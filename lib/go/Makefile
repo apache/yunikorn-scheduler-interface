@@ -83,7 +83,7 @@ export PATH := $(shell pwd):$(PATH)
 ##                              BUILD                                 ##
 ########################################################################
 CSI_PROTO := ../../si.proto
-CSI_PKG_ROOT := github.com/leftnoteasy/si-spec
+CSI_PKG_ROOT := github.infra.cloudera.com/yunikorn/scheduler-interface
 CSI_PKG_SUB := si
 CSI_BUILD := $(CSI_PKG_SUB)/.build
 CSI_GO := $(CSI_PKG_SUB)/si.pb.go

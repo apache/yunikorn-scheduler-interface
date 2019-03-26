@@ -81,12 +81,12 @@ message UpdateRequest {
   // Id of RM, this will be used to identify which RM of the request comes from.
   string rmId = 6;
   
-  // RM should explicitly add job when allocation request also explictly belongs to job.
-  // This is optional if allocation request doesn't belong to a job. (Independent allocation)
-  repeated AddJobRequest newJobs = 8;
+  // RM should explicitly add application when allocation request also explictly belongs to application.
+  // This is optional if allocation request doesn't belong to a application. (Independent allocation)
+  repeated AddApplicationRequest newApplications = 8;
   
-  // RM can also remove jobs, all allocation/allocation requests associated with the job will be removed
-  repeated RemoveJobRequest removeJobs = 9;
+  // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
+  repeated RemoveApplicationRequest removeApplications = 9;
 }
 
 message UpdateResponse {
@@ -121,11 +121,11 @@ message UpdateResponse {
   // 2) Other recommendations.
   repeated NodeRecommendation nodeRecommendations = 5;
   
-  // Rejected Jobs
-  repeated RejectedJob rejectedJobs = 6;
+  // Rejected Applications
+  repeated RejectedApplication rejectedApplications = 6;
   
-  // Accepted Jobs
-  repeated AcceptedJob acceptedJobs = 7;
+  // Accepted Applications
+  repeated AcceptedApplication acceptedApplications = 7;
   
   // Rejected Node Registrations
   repeated RejectedNode rejectedNodes = 8;
@@ -134,13 +134,13 @@ message UpdateResponse {
   repeated AcceptedNode acceptedNodes = 9;
 }
 
-message RejectedJob {
-  string jobId = 1; 
+message RejectedApplication {
+  string applicationId = 1;
   string reason = 2;
 }
 
-message AcceptedJob {
-  string jobId = 1;
+message AcceptedApplication {
+  string applicationId = 1;
 }
 
 message RejectedNode {
@@ -210,9 +210,9 @@ message AllocationAsk {
   // once allocated by scheduler, 0 or negative value means never expire.
   int64 executionTimeoutMilliSeconds = 10;
   
-  // Which job this allocation ask belongs to, if it is not specified. The allocation
-  // won't belong to any job.
-  string jobId = 11;
+  // Which application this allocation ask belongs to, if it is not specified. The allocation
+  // won't belong to any application.
+  string applicationId = 11;
   
   // Which partition requested by this ask
   // One ask can only request one node partition
@@ -232,14 +232,14 @@ message UserGroupInformation {
   repeated string groups = 2;
 }
 
-message AddJobRequest {
-  string jobId = 1;
+message AddApplicationRequest {
+  string applicationId = 1;
   string queueName = 2;
   string partitionName = 3;
 }
 
-message RemoveJobRequest {
-  string jobId = 1;
+message RemoveApplicationRequest {
+  string applicationId = 1;
   string partitionName = 2;
 }
 // PlacementConstraint could have simplePlacementConstraint or
@@ -350,10 +350,10 @@ message AllocationReleaseRequest {
   // optional, when this is set, only release allocation by given uuid.
   string uuid = 1;
   
-  // when this is set, filter allocations by job id.
-  // empty value will filter allocations don't belong to job. 
-  // when job id is set and uuid not set, release all allocations under the job id.
-  string jobId = 2;
+  // when this is set, filter allocations by application id.
+  // empty value will filter allocations don't belong to application.
+  // when application id is set and uuid not set, release all allocations under the application id.
+  string applicationId = 2;
   
   // Which partition to release, required.
   string partitionName = 3;
@@ -367,10 +367,10 @@ message AllocationAskReleaseRequest {
   // optional, when this is set, only release allocation ask by specified
   string allocationkey = 1;
   
-  // when this is set, filter allocation key by job id.
-  // empty value will filter allocations don't belong to job. 
-  // when job id is set and allocationKey not set, release all allocations key under the job id.
-  string jobId = 2;
+  // when this is set, filter allocation key by application id.
+  // empty value will filter allocations don't belong to application.
+  // when application id is set and allocationKey not set, release all allocations key under the application id.
+  string applicationId = 2;
   
   // Which partition to release, required.
   string partitionName = 3;
@@ -453,8 +453,8 @@ message Allocation {
   // Node which the allocation belongs to
   string nodeId = 8;
   
-  // Id of Job
-  string jobId = 9;
+  // Id of Application
+  string applicationId = 9;
   
   // Partition of the allocation 
   string partition = 10;
