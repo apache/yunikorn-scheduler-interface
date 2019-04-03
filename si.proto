@@ -462,7 +462,8 @@ message Allocation {
 
 message RejectedAllocationAsk {
   string allocationKey = 1;
-  string reason = 2;
+  string applicationId = 2;
+  string reason = 3;
 }
 
 message NodeRecommendation {
