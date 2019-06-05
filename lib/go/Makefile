@@ -1,136 +1,86 @@
 all: build
 
-########################################################################
-##                             GOLANG                                 ##
-########################################################################
-
-# If GOPATH isn't defined then set its default location.
-ifeq (,$(strip $(GOPATH)))
-GOPATH := $(HOME)/go
-else
-# If GOPATH is already set then update GOPATH to be its own
-# first element.
-GOPATH := $(word 1,$(subst :, ,$(GOPATH)))
-endif
+# build everything under the local directory.
+HERE := $(CURDIR)
+BASE := $(abspath $(CURDIR)/../../../../..)
+GOPATH := $(HERE)
 export GOPATH
-
-
-########################################################################
-##                             PROTOC                                 ##
-########################################################################
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
 PROTOC_VER := 3.5.1
 endif
 
+# fix OS string for Mac builds.
 PROTOC_OS := $(shell uname -s)
 ifeq (Darwin,$(PROTOC_OS))
 PROTOC_OS := osx
 endif
 
+# allow building on 32 bit machines.
 PROTOC_ARCH := $(shell uname -m)
 ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
 endif
 
-PROTOC := ./protoc
+# Get and install the protoc binary.
 PROTOC_ZIP := protoc-$(PROTOC_VER)-$(PROTOC_OS)-$(PROTOC_ARCH).zip
 PROTOC_URL := https://github.com/google/protobuf/releases/download/v$(PROTOC_VER)/$(PROTOC_ZIP)
-PROTOC_TMP_DIR := .protoc
-PROTOC_TMP_BIN := $(PROTOC_TMP_DIR)/bin/protoc
-
+PROTOC_TMP_DIR := protoc
+PROTOC_BIN_DIR := $(PROTOC_TMP_DIR)/bin
+PROTOC := $(PROTOC_BIN_DIR)/protoc
 $(PROTOC):
-	-mkdir -p "$(PROTOC_TMP_DIR)" && \
-	  curl -L $(PROTOC_URL) -o "$(PROTOC_TMP_DIR)/$(PROTOC_ZIP)" && \
-	  unzip "$(PROTOC_TMP_DIR)/$(PROTOC_ZIP)" -d "$(PROTOC_TMP_DIR)" && \
-	  chmod 0755 "$(PROTOC_TMP_BIN)" && \
-	  cp -f "$(PROTOC_TMP_BIN)" "$@"
-	stat "$@" > /dev/null 2>&1
+	mkdir -p $(PROTOC_TMP_DIR) && \
+		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
+		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
+		chmod 0755 $(PROTOC)
+	stat $@ > /dev/null 2>&1
 
-
-########################################################################
-##                          PROTOC-GEN-GO                             ##
-########################################################################
-
-# This is the recipe for getting and installing the go plug-in
-# for protoc
-PROTOC_GEN_GO_PKG := github.com/golang/protobuf/protoc-gen-go
+# Get and install the go plug-in for protoc
+PROTOBUF_PKG := github.com/golang/protobuf
+PROTOBUF_VERSION := v1.3.1
 PROTOC_GEN_GO := protoc-gen-go
-$(PROTOC_GEN_GO): PROTOBUF_PKG := $(dir $(PROTOC_GEN_GO_PKG))
-$(PROTOC_GEN_GO): PROTOBUF_VERSION := v1.2.0
+PROTOC_GEN_GO_PKG := $(PROTOBUF_PKG)/$(PROTOC_GEN_GO)
+PROTOC_GEN_GO_SRC := src
 $(PROTOC_GEN_GO):
-	mkdir -p $(dir $(GOPATH)/src/$(PROTOBUF_PKG))
-	test -d $(GOPATH)/src/$(PROTOBUF_PKG)/.git || git clone https://$(PROTOBUF_PKG) $(GOPATH)/src/$(PROTOBUF_PKG)
-	(cd $(GOPATH)/src/$(PROTOBUF_PKG) && \
+	mkdir -p $(dir $(PROTOC_GEN_GO_SRC)/$(PROTOBUF_PKG))
+	test -d $(PROTOC_GEN_GO_SRC)/$(PROTOBUF_PKG)/.git || \
+		git clone https://$(PROTOBUF_PKG) $(PROTOC_GEN_GO_SRC)/$(PROTOBUF_PKG)
+	(cd $(PROTOC_GEN_GO_SRC)/$(PROTOBUF_PKG) && \
 		(test "$$(git describe --tags | head -1)" = "$(PROTOBUF_VERSION)" || \
-			(git fetch && git checkout tags/$(PROTOBUF_VERSION))))
-	(cd $(GOPATH)/src/$(PROTOBUF_PKG) && go get -v -d $$(go list -f '{{ .ImportPath }}' ./...)) && \
-	go build -o "$@" $(PROTOC_GEN_GO_PKG)
+		(git fetch && git checkout tags/$(PROTOBUF_VERSION))))
+	(cd $(PROTOC_GEN_GO_SRC)/$(PROTOBUF_PKG) && \
+		go get -v -d $$(go list -f '{{ .ImportPath }}' ./...)) && \
+		go build -o $(PROTOC_BIN_DIR)/$@ $(PROTOC_GEN_GO_PKG)
 
+# Update PATH with the protoc bin dir which contains protoc and its plug-in
+export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
-########################################################################
-##                              PATH                                  ##
-########################################################################
+# Generate the go language bindings.
+SI_PROTO := ../../si.proto
+SI_PKG_ROOT := github.infra.cloudera.com/yunikorn/scheduler-interface
+SI_PKG_SUB := si
+SI_BUILD := $(SI_PKG_SUB)/build
+SI_GO := $(SI_PKG_SUB)/si.pb.go
+SI_GO_TMP := $(SI_BUILD)/$(SI_PKG_ROOT)/si.pb.go
+$(SI_GO): PTYPES_PKG := github.com/golang/protobuf/ptypes
+$(SI_GO): GO_OUT := plugins=grpc
+$(SI_GO): GO_OUT := $(GO_OUT),Mgoogle/protobuf/descriptor.proto=$(PROTOC_GEN_GO_PKG)/descriptor
+$(SI_GO): GO_OUT := $(GO_OUT),Mgoogle/protobuf/wrappers.proto=$(PTYPES_PKG)/wrappers
+$(SI_GO): GO_OUT := $(GO_OUT):$(HERE)/$(SI_BUILD)
+$(SI_GO): INCLUDE := -I$(BASE) -I$(HERE)/$(PROTOC_TMP_DIR)/include
+$(SI_GO): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
+	mkdir -p $(SI_BUILD) && \
+		(cd $(BASE) && \
+		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(SI_PKG_ROOT)/$(<F)) && \
+		cp -f $(SI_GO_TMP) $(SI_GO)
 
-# Update PATH with the current directory. This enables the protoc
-# binary to discover the protoc-gen-go binary, built inside this
-# directory.
-export PATH := $(shell pwd):$(PATH)
-
-
-########################################################################
-##                              BUILD                                 ##
-########################################################################
-CSI_PROTO := ../../si.proto
-CSI_PKG_ROOT := github.infra.cloudera.com/yunikorn/scheduler-interface
-CSI_PKG_SUB := si
-CSI_BUILD := $(CSI_PKG_SUB)/.build
-CSI_GO := $(CSI_PKG_SUB)/si.pb.go
-CSI_A := si.a
-CSI_GO_TMP := $(CSI_BUILD)/$(CSI_PKG_ROOT)/si.pb.go
-
-# This recipe generates the go language bindings to a temp area.
-$(CSI_GO_TMP): HERE := $(shell pwd)
-$(CSI_GO_TMP): PTYPES_PKG := github.com/golang/protobuf/ptypes
-$(CSI_GO_TMP): GO_OUT := plugins=grpc
-$(CSI_GO_TMP): GO_OUT := $(GO_OUT),Mgoogle/protobuf/descriptor.proto=github.com/golang/protobuf/protoc-gen-go/descriptor
-$(CSI_GO_TMP): GO_OUT := $(GO_OUT),Mgoogle/protobuf/wrappers.proto=$(PTYPES_PKG)/wrappers
-$(CSI_GO_TMP): GO_OUT := $(GO_OUT):"$(HERE)/$(CSI_BUILD)"
-$(CSI_GO_TMP): INCLUDE := -I$(GOPATH)/src -I$(HERE)/$(PROTOC_TMP_DIR)/include
-$(CSI_GO_TMP): $(CSI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
-	@mkdir -p "$(@D)"
-	(cd "$(GOPATH)/src" && \
-		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) "$(CSI_PKG_ROOT)/$(<F)")
-
-# The temp language bindings are compared to the ones that are
-# versioned. If they are different then it means the language
-# bindings were not updated prior to being committed.
-$(CSI_GO): $(CSI_GO_TMP)
-ifeq (true,$(TRAVIS))
-	diff "$@" "$?"
-else
-	@mkdir -p "$(@D)"
-	diff "$@" "$?" > /dev/null 2>&1 || cp -f "$?" "$@"
-endif
-
-# This recipe builds the Go archive from the sources in three steps:
-#
-#   1. Go get any missing dependencies.
-#   2. Cache the packages.
-#   3. Build the archive file.
-$(CSI_A): $(CSI_GO)
-	go get -v -d ./...
-	go install ./$(CSI_PKG_SUB)
-	go build -o "$@" ./$(CSI_PKG_SUB)
-
-build: $(CSI_A)
+build: $(SI_GO)
 
 clean:
-	go clean -i ./...
-	rm -rf "$(CSI_A)" "$(CSI_GO)" "$(CSI_BUILD)"
+	rm -rf $(SI_GO)
 
 clobber: clean
-	rm -fr "$(PROTOC)" "$(PROTOC_GEN_GO)" "$(CSI_PKG_SUB)"
+	rm -rf $(PROTOC_TMP_DIR) $(PROTOC_GEN_GO_SRC) $(SI_BUILD)
 
 .PHONY: clean clobber
