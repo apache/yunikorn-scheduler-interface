@@ -72,10 +72,11 @@ $(SI_GO): INCLUDE := -I$(BASE) -I$(HERE)/$(PROTOC_TMP_DIR)/include
 $(SI_GO): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && \
-		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(SI_PKG_ROOT)/$(<F)) && \
-		cp -f $(SI_GO_TMP) $(SI_GO)
+		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(SI_PKG_ROOT)/$(<F))
 
 build: $(SI_GO)
+	cp -f $(SI_GO_TMP) $(SI_GO) && \
+	echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 
 clean:
 	rm -rf $(SI_GO)
