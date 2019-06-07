@@ -1,52 +1,42 @@
-
-<!--
-About flow chart: use this website:
-<!--- http://stable.ascii-flow.appspot.com/#Draw-->
-
 # Scheduler Interface Spec
 
-Authors:
+Authors: The Yunikorn Scheduler Authors
 
 ## Objective
 
-To define standard interface can be used by different resource management systems such as YARN/K8s.
+To define a standard interface that can be used by different types of resource management systems such as YARN/K8s.
 
-### Goals in MVP
+### Goals for minimum viable product (MVP)
 
-- Interface and implementation should be RM-agnostic.
-- Interface can handle multiple RMs from multiple zones, and different policies can be configured in different zones. There will be less correlations between zones
+- Interface and implementation should be resource manager (RM) agnostic.
+- Interface can handle multiple types of resource managers from multiple zones, and different policies can be configured in different zones.
 
 Possible use cases:
 - A large cluster needs multiple schedulers to achieve horizontally scalability.
-- Multiple RMs need to run on the same cluster, grows and shrinks according to runtime resource usage and policies.
+- Multiple resource managers need to run on the same cluster. The managers grow and shrink according to runtime resource usage and policies.
 
-### Non-Goals in MVP
+### Non-Goals for minimum viable product (MVP)
 
 - Handle process-specific information: Scheduler Interface only handles decisions for scheduling instead of how containers will be launched.
 
-## Design
+## Design considerations
 
 Highlights:
-- Scheduler should be as stateless as possible, should eliminate any local persistent storage for scheduling decisions.
-- When RM restarts, recovers, etc. RM needs to re-sync state with scheduler.
+- The scheduler should be as stateless as possible. It should try to eliminate any local persistent storage for scheduling decisions.
+- When a RM starts, restarts or recovers the RM needs to sync its state with scheduler.
 
 ### Architecture
 
-## Scheduler Interface
+## Generic definitions
 
-There're two kinds of interfaces, one is grpc-based communication, another is api-based. Grpc based will be useful when scheduler has to be deployed in remote processes (For example, when we need to deploy scheduler support multiple clusters). Or wanna to have cross-lang communications (like between Java and Go).
+Interface and messages generic definition.
 
-Otherwise we highly suggest to use API-based interface to avoid addition costs in grpc serialization and de-serialization.
-
-### RPC Interface
-
+The syntax used for the declarations is `proto3`. The definition currently only provides go related info. 
 ```protobuf
 syntax = "proto3";
 package si.v1;
 
 import "google/protobuf/descriptor.proto";
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
 
 option go_package = "si";
 
@@ -57,20 +47,34 @@ extend google.protobuf.FieldOptions {
 }
 ```
 
+## Scheduler Interfaces
+
+There are two kinds of interfaces, the first one is RPC based communication, the second one is API based.
+
+RPC based, the [gRPC](https://grpc.io/) framework is used, will be useful when scheduler has to be deployed as a remote process.
+For example when we need to deploy scheduler support multiple remote clusters. 
+A second example is when there is a cross language integration, like between Java and Go.
+
+Unless specifically required we strongly recommend the use of the API based interface to avoid the overhead of the RPC serialization and de-serialization.
+
+### RPC Interface
+
 There are three sets of RPCs:
 
-* **Scheduler Service**: Scheduler can communicate with the Scheduler Service and do resource allocation/request update, etc.
+* **Scheduler Service**: RM can communicate with the Scheduler Service and do resource allocation/request update, etc.
 * **Admin Service**: Admin can communicate with Scheduler Interface and get configuration updated.
 * **Metrics Service**: Used to retrieve state of scheduler by users / RMs.
 
+Currently only the design and implementation for the Scheduler Service is provided. 
+
 ```protobuf
 service Scheduler {
-  // Register a new RM, if it is a reconnect from previous RM, cleanup
-  // all in-memory data and resync with RM.
+  // Register a RM, if it is a reconnect from previous RM the call will
+  // trigger a cleanup of all in-memory data and resync with RM.
   rpc RegisterResourceManager (RegisterResourceManagerRequest)
     returns (RegisterResourceManagerResponse) { }
 
-  // Update Scheduler status (including node status update, allocation request
+  // Update Scheduler status (this includes node status update, allocation request
   // updates, etc. And receive updates from scheduler for allocation changes,
   // any required status changes, etc.
   rpc Update (stream UpdateRequest)
@@ -88,16 +92,30 @@ service AdminService {
     returns (UpdateConfigResponse) {}
 }
 */
+
+/*
+service MetricsService {
+}
+*/
 ```
+#### Why bi-directional gRPC
+
+The reason of using bi-directional streaming gRPC is, according to performance benchmark: https://grpc.io/docs/guides/benchmarking.html latency is close to 0.5 ms.
+The same performance benchmark shows streaming QPS can be 4x of non-streaming RPC.
+Considering scheduler needs both throughput and better latency, we go with streaming API for scheduler related decisions.
 
 ### API Interface
 
-Here's a draft go-lang api.
+The API interface only relies on the message definition and not on other generated code as the RPC Interface does.
+Below is an example of the Scheduler Service as defined in the RPC. The SchedulerAPI is bi-directional and can be a-synchronous.
+For the asynchronous cases the API requires a callback interface to be implemented in the resource manager.
+The callback must be provided to the scheduler as part of the registration.
+
 
 ```golang
 package api
 
-import "github.com/leftnoteasy/si-spec/lib/go/si"
+import "github.infra.cloudera.com/yunikorn/scheduler-interface/lib/go/si"
 
 type SchedulerApi interface {
     // Register a new RM, if it is a reconnect from previous RM, cleanup
@@ -113,12 +131,7 @@ type SchedulerApi interface {
 type ResourceManagerCallback interface {
     RecvUpdateResponse(response *si.UpdateResponse) error
 }
-
 ```
-
-#### Why bi-directional grpc
-
-The reason of using bi-directional streaming grpc is, according to performance benchmark: https://grpc.io/docs/guides/benchmarking.htmlping-pong latency is close to 0.5 ms. The same performance benchmark shows streaming QPS can be 4x of non-streaming RPC. Considering scheduler needs both throughput and better latency, we go with streaming API for scheduler related decisions.
 
 ### Communications between RM and Scheduler
 
@@ -126,7 +139,6 @@ Lifecycle of RM-Scheduler communication
 
 ```
 Status of RM in scheduler:
-
 
                             Connection     timeout
     +-------+      +-------+ loss +-------+      +---------+
@@ -195,12 +207,12 @@ message UpdateRequest {
   // Id of RM, this will be used to identify which RM of the request comes from.
   string rmId = 6;
   
-  // RM should explicitly add job when allocation request also explictly belongs to job.
-  // This is optional if allocation request doesn't belong to a job. (Independent allocation)
-  repeated AddJobRequest newJobs = 8;
+  // RM should explicitly add application when allocation request also explictly belongs to application.
+  // This is optional if allocation request doesn't belong to a application. (Independent allocation)
+  repeated AddApplicationRequest newApplications = 8;
   
-  // RM can also remove jobs, all allocation/allocation requests associated with the job will be removed
-  repeated RemoveJobRequest removeJobs = 9;
+  // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
+  repeated RemoveApplicationRequest removeApplications = 9;
 }
 
 message UpdateResponse {
@@ -235,11 +247,11 @@ message UpdateResponse {
   // 2) Other recommendations.
   repeated NodeRecommendation nodeRecommendations = 5;
   
-  // Rejected Jobs
-  repeated RejectedJob rejectedJobs = 6;
+  // Rejected Applications
+  repeated RejectedApplication rejectedApplications = 6;
   
-  // Accepted Jobs
-  repeated AcceptedJob acceptedJobs = 7;
+  // Accepted Applications
+  repeated AcceptedApplication acceptedApplications = 7;
   
   // Rejected Node Registrations
   repeated RejectedNode rejectedNodes = 8;
@@ -248,13 +260,13 @@ message UpdateResponse {
   repeated AcceptedNode acceptedNodes = 9;
 }
 
-message RejectedJob {
-  string jobId = 1; 
+message RejectedApplication {
+  string applicationId = 1; 
   string reason = 2;
 }
 
-message AcceptedJob {
-  string jobId = 1;
+message AcceptedApplication {
+  string applicationId = 1;
 }
 
 message RejectedNode {
@@ -265,7 +277,6 @@ message RejectedNode {
 message AcceptedNode {
   string nodeId = 1;
 }
-
 ```
 
 #### Ask for more resources
@@ -376,9 +387,9 @@ message AllocationAsk {
   // once allocated by scheduler, 0 or negative value means never expire.
   int64 executionTimeoutMilliSeconds = 10;
   
-  // Which job this allocation ask belongs to, if it is not specified. The allocation
-  // won't belong to any job.
-  string jobId = 11;
+  // Which application this allocation ask belongs to, if it is not specified. The allocation
+  // won't belong to any application.
+  string applicationId = 11;
   
   // Which partition requested by this ask
   // One ask can only request one node partition
@@ -398,14 +409,14 @@ message UserGroupInformation {
   repeated string groups = 2;
 }
 
-message AddJobRequest {
-  string jobId = 1;
+message AddApplicationRequest {
+  string applicationId = 1;
   string queueName = 2;
   string partitionName = 3;
 }
 
-message RemoveJobRequest {
-  string jobId = 1;
+message RemoveApplicationRequest {
+  string applicationId = 1;
   string partitionName = 2;
 }
 ```
@@ -482,12 +493,11 @@ message AffinityTargetExpression {
 }
 ```
 
-As mentioned above, we can support Composite Placement Constraint in the future. To ease initial implementation of scheduler, following code is commented out on purpose which is for your reference only.
+As mentioned above, the intention is to support Composite Placement Constraint in the future.
 
-```protobuf
-/*
-Following protocol is commented on-purpose, currently for your references only
+The following protocol block is not marked as `protobuf` code and is added as a reference only and will not be processed as part of the protocol generation.
 
+```
 message CompositePlacementConstraintProto {
   enum CompositeType {
     // All children constraints have to be satisfied.
@@ -505,7 +515,6 @@ message CompositePlacementConstraintProto {
   repeated TimedPlacementConstraintProto timedChildConstraints = 3;
 }
 
-
 message TimedPlacementConstraintProto {
   enum DelayUnit {
     MILLISECONDS = 0;
@@ -516,7 +525,6 @@ message TimedPlacementConstraintProto {
   required int64 schedulingDelay = 2;
   DelayUnit delayUnit = 3 [ default = MILLISECONDS ];
 }
-*/
 ```
 
 #### Release previously allocated resources
@@ -532,10 +540,10 @@ message AllocationReleaseRequest {
   // optional, when this is set, only release allocation by given uuid.
   string uuid = 1;
   
-  // when this is set, filter allocations by job id.
-  // empty value will filter allocations don't belong to job. 
-  // when job id is set and uuid not set, release all allocations under the job id.
-  string jobId = 2;
+  // when this is set, filter allocations by application id.
+  // empty value will filter allocations don't belong to application. 
+  // when application id is set and uuid not set, release all allocations under the application id.
+  string applicationId = 2;
   
   // Which partition to release, required.
   string partitionName = 3;
@@ -549,10 +557,10 @@ message AllocationAskReleaseRequest {
   // optional, when this is set, only release allocation ask by specified
   string allocationkey = 1;
   
-  // when this is set, filter allocation key by job id.
-  // empty value will filter allocations don't belong to job. 
-  // when job id is set and allocationKey not set, release all allocations key under the job id.
-  string jobId = 2;
+  // when this is set, filter allocation key by application id.
+  // empty value will filter allocations don't belong to application. 
+  // when application id is set and allocationKey not set, release all allocations key under the application id.
+  string applicationId = 2;
   
   // Which partition to release, required.
   string partitionName = 3;
@@ -560,9 +568,6 @@ message AllocationAskReleaseRequest {
   // For human-readable
   string message = 4;
 }
-
-
-
 ```
 
 #### Schedulable nodes registration and updates
@@ -570,24 +575,20 @@ message AllocationAskReleaseRequest {
 State transition of node:
 
 ```
-
-
-   +-----------+      +--------+        +-------+
-   |SCHEDULABLE|+---->|DRAINING|+------>|REMOVED|
-   +-----------+      +--------+        +-------+
-         ^     ASKED       +     ASKED BY
-         |      BY RM      |     RM TO REMOVE
-         |     TO DRAIN    |
-         |                 |
-         |                 |
-         |                 |
-         +-----------------+
-             RM ASK TO SCHEDULABLE
-                   AGAIN
+   +-----------+          +--------+            +-------+
+   |SCHEDULABLE|+-------->|DRAINING|+---------->|REMOVED|
+   +-----------+          +--------+            +-------+
+         ^       Asked by      +     Aasked by
+         |      RM to DRAIN    |     RM to REMOVE
+         |                     |
+         +---------------------+
+              Asked by RM to
+              SCHEDULE again
 ```
 
 See protocol below:
 
+Registration of a new node with the scheduler
 ```protobuf
 message NewNodeInfo {
   // Id of node, it should be identical if same node daemon restarted.
@@ -604,7 +605,10 @@ message NewNodeInfo {
   // (recovery) 
   repeated Allocation existingAllocations = 4;
 }
+```
 
+Update of a registered node with the scheduler
+```protobuf
 message UpdateNodeInfo {
   // Action from RM
   enum ActionFromRM {
@@ -675,8 +679,8 @@ message Allocation {
   // Node which the allocation belongs to
   string nodeId = 8;
   
-  // Id of Job
-  string jobId = 9;
+  // Id of Application
+  string applicationId = 9;
   
   // Partition of the allocation 
   string partition = 10;
@@ -686,17 +690,16 @@ message Allocation {
 When allocation ask rejected by scheduler, information will be shared by scheduler.
 
 ```protobuf
-
 message RejectedAllocationAsk {
   string allocationKey = 1;
-  string reason = 2;
+  string applicationId = 2;
+  string reason = 3;
 }
 ```
 
 Scheduler can notify suggestions to RM about node. This can be either human-readable or actions can be taken.
 
 ```protobuf
-
 message NodeRecommendation {
   Resource recommendedSchedulableResource = 1;
 
@@ -708,7 +711,6 @@ message NodeRecommendation {
 For released allocations
 
 ```protobuf
-
 // When allocation released, either by RM or preempted by scheduler. It will be sent back to RM.
 message AllocationReleaseResponse {
 
@@ -740,8 +742,7 @@ Scheduler Interface reserved all attribute in si.io namespace.
 
 Known attribute names for nodes and applications.
 
-```go
-
+```golang
 // Constants for node attribtues
 const (
     ARCH="si.io/arch"
@@ -757,7 +758,7 @@ const (
 
 // Constants for allocation attribtues
 const (
-    JOB_ID="si.io/job-id"
+    APPLICATION_ID="si.io/application-id"
     CONTAINER_IMAGE="si.io/container-image"
     CONTAINER_PORTS="si.io/container-ports"
 )
