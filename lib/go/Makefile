@@ -1,6 +1,22 @@
+#
+# Copyright 2019 The Yunikorn Scheduler Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 all: build
 
-# build everything under the local directory.
+# Build everything under the local directory.
 HERE := $(CURDIR)
 BASE := $(abspath $(CURDIR)/../../../../..)
 GOPATH := $(HERE)
@@ -11,13 +27,13 @@ ifeq (,$(strip $(PROTOC_VER)))
 PROTOC_VER := 3.5.1
 endif
 
-# fix OS string for Mac builds.
+# Fix OS string for Mac builds.
 PROTOC_OS := $(shell uname -s)
 ifeq (Darwin,$(PROTOC_OS))
 PROTOC_OS := osx
 endif
 
-# allow building on 32 bit machines.
+# Allow building on 32 bit machines.
 PROTOC_ARCH := $(shell uname -m)
 ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
@@ -36,7 +52,7 @@ $(PROTOC):
 		chmod 0755 $(PROTOC)
 	stat $@ > /dev/null 2>&1
 
-# Get and install the go plug-in for protoc
+# Get and install the go plug-in for protoc.
 PROTOBUF_PKG := github.com/golang/protobuf
 PROTOBUF_VERSION := v1.3.1
 PROTOC_GEN_GO := protoc-gen-go
@@ -72,13 +88,16 @@ $(SI_GO): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 		(cd $(BASE) && \
 		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(SI_PKG_ROOT)/$(<F))
 
+# Build the go language bindings from the generated proto.
 build: $(SI_GO)
 	cp -f $(SI_GO_TMP) $(SI_GO) && \
 	echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 
+# Simple clean of generated file language binding.
 clean:
 	rm -rf $(SI_GO)
 
+# Remove all non versioned files (including compiler and cache)
 clobber: clean
 	rm -rf $(PROTOC_TMP_DIR) $(PROTOC_GEN_GO_SRC) $(SI_BUILD)
 
