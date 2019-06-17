@@ -473,10 +473,10 @@ message PredicatesArgs {
 
 message ReSyncSchedulerCacheArgs {
    // a list of assumed allocations, this will be sync'd to scheduler cache.
-   repeated AssumeAllocationRequest assumedAllocation = 1;
+   repeated AssumedAllocation assumedAllocations = 1;
 }
 
-message AssumeAllocationRequest {
+message AssumedAllocation {
    // allocation key used to identify a container.
    string allocationKey = 1;
    // the node ID the container is assumed to be allocated to, this info is stored in scheduler cache.
