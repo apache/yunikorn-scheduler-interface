@@ -763,3 +763,32 @@ const (
     CONTAINER_PORTS="si.io/container-ports"
 )
 ```
+
+### Scheduler plugin
+
+SchedulerPlugin is a way to extend scheduler capabilities. Scheduler shim can implement such plugin and register itself to
+yunikorn-core, so plugged function can be invoked in the scheduler core.
+
+```protobuf
+
+message PredicatesArgs {
+    // allocation key identifies a container, the predicates function is going to check
+    // if this container is eligible to be placed ont to a node.
+    string allocationKey = 1;
+
+    // the node ID the container is assigned to.
+    string nodeId = 2;
+}
+
+message ReSyncSchedulerCacheArgs {
+   // a list of assumed allocations, this will be sync'd to scheduler cache.
+   repeated AssumeAllocationRequest assumedAllocation = 1;
+}
+
+message AssumeAllocationRequest {
+   // allocation key used to identify a container.
+   string allocationKey = 1;
+   // the node ID the container is assumed to be allocated to, this info is stored in scheduler cache.
+   string nodeId = 2;
+}
+```
