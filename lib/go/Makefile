@@ -21,6 +21,8 @@ HERE := $(CURDIR)
 BASE := $(abspath $(CURDIR)/../../../../..)
 GOPATH := $(HERE)
 export GOPATH
+# Find the checked out package details (git host, user and repo)
+PKG_ROOT := $(patsubst %/lib/go,%,$(patsubst $(BASE)/%,%,$(HERE)))
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
@@ -74,11 +76,10 @@ export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
 # Generate the go language bindings.
 SI_PROTO := ../../si.proto
-SI_PKG_ROOT := github.infra.cloudera.com/yunikorn/scheduler-interface
 SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
 SI_GO := $(SI_PKG_SUB)/si.pb.go
-SI_GO_TMP := $(SI_BUILD)/$(SI_PKG_ROOT)/si.pb.go
+SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
 $(SI_GO): GO_OUT := plugins=grpc
 $(SI_GO): GO_OUT := $(GO_OUT),Mgoogle/protobuf/descriptor.proto=$(PROTOC_GEN_GO_PKG)/descriptor
 $(SI_GO): GO_OUT := $(GO_OUT):$(HERE)/$(SI_BUILD)
@@ -86,12 +87,12 @@ $(SI_GO): INCLUDE := -I$(BASE) -I$(HERE)/$(PROTOC_TMP_DIR)/include
 $(SI_GO): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && \
-		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(SI_PKG_ROOT)/$(<F))
+		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(PKG_ROOT)/$(<F))
 
 # Build the go language bindings from the generated proto.
 build: $(SI_GO)
-	cp -f $(SI_GO_TMP) $(SI_GO) && \
-	echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
+	cp -f $(SI_GO_TMP) $(SI_GO)
+	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 
 # Simple clean of generated file language binding.
 clean:
