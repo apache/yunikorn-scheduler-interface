@@ -14,13 +14,24 @@
 # limitations under the License.
 #
 
+# Check if this is at least GO 1.11 for Go Modules
+GO_VERSION := $(shell go version | awk '$$3 ~ /go1.(10|0-9])/ {print $$3}')
+ifdef GO_VERSION
+$(error Build requires go 1.11 or later)
+endif
+
 all: build
 
 # Build everything under the local directory.
 HERE := $(CURDIR)
-BASE := $(abspath $(CURDIR)/../../../../..)
-# Find the checked out package details (git host, user and repo)
+# compensate for lib/go/<repo>
+BASE := $(abspath $(CURDIR)/../../..)
+# Find the checked out package details (repo only)
 PKG_ROOT := $(patsubst %/lib/go,%,$(patsubst $(BASE)/%,%,$(HERE)))
+
+# Force Go modules even when checked out inside GOPATH
+GO111MODULE := on
+export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
@@ -78,18 +89,18 @@ SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
 SI_GO := $(SI_PKG_SUB)/si.pb.go
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
-$(SI_GO): GO_OUT := plugins=grpc
-$(SI_GO): GO_OUT := $(GO_OUT),Mgoogle/protobuf/descriptor.proto=$(PROTOC_GEN_GO_PKG)/descriptor
-$(SI_GO): GO_OUT := $(GO_OUT):$(HERE)/$(SI_BUILD)
-$(SI_GO): INCLUDE := -I$(BASE) -I$(HERE)/$(PROTOC_TMP_DIR)/include
-$(SI_GO): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
+$(SI_GO_TMP): GO_OUT := plugins=grpc
+$(SI_GO_TMP): GO_OUT := $(GO_OUT),Mgoogle/protobuf/descriptor.proto=$(PROTOC_GEN_GO_PKG)/descriptor
+$(SI_GO_TMP): GO_OUT := $(GO_OUT):$(HERE)/$(SI_BUILD)
+$(SI_GO_TMP): INCLUDE := -I$(BASE) -I$(HERE)/$(PROTOC_TMP_DIR)/include
+$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && \
 		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(PKG_ROOT)/$(<F))
 
 # Build the go language bindings from the generated proto.
-build: $(SI_GO)
-	cp -f $(SI_GO_TMP) $(SI_GO)
+build: $(SI_GO_TMP)
+	@cp -f $(SI_GO_TMP) $(SI_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 
 # Simple clean of generated file language binding.
