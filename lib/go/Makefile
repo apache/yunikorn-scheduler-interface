@@ -19,8 +19,6 @@ all: build
 # Build everything under the local directory.
 HERE := $(CURDIR)
 BASE := $(abspath $(CURDIR)/../../../../..)
-GOPATH := $(HERE)
-export GOPATH
 # Find the checked out package details (git host, user and repo)
 PKG_ROOT := $(patsubst %/lib/go,%,$(patsubst $(BASE)/%,%,$(HERE)))
 

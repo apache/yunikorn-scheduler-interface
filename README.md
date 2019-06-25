@@ -22,7 +22,7 @@ The blocks of definitions are extracted from the specification file and added to
 
 ## How to build
 Prerequisite: 
-- Go 1.9+
+- Go 1.11+
   
 Steps: 
 - Run `make` to build.
