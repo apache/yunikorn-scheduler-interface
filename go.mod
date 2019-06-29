@@ -1,4 +1,4 @@
-module github.infra.cloudera.com/yunikorn/scheduler-interface
+module github.com/cloudera/scheduler-interface
 
 go 1.12
 

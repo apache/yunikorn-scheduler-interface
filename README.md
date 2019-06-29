@@ -33,18 +33,18 @@ Currently only the go source code artifact is generated.
 ## How to use 
 The output of this build is required to build the scheduler and the resource manager(s). To allow building those projects without the requirement of generating the interface artifacts in each the generated artifacts are part of the repository.
 
-The dependent projects can use the interface by importing "github.infra.cloudera.com/yunikorn/scheduler-interface/lib/go/si"
+The dependent projects can use the interface by importing "github.com/cloudera/scheduler-interface/lib/go/si"
 ```go
 package example
 
-import "github.infra.cloudera.com/yunikorn/scheduler-interface/lib/go/si"
+import "github.com/cloudera/scheduler-interface/lib/go/si"
 ```
 
 ## How do I contribute code?
 You need to first sign and return an
-[ICLA](https://github.infra.cloudera.com/yunikorn-core/blob/master/CLAs/Cloudera%20ICLA_25APR2018.pdf)
+[ICLA](https://github.com/cloudera/yunikorn-core/blob/master/CLAs/Cloudera%20ICLA_25APR2018.pdf)
 and
-[CCLA](https://github.infra.cloudera.com/yunikorn-core/blob/master/CLAs/Cloudera%20CCLA_25APR2018.pdf)
+[CCLA](https://github.com/cloudera/yunikorn-core/blob/master/CLAs/Cloudera%20CCLA_25APR2018.pdf)
 before we can accept and redistribute your contribution. Once these are submitted you are
 free to start contributing to scheduler-interface. Submit these to CLA@cloudera.com.
 
