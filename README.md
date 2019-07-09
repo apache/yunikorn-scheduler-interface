@@ -1,5 +1,5 @@
 # Yunikorn Scheduler Interface
-Yunikorn Resource Scheduler Interface defines a protobuf interface for communication between the core scheduler and the resource management systems.
+Yunikorn Scheduler Interface defines protobuf interfaces for the communication between the yunikorn-core and the resource management systems.
 
 The interface has two parts:
 * an API based interface for locally deployed go based interactions.
@@ -33,11 +33,11 @@ Currently only the go source code artifact is generated.
 ## How to use 
 The output of this build is required to build the scheduler and the resource manager(s). To allow building those projects without the requirement of generating the interface artifacts in each the generated artifacts are part of the repository.
 
-The dependent projects can use the interface by importing "github.com/cloudera/scheduler-interface/lib/go/si"
+The dependent projects can use the interface by importing "github.com/cloudera/yunikorn-scheduler-interface/lib/go/si"
 ```go
 package example
 
-import "github.com/cloudera/scheduler-interface/lib/go/si"
+import "github.com/cloudera/yunikorn-scheduler-interface/lib/go/si"
 ```
 
 ## How do I contribute code?
