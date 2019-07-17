@@ -43,8 +43,6 @@ The scheduler interface is used by all other components of yunikorn. For buildin
 
 The build process will download and install all required tools to build the artifact. Building the interface should only be required if the interface has been modified.
 
-[//]: # (TODO need to add instructions on how to use a modified interface) 
-
 Prerequisite: 
 - Go 1.11+
 
