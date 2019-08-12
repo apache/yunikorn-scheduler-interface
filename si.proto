@@ -221,7 +221,7 @@ message AddApplicationRequest {
   string partitionName = 3;
   // The user group information of the application owner
   UserGroupInformation ugi = 4;
-  // A set of tags for the application. These tags provide application level genric inforamtion.
+  // A set of tags for the application. These tags provide application level generic inforamtion.
   // The tags are optional and are used in placing an appliction or scheduling.
   // Application tags are not considered when processing AllocationAsks.
   map<string, string> tags = 5;
