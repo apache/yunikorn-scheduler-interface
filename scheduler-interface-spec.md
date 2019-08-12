@@ -357,10 +357,11 @@ Allocation ask:
 
 ```protobuf
 message AllocationAsk {
-  // Allocation key is used by both of scheduler and RM to track container allocation.
+  // Allocation key is used by both of scheduler and RM to track allocations.
   // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerId of YARN).
-  // If multiple allocation from a same AllocationAsk returned to RM, they will share the same allocationKey.
-  // If ALlocationAsk with the same allocationKey exists, old one will be replaced by the new one.
+  // Allocations from the same AllocationAsk which are returned to the RM at the same time will have the same allocationKey.
+  // The request is considered an update of the existing AllocationAsk if an ALlocationAsk with the same allocationKey 
+  // already exists.
   string allocationKey = 1;
   // The application ID this allocation ask belongs to
   string applicationId = 2;
@@ -375,38 +376,32 @@ message AllocationAsk {
   // Execution timeout: How long this allocation will be terminated (by scheduler)
   // once allocated by scheduler, 0 or negative value means never expire.
   int64 executionTimeoutMilliSeconds = 7;
+  // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
+  // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
+  // These tags are optional.
+  map<string, string> tags = 8;
   // Placement constraint defines how this allocation should be placed in the cluster.
   // if not set, no placement constraint will be applied.
-  PlacementConstraint placementConstraint = 8;
-
-  // TODO.
-  // wangda: even if I don't like it, it seems we have to support old-school style
-  // YARN resource requests, otherwise it gonna be very hard to support legacy apps
-  // running on YARN.
-  // Maybe a simple approach is to add a flag to indicate it is an old-school resource
-  // request from YARN.
-  // Check: YARN code: placement.LocalityAppPlacementAllocator for more details.
+  PlacementConstraint placementConstraint = 9;
 }
+```
 
-message UserGroupInformation {
-  // the user name
-  string user = 1;
-  // the list of groups of the user, can be empty
-  repeated string groups = 2;
-}
+Application requests:
 
+```protobuf
 message AddApplicationRequest {
   // The ID of the application, must be unique
   string applicationId = 1;
-  // The queue this application is requesting. The scheduler will place the allocation to a
+  // The queue this application is requesting. The scheduler will place the application into a
   // queue according to policy, taking into account the requested queue as per the policy.
   string queueName = 2;
   // The partition the application belongs to
   string partitionName = 3;
   // The user group information of the application owner
   UserGroupInformation ugi = 4;
-  // A set of tags for the application
-  // These tags are optional and can be used in placing an appliction or scheduling
+  // A set of tags for the application. These tags provide application level genric inforamtion.
+  // The tags are optional and are used in placing an appliction or scheduling.
+  // Application tags are not considered when processing AllocationAsks.
   map<string, string> tags = 5;
   // Execution timeout: How long this application can be in a running state
   // 0 or negative value means never expire.
@@ -418,6 +413,17 @@ message RemoveApplicationRequest {
   string applicationId = 1;
   // The partition the application belongs to
   string partitionName = 2;
+}
+```
+
+User information:
+The user that owns the application. Group information can be empty. If the group information is empty the groups will be resolved by the scheduler when needed. 
+```protobuf
+message UserGroupInformation {
+  // the user name
+  string user = 1;
+  // the list of groups of the user, can be empty
+  repeated string groups = 2;
 }
 ```
 
