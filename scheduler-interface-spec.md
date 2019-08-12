@@ -31,7 +31,7 @@ Highlights:
 
 Interface and messages generic definition.
 
-The syntax used for the declarations is `proto3`. The definition currently only provides go related info. 
+The syntax used for the declarations is `proto3`. The definition currently only provides go related info.
 ```protobuf
 syntax = "proto3";
 package si.v1;
@@ -52,7 +52,7 @@ extend google.protobuf.FieldOptions {
 There are two kinds of interfaces, the first one is RPC based communication, the second one is API based.
 
 RPC based, the [gRPC](https://grpc.io/) framework is used, will be useful when scheduler has to be deployed as a remote process.
-For example when we need to deploy scheduler support multiple remote clusters. 
+For example when we need to deploy scheduler support multiple remote clusters.
 A second example is when there is a cross language integration, like between Java and Go.
 
 Unless specifically required we strongly recommend the use of the API based interface to avoid the overhead of the RPC serialization and de-serialization.
@@ -65,7 +65,7 @@ There are three sets of RPCs:
 * **Admin Service**: Admin can communicate with Scheduler Interface and get configuration updated.
 * **Metrics Service**: Used to retrieve state of scheduler by users / RMs.
 
-Currently only the design and implementation for the Scheduler Service is provided. 
+Currently only the design and implementation for the Scheduler Service is provided.
 
 ```protobuf
 service Scheduler {
@@ -203,14 +203,14 @@ message UpdateRequest {
 
   // UtilizationReports for allocation and nodes.
   repeated UtilizationReport utilizationReports = 5;
-  
+
   // Id of RM, this will be used to identify which RM of the request comes from.
   string rmId = 6;
-  
+
   // RM should explicitly add application when allocation request also explictly belongs to application.
   // This is optional if allocation request doesn't belong to a application. (Independent allocation)
   repeated AddApplicationRequest newApplications = 8;
-  
+
   // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
   repeated RemoveApplicationRequest removeApplications = 9;
 }
@@ -246,35 +246,41 @@ message UpdateResponse {
   //    and update YARN NodeManager / Kubelet resource dynamically.
   // 2) Other recommendations.
   repeated NodeRecommendation nodeRecommendations = 5;
-  
+
   // Rejected Applications
   repeated RejectedApplication rejectedApplications = 6;
-  
+
   // Accepted Applications
   repeated AcceptedApplication acceptedApplications = 7;
-  
+
   // Rejected Node Registrations
   repeated RejectedNode rejectedNodes = 8;
-  
+
   // Accepted Node Registrations
   repeated AcceptedNode acceptedNodes = 9;
 }
 
 message RejectedApplication {
-  string applicationId = 1; 
+  // The application ID that was rejected
+  string applicationId = 1;
+  // A human-readable reason message
   string reason = 2;
 }
 
 message AcceptedApplication {
+  // The application ID that was accepted
   string applicationId = 1;
 }
 
 message RejectedNode {
+  // The node ID that was rejected
   string nodeId = 1;
+  // A human-readable reason message
   string reason = 2;
 }
 
 message AcceptedNode {
+  // The node ID that was accepted
   string nodeId = 1;
 }
 ```
@@ -351,73 +357,73 @@ Allocation ask:
 
 ```protobuf
 message AllocationAsk {
-  // Allocation key is used by both of scheduler and RM to track container allocation.
+  // Allocation key is used by both of scheduler and RM to track allocations.
   // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerId of YARN).
-  // If multiple allocation from a same AllocationAsk returned to RM, they will share the same allocationKey.
-  // If ALlocationAsk with the same allocationKey exists, old one will be replaced by the new one.
+  // Allocations from the same AllocationAsk which are returned to the RM at the same time will have the same allocationKey.
+  // The request is considered an update of the existing AllocationAsk if an ALlocationAsk with the same allocationKey 
+  // already exists.
   string allocationKey = 1;
-
-  // How much resource per allocation?
-  Resource resourceAsk = 2;
-
-  // Tags of Allocation
-  map<string, string> tags = 3;
-
-  // Priority of ask
-  Priority priority = 4;
-
-  // Placement constraint defines how app wanna to be placed in the cluster.
-  // if not set, no placement constraint will be applied.
-  PlacementConstraint placementConstraint = 6;
-
+  // The application ID this allocation ask belongs to
+  string applicationId = 2;
+  // The partition the application belongs to
+  string partitionName = 3;
+  // The amount of resources per ask
+  Resource resourceAsk = 4;
   // Maximum number of allocations
-  int32 maxAllocations = 7;
-
-  // Who owns the allocation
-  UserGroupInformation ugi = 8;
-
-  // Place this allocation to specified queue.
-  // If queue not specified, scheduler will place the allocation to a queue
-  // according to policy
-  // When queue is specified and allocation cannot be allocated in asked queue
-  // AllocationAsk will be rejected.
-  string queueName = 9;
-
+  int32 maxAllocations = 5;
+  // Priority of ask
+  Priority priority = 6;
   // Execution timeout: How long this allocation will be terminated (by scheduler)
   // once allocated by scheduler, 0 or negative value means never expire.
-  int64 executionTimeoutMilliSeconds = 10;
-  
-  // Which application this allocation ask belongs to, if it is not specified. The allocation
-  // won't belong to any application.
-  string applicationId = 11;
-  
-  // Which partition requested by this ask
-  // One ask can only request one node partition
-  string PartitionName = 12;
-  
-  // TODO.
-  // wangda: even if I don't like it, it seems we have to support old-school style
-  // YARN resource requests, otherwise it gonna be very hard to support legacy apps
-  // running on YARN.
-  // Maybe a simple approach is to add a flag to indicate it is an old-school resource
-  // request from YARN.
-  // Check: YARN code: placement.LocalityAppPlacementAllocator for more details. 
+  int64 executionTimeoutMilliSeconds = 7;
+  // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
+  // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
+  // These tags are optional.
+  map<string, string> tags = 8;
+  // Placement constraint defines how this allocation should be placed in the cluster.
+  // if not set, no placement constraint will be applied.
+  PlacementConstraint placementConstraint = 9;
 }
+```
 
-message UserGroupInformation {
-  string user = 1;
-  repeated string groups = 2;
-}
+Application requests:
 
+```protobuf
 message AddApplicationRequest {
+  // The ID of the application, must be unique
   string applicationId = 1;
+  // The queue this application is requesting. The scheduler will place the application into a
+  // queue according to policy, taking into account the requested queue as per the policy.
   string queueName = 2;
+  // The partition the application belongs to
   string partitionName = 3;
+  // The user group information of the application owner
+  UserGroupInformation ugi = 4;
+  // A set of tags for the application. These tags provide application level generic inforamtion.
+  // The tags are optional and are used in placing an appliction or scheduling.
+  // Application tags are not considered when processing AllocationAsks.
+  map<string, string> tags = 5;
+  // Execution timeout: How long this application can be in a running state
+  // 0 or negative value means never expire.
+  int64 executionTimeoutMilliSeconds = 6;
 }
 
 message RemoveApplicationRequest {
+  // The ID of the application to remove
   string applicationId = 1;
+  // The partition the application belongs to
   string partitionName = 2;
+}
+```
+
+User information:
+The user that owns the application. Group information can be empty. If the group information is empty the groups will be resolved by the scheduler when needed. 
+```protobuf
+message UserGroupInformation {
+  // the user name
+  string user = 1;
+  // the list of groups of the user, can be empty
+  repeated string groups = 2;
 }
 ```
 
@@ -531,41 +537,35 @@ message TimedPlacementConstraintProto {
 
 ```protobuf
 message AllocationReleasesRequest {
+  // The allocations to release
   repeated AllocationReleaseRequest allocationsToRelease = 1;
+  // The asks to release
   repeated AllocationAskReleaseRequest allocationAsksToRelease = 2;
 }
 
 // Release allocation
 message AllocationReleaseRequest {
-  // optional, when this is set, only release allocation by given uuid.
-  string uuid = 1;
-  
-  // when this is set, filter allocations by application id.
-  // empty value will filter allocations don't belong to application. 
-  // when application id is set and uuid not set, release all allocations under the application id.
+  // Which partition to release the allocation from, required.
+  string partitionName = 1;
+  // optional, when this is set, filter allocations by application id.
+  // when application id is set and uuid is not set, release all allocations under the application id.
   string applicationId = 2;
-  
-  // Which partition to release, required.
-  string partitionName = 3;
-  
-  // For human-readable
+  // optional, when this is set, only release allocation by given uuid.
+  string uuid = 3;
+  // For human-readable message
   string message = 4;
 }
 
-// Release allocation
+// Release ask
 message AllocationAskReleaseRequest {
-  // optional, when this is set, only release allocation ask by specified
-  string allocationkey = 1;
-  
-  // when this is set, filter allocation key by application id.
-  // empty value will filter allocations don't belong to application. 
-  // when application id is set and allocationKey not set, release all allocations key under the application id.
+  // Which partition to release the ask from, required.
+  string partitionName = 1;
+  // optional, when this is set, filter allocation key by application id.
+  // when application id is set and allocationKey is not set, release all allocations key under the application id.
   string applicationId = 2;
-  
-  // Which partition to release, required.
-  string partitionName = 3;
-  
-  // For human-readable
+  // optional, when this is set, only release allocation ask by specified
+  string allocationkey = 3;
+  // For human-readable message
   string message = 4;
 }
 ```
@@ -588,26 +588,21 @@ State transition of node:
 
 See protocol below:
 
-Registration of a new node with the scheduler
+Registration of a new node with the scheduler. If the node exists then the request will be rejected.
 ```protobuf
 message NewNodeInfo {
-  // Id of node, it should be identical if same node daemon restarted.
+  // Id of node, must be unique
   string nodeId = 1;
-
   // node attributes
   map<string, string> attributes = 2;
-
-  // Schedulable Resource, scheduler may overcommit resource of node depends on available information
-  // (such as utilization, priority of each container, etc.)
+  // Schedulable Resource
   Resource schedulableResource = 3;
-  
-  // Allocated resources, this will be added when node registered to RM
-  // (recovery) 
+  // Allocated resources, this will be added when node registered to RM (recovery)
   repeated Allocation existingAllocations = 4;
 }
 ```
 
-Update of a registered node with the scheduler
+Update of a registered node with the scheduler. If the node does not exist the update will fail.
 ```protobuf
 message UpdateNodeInfo {
   // Action from RM
@@ -615,8 +610,8 @@ message UpdateNodeInfo {
     // Do not allocate new allocations on the node.
     DRAIN_NODE = 0;
 
-    // Decomission node, it will immediately stop allocations on the same
-    // node and move the node from schedulable lists.
+    // Decomission node, it will immediately stop allocations on the node and
+    // remove the node from schedulable lists.
     DECOMISSION = 1;
 
     // From Draining state to SCHEDULABLE state.
@@ -624,16 +619,14 @@ message UpdateNodeInfo {
     DRAIN_TO_SCHEDULABLE = 2;
   }
 
-  // Id of node
+  // Id of node, the node must exist to be updated
   string nodeId = 1;
-
   // New attributes of node, which will replace previously reported attribute.
   map<string, string> attributes = 2;
-
   // new schedulable resource, scheduler may preempt allocations on the
   // node or schedule more allocations accordingly.
   Resource schedulableResource = 3;
-
+  // Action to perform by the scheduler
   ActionFromRM action = 4;
 }
 ```
@@ -660,30 +653,22 @@ Allocation is allocated allocations from scheduler.
 message Allocation {
   // AllocationKey from AllocationAsk
   string allocationKey = 1;
-
   // Allocation tags from AllocationAsk
   map<string, string> allocationTags = 2;
-
   // uuid of the allocation
   string uuid = 3;
-
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
-
   // Priority of ask
   Priority priority = 6;
-
   // Queue which the allocation belongs to
   string queueName = 7;
-
   // Node which the allocation belongs to
   string nodeId = 8;
-  
-  // Id of Application
+  // The ID of the application
   string applicationId = 9;
-  
-  // Partition of the allocation 
-  string partition = 10;
+  // Partition of the allocation
+  string partitionName = 10;
 }
 ```
 
@@ -692,7 +677,9 @@ When allocation ask rejected by scheduler, information will be shared by schedul
 ```protobuf
 message RejectedAllocationAsk {
   string allocationKey = 1;
+  // The ID of the application
   string applicationId = 2;
+  // A human-readable reason message
   string reason = 3;
 }
 ```
@@ -718,20 +705,18 @@ message AllocationReleaseResponse {
     // STOPPED by ResourceManager.
     STOPPED_BY_RM = 0;
 
-    // TIMEOUT (when timeout of allocation set)
+    // TIMEOUT based on the executionTimeoutMilliSeconds
     TIMEOUT = 1;
 
-    // PREEMPTED BY SCHEDULER
+    // PREEMPTED by scheduler
     PREEMPTED_BY_SCHEDULER = 2;
   }
 
-  // UUID of allocation.
-  string allocationUUID = 1;
-
-  // Why terminated
+  // UUID of the allocation that is released
+  string uuid = 1;
+  // Termination type of the released allocation
   TerminationType terminationType = 2;
-
-  // Message (for human readble)
+  // Any other human-readable message
   string message = 3;
 }
 ```
@@ -770,12 +755,10 @@ SchedulerPlugin is a way to extend scheduler capabilities. Scheduler shim can im
 yunikorn-core, so plugged function can be invoked in the scheduler core.
 
 ```protobuf
-
 message PredicatesArgs {
     // allocation key identifies a container, the predicates function is going to check
     // if this container is eligible to be placed ont to a node.
     string allocationKey = 1;
-
     // the node ID the container is assigned to.
     string nodeId = 2;
 }
