@@ -41,15 +41,20 @@ $(SI_PROTO).tmp: $(SI_SPEC)
 build: $(SI_PROTO).tmp
 	$(MAKE) -C lib/go
 
+# Set a empty recipe used in the internal build
+.PHONY: test
+test:
+	@echo ""
+
 # Simple clean of generated files only (no local cleanup).
+.PHONY: clean
 clean:
 	cd $(BASE_DIR) && \
 	$(MAKE) -C lib/go $@
 
 # Remove all non versioned files,
 # Running this target will trigger a re-install of protoc etc in te next build cycle.
+.PHONY: clobber
 clobber:
 	cd $(BASE_DIR) && \
 	$(MAKE) -C lib/go $@
-
-.PHONY: clean clobber
