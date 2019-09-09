@@ -766,6 +766,8 @@ message PredicatesArgs {
 message ReSyncSchedulerCacheArgs {
    // a list of assumed allocations, this will be sync'd to scheduler cache.
    repeated AssumedAllocation assumedAllocations = 1;
+   // a list of allocations to forget
+   repeated ForgotAllocation forgetAllocations = 2;
 }
 
 message AssumedAllocation {
@@ -773,5 +775,10 @@ message AssumedAllocation {
    string allocationKey = 1;
    // the node ID the container is assumed to be allocated to, this info is stored in scheduler cache.
    string nodeId = 2;
+}
+
+message ForgotAllocation {
+   // allocation key used to identify a container.
+   string allocationKey = 1;
 }
 ```
