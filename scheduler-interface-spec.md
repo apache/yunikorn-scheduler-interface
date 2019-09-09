@@ -552,8 +552,10 @@ message AllocationReleaseRequest {
   string applicationId = 2;
   // optional, when this is set, only release allocation by given uuid.
   string uuid = 3;
+  // optional, when this is set, only release allocation by given allocation key.
+  string allocationKey = 4;
   // For human-readable message
-  string message = 4;
+  string message = 5;
 }
 
 // Release ask
