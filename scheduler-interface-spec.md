@@ -607,16 +607,19 @@ Update of a registered node with the scheduler. If the node does not exist the u
 message UpdateNodeInfo {
   // Action from RM
   enum ActionFromRM {
+    // Noop
+    NOOP = 0;
+
     // Do not allocate new allocations on the node.
-    DRAIN_NODE = 0;
+    DRAIN_NODE = 1;
 
     // Decomission node, it will immediately stop allocations on the node and
     // remove the node from schedulable lists.
-    DECOMISSION = 1;
+    DECOMISSION = 2;
 
     // From Draining state to SCHEDULABLE state.
     // If node is not in draining state, error will be thrown
-    DRAIN_TO_SCHEDULABLE = 2;
+    DRAIN_TO_SCHEDULABLE = 3;
   }
 
   // Id of node, the node must exist to be updated
