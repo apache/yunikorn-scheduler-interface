@@ -87,7 +87,6 @@ service AdminService {
   //   addQueueInfo.
   //   removeQueueInfo.
   //   updateQueueInfo.
-  // Ref: org.apache.hadoop.yarn.webapp.dao.SchedConfUpdateInfo
   rpc UpdateConfig (UpdateConfigRequest)
     returns (UpdateConfigResponse) {}
 }
@@ -158,8 +157,8 @@ When a new RM starts, fails, it will register with scheduler. In some cases, sch
 ```protobuf
 message RegisterResourceManagerRequest {
   // An ID which can uniquely identify a RM **cluster**. (For example, if a RM cluster has multiple manager instances for HA purpose, they should use the same information when do registration).
-  // If RM register with the same id, all previous scheduling state in memory will be cleaned up, and expect RM report full scheduling state after registration.
-  string rmId = 1;
+  // If RM register with the same ID, all previous scheduling state in memory will be cleaned up, and expect RM report full scheduling state after registration.
+  string rmID = 1;
 
   // Version of RM scheduler interface client.
   string version = 2;
@@ -182,7 +181,7 @@ Below is overview of how scheduler/RM keep connection and updates.
 
 ```protobuf
 message UpdateRequest {
-  // New allocation requests or replace existing allocation request (if allocation-id is same)
+  // New allocation requests or replace existing allocation request (if allocationID is same)
   repeated AllocationAsk asks = 1;
 
   // Allocations can be released.
@@ -204,8 +203,8 @@ message UpdateRequest {
   // UtilizationReports for allocation and nodes.
   repeated UtilizationReport utilizationReports = 5;
 
-  // Id of RM, this will be used to identify which RM of the request comes from.
-  string rmId = 6;
+  // ID of RM, this will be used to identify which RM of the request comes from.
+  string rmID = 6;
 
   // RM should explicitly add application when allocation request also explictly belongs to application.
   // This is optional if allocation request doesn't belong to a application. (Independent allocation)
@@ -262,26 +261,26 @@ message UpdateResponse {
 
 message RejectedApplication {
   // The application ID that was rejected
-  string applicationId = 1;
+  string applicationID = 1;
   // A human-readable reason message
   string reason = 2;
 }
 
 message AcceptedApplication {
   // The application ID that was accepted
-  string applicationId = 1;
+  string applicationID = 1;
 }
 
 message RejectedNode {
   // The node ID that was rejected
-  string nodeId = 1;
+  string nodeID = 1;
   // A human-readable reason message
   string reason = 2;
 }
 
 message AcceptedNode {
   // The node ID that was accepted
-  string nodeId = 1;
+  string nodeID = 1;
 }
 ```
 
@@ -358,13 +357,13 @@ Allocation ask:
 ```protobuf
 message AllocationAsk {
   // Allocation key is used by both of scheduler and RM to track allocations.
-  // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerId of YARN).
+  // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerID of YARN).
   // Allocations from the same AllocationAsk which are returned to the RM at the same time will have the same allocationKey.
   // The request is considered an update of the existing AllocationAsk if an ALlocationAsk with the same allocationKey 
   // already exists.
   string allocationKey = 1;
   // The application ID this allocation ask belongs to
-  string applicationId = 2;
+  string applicationID = 2;
   // The partition the application belongs to
   string partitionName = 3;
   // The amount of resources per ask
@@ -391,7 +390,7 @@ Application requests:
 ```protobuf
 message AddApplicationRequest {
   // The ID of the application, must be unique
-  string applicationId = 1;
+  string applicationID = 1;
   // The queue this application is requesting. The scheduler will place the application into a
   // queue according to policy, taking into account the requested queue as per the policy.
   string queueName = 2;
@@ -410,7 +409,7 @@ message AddApplicationRequest {
 
 message RemoveApplicationRequest {
   // The ID of the application to remove
-  string applicationId = 1;
+  string applicationID = 1;
   // The partition the application belongs to
   string partitionName = 2;
 }
@@ -548,10 +547,10 @@ message AllocationReleaseRequest {
   // Which partition to release the allocation from, required.
   string partitionName = 1;
   // optional, when this is set, filter allocations by application id.
-  // when application id is set and uuid is not set, release all allocations under the application id.
-  string applicationId = 2;
-  // optional, when this is set, only release allocation by given uuid.
-  string uuid = 3;
+  // when application id is set and UUID is not set, release all allocations under the application id.
+  string applicationID = 2;
+  // optional, when this is set, only release allocation by given UUID.
+  string UUID = 3;
   // For human-readable message
   string message = 4;
 }
@@ -562,7 +561,7 @@ message AllocationAskReleaseRequest {
   string partitionName = 1;
   // optional, when this is set, filter allocation key by application id.
   // when application id is set and allocationKey is not set, release all allocations key under the application id.
-  string applicationId = 2;
+  string applicationID = 2;
   // optional, when this is set, only release allocation ask by specified
   string allocationkey = 3;
   // For human-readable message
@@ -591,8 +590,8 @@ See protocol below:
 Registration of a new node with the scheduler. If the node exists then the request will be rejected.
 ```protobuf
 message NewNodeInfo {
-  // Id of node, must be unique
-  string nodeId = 1;
+  // ID of node, must be unique
+  string nodeID = 1;
   // node attributes
   map<string, string> attributes = 2;
   // Schedulable Resource
@@ -622,8 +621,8 @@ message UpdateNodeInfo {
     DRAIN_TO_SCHEDULABLE = 3;
   }
 
-  // Id of node, the node must exist to be updated
-  string nodeId = 1;
+  // ID of node, the node must exist to be updated
+  string nodeID = 1;
   // New attributes of node, which will replace previously reported attribute.
   map<string, string> attributes = 2;
   // new schedulable resource, scheduler may preempt allocations on the
@@ -638,8 +637,8 @@ message UpdateNodeInfo {
 
 ```protobuf
 message UtilizationReport {
-  // it could be either node id or allocation uuid.
-  string id = 1;
+  // it could be either a nodeID or allocation UUID.
+  string ID = 1;
 
   // Actual used resource
   Resource actualUsedResource = 2;
@@ -658,8 +657,8 @@ message Allocation {
   string allocationKey = 1;
   // Allocation tags from AllocationAsk
   map<string, string> allocationTags = 2;
-  // uuid of the allocation
-  string uuid = 3;
+  // UUID of the allocation
+  string UUID = 3;
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
   // Priority of ask
@@ -667,9 +666,9 @@ message Allocation {
   // Queue which the allocation belongs to
   string queueName = 7;
   // Node which the allocation belongs to
-  string nodeId = 8;
+  string nodeID = 8;
   // The ID of the application
-  string applicationId = 9;
+  string applicationID = 9;
   // Partition of the allocation
   string partitionName = 10;
 }
@@ -681,7 +680,7 @@ When allocation ask rejected by scheduler, information will be shared by schedul
 message RejectedAllocationAsk {
   string allocationKey = 1;
   // The ID of the application
-  string applicationId = 2;
+  string applicationID = 2;
   // A human-readable reason message
   string reason = 3;
 }
@@ -716,7 +715,7 @@ message AllocationReleaseResponse {
   }
 
   // UUID of the allocation that is released
-  string uuid = 1;
+  string UUID = 1;
   // Termination type of the released allocation
   TerminationType terminationType = 2;
   // Any other human-readable message
@@ -763,7 +762,7 @@ message PredicatesArgs {
     // if this container is eligible to be placed ont to a node.
     string allocationKey = 1;
     // the node ID the container is assigned to.
-    string nodeId = 2;
+    string nodeID = 2;
 }
 
 message ReSyncSchedulerCacheArgs {
@@ -777,7 +776,7 @@ message AssumedAllocation {
    // allocation key used to identify a container.
    string allocationKey = 1;
    // the node ID the container is assumed to be allocated to, this info is stored in scheduler cache.
-   string nodeId = 2;
+   string nodeID = 2;
 }
 
 message ForgotAllocation {
