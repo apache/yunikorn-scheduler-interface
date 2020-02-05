@@ -1,7 +1,7 @@
 # Yunikorn Scheduler Interface
 Yunikorn Scheduler Interface defines protobuf interfaces for the communication between the yunikorn-core and the resource management systems.
 
-For detailed information on the components and how to build the overall scheduler please see the [yunikorn-core](https://github.com/cloudera/yunikorn-core).
+For detailed information on the components and how to build the overall scheduler please see the [yunikorn-core](https://github.com/apache/incubator-yunikorn-core).
 
 ## Interface description
 The interface has two parts:
@@ -28,18 +28,18 @@ The output of this build is required to build the scheduler and the shims for th
 However to allow building those projects against a predefined interface and without the requirement of generating the interface artifacts in each build the generated artifacts are part of the repository for direct use.
 
 ### Go based components
-The dependent projects can use the interface by importing _github.com/cloudera/yunikorn-scheduler-interface/lib/go/si_ as part of the code:
+The dependent projects can use the interface by importing _github.com/apache/incubator-yunikorn-scheduler-interface/lib/go/si_ as part of the code:
 ```go
 package example
 
-import "github.com/cloudera/yunikorn-scheduler-interface/lib/go/si"
+import "github.com/apache/incubator-yunikorn-scheduler-interface/lib/go/si"
 ```
 
 ### Java based components
 To be added: currently only the go source code artifact is generated.
 
 ## How to build
-The scheduler interface is used by all other components of yunikorn. For building the scheduler and its shims please check the instructions in the [How to build](https://github.com/cloudera/yunikorn-core#Building-and-using-Yunikorn) section in the yunikorn-core repository.
+The scheduler interface is used by all other components of yunikorn. For building the scheduler and its shims please check the instructions in the [How to build](https://github.com/apache/incubator-yunikorn-core#Building-and-using-Yunikorn) section in the yunikorn-core repository.
 
 The build process will download and install all required tools to build the artifact. Building the interface should only be required if the interface has been modified.
 

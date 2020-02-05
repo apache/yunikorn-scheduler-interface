@@ -378,7 +378,7 @@ message UpdateNodeInfo {
   ActionFromRM action = 4;
 }
 message UtilizationReport {
-  // it could be either node id or allocation UUID.
+  // it could be either a nodeID or allocation UUID.
   string ID = 1;
 
   // Actual used resource

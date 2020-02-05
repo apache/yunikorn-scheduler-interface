@@ -1,4 +1,4 @@
-module github.com/cloudera/yunikorn-scheduler-interface
+module github.com/apache/incubator-yunikorn-scheduler-interface
 
 go 1.12
 
