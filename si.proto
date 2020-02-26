@@ -477,6 +477,4 @@ message OutstandingResourceRequest {
   Resource resource = 2;
   // an arbitrary map for tags, this stores some useful information that can help the decision
   map<string, string> tags = 3;
-  // how many number of such requests
-  int32 numOfRequests = 4;
 }
