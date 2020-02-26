@@ -784,3 +784,28 @@ message ForgotAllocation {
    string allocationKey = 1;
 }
 ```
+
+### Auto Scaling Metrics
+
+Auto scaling metrics can be monitored and collected by a 3rd party auto-scaler and used as the
+supplementary metrics while making auto-scaling decisions. These metrics are indicating how many
+outstanding resource requests are there in the cluster, due to the shortage of node resources.
+This has excluded requests could not be satisfied because of other reasons, such as hitting queue
+resource limit, user/app limit, desire on certain placement constraints, etc.
+
+```protobuf
+// auto scaling metrics at a certain point of time
+message AutoScalingMetrics {
+  // a list of outstanding requests that desires for additional resources
+  repeated OutstandingResourceRequest outstandingRequests = 1;
+}
+
+message OutstandingResourceRequest {
+  // an unique ID
+  string requestID = 1;
+  // resource specification
+  Resource resource = 2;
+  // an arbitrary map for tags, this stores some useful information that can help the decision
+  map<string, string> tags = 3;
+}
+``` 

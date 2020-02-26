@@ -464,3 +464,17 @@ message ForgotAllocation {
    // allocation key used to identify a container.
    string allocationKey = 1;
 }
+// auto scaling metrics at a certain point of time
+message AutoScalingMetrics {
+  // a list of outstanding requests that desires for additional resources
+  repeated OutstandingResourceRequest outstandingRequests = 1;
+}
+
+message OutstandingResourceRequest {
+  // an unique ID
+  string requestID = 1;
+  // resource specification
+  Resource resource = 2;
+  // an arbitrary map for tags, this stores some useful information that can help the decision
+  map<string, string> tags = 3;
+}
