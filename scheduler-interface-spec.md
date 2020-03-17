@@ -619,6 +619,9 @@ message UpdateNodeInfo {
     // From Draining state to SCHEDULABLE state.
     // If node is not in draining state, error will be thrown
     DRAIN_TO_SCHEDULABLE = 3;
+
+    // Update node total allocatable resources.
+    UPDATE_NODE_CAPACITY = 4;
   }
 
   // ID of node, the node must exist to be updated
