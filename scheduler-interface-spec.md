@@ -606,8 +606,8 @@ Update of a registered node with the scheduler. If the node does not exist the u
 message UpdateNodeInfo {
   // Action from RM
   enum ActionFromRM {
-    // Noop
-    NOOP = 0;
+    // Update node resources, attributes.
+    UPDATE = 0;
 
     // Do not allocate new allocations on the node.
     DRAIN_NODE = 1;
@@ -628,8 +628,11 @@ message UpdateNodeInfo {
   // new schedulable resource, scheduler may preempt allocations on the
   // node or schedule more allocations accordingly.
   Resource schedulableResource = 3;
+  // when the scheduler is co-exist with some other schedulers, some node
+  // resources might be occupied (allocated) by other schedulers.
+  Resource occupiedResource = 4;
   // Action to perform by the scheduler
-  ActionFromRM action = 4;
+  ActionFromRM action = 5;
 }
 ```
 
