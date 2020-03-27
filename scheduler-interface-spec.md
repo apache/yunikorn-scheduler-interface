@@ -596,8 +596,10 @@ message NewNodeInfo {
   map<string, string> attributes = 2;
   // Schedulable Resource
   Resource schedulableResource = 3;
+  // Occupied resources
+  Resource occupiedResource = 4;
   // Allocated resources, this will be added when node registered to RM (recovery)
-  repeated Allocation existingAllocations = 4;
+  repeated Allocation existingAllocations = 5;
 }
 ```
 
