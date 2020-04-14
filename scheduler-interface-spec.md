@@ -768,8 +768,6 @@ message PredicatesArgs {
     string allocationKey = 1;
     // the node ID the container is assigned to.
     string nodeID = 2;
-    // run the predicates for alloactions (true) or reservations (false)
-    bool allocate = 3;
 }
 
 message ReSyncSchedulerCacheArgs {
