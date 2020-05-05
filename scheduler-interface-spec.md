@@ -754,6 +754,22 @@ const (
     CONTAINER_IMAGE="si.io/container-image"
     CONTAINER_PORTS="si.io/container-ports"
 )
+
+// Constants for allocation tags
+const (
+    // Domains
+    DOMAIN_K8S="kubernetes.io/"
+    DOMAIN_YUNIKORN="yunikorn.apache.org/"
+    
+    // Groups
+    GROUP_META="meta/"
+    GROUP_LABEL="label/"
+    GROUP_ANNOTATION="annotation/"
+
+    // Keys
+    KEY_POD_NAME="podName"
+    KEY_NAMESPACE="namespace"
+)
 ```
 
 ### Scheduler plugin
