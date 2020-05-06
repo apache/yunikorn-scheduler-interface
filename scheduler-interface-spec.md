@@ -730,30 +730,56 @@ message AllocationReleaseResponse {
 
 ### Following are constant of spec
 
-Scheduler Interface reserved all attribute in si.io namespace.
+Scheduler Interface reserved all attribute in si.io namespace, e.g. known attribute names for nodes and applications.
 
-Known attribute names for nodes and applications.
-
-```golang
+```go
 // Constants for node attribtues
 const (
-    ARCH="si.io/arch"
-    HOSTNAME="si.io/hostname"
-    RACKNAME="si.io/rackname"
-    OS="si.io/os"
-    INSTANCE_TYPE="si.io/instance-type"
-    FAILURE_DOMAIN_ZONE="si.io/zone"
-    FAILURE_DOMAIN_REGION="si.io/region"
-    LOCAL_IMAGES="si.io/local-images"
-    NODE_PARTITION="si.io/node-partition"
+	ARCH                = "si.io/arch"
+	HostName            = "si.io/hostname"
+	RackName            = "si.io/rackname"
+	OS                  = "si.io/os"
+	InstanceType        = "si.io/instance-type"
+	FailureDomainZone   = "si.io/zone"
+	FailureDomainRegion = "si.io/region"
+	LocalImages         = "si.io/local-images"
+	NodePartition       = "si.io/node-partition"
 )
 
 // Constants for allocation attribtues
 const (
-    APPLICATION_ID="si.io/application-id"
-    CONTAINER_IMAGE="si.io/container-image"
-    CONTAINER_PORTS="si.io/container-ports"
+	ApplicationID  = "si.io/application-id"
+	ContainerImage = "si.io/container-image"
+	ContainerPorts = "si.io/container-ports"
 )
+```
+
+Default constants:
+
+```go
+// Cluster
+const DefaultNodeAttributeHostNameKey = "si.io/hostname"
+const DefaultNodeAttributeRackNameKey = "si.io/rackname"
+const DefaultRackName = "/rack-default"
+
+// Application
+const LabelApp = "app"
+const LabelApplicationID = "applicationId"
+const LabelQueueName = "queue"
+const ApplicationDefaultQueue = "root.sandbox"
+const DefaultPartition = "default"
+
+// Resource
+const Memory = "memory"
+const CPU = "vcore"
+
+// Spark
+const SparkLabelAppID = "spark-app-selector"
+const SparkLabelRole = "spark-role"
+const SparkLabelRoleDriver = "driver"
+
+// Configuration
+const DefaultConfigMapName = "yunikorn-configs"
 ```
 
 ### Scheduler plugin
