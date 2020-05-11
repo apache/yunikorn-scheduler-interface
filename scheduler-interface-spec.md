@@ -130,6 +130,11 @@ type SchedulerApi interface {
 type ResourceManagerCallback interface {
     RecvUpdateResponse(response *si.UpdateResponse) error
 }
+
+type AdminApi interface {
+    // Update scheduler configuration, currently only includes queue configuration updates
+    UpdateConfig (request *si.UpdateConfigRequest) (*si.UpdateConfigResponse, error)
+}
 ```
 
 ### Communications between RM and Scheduler
@@ -725,6 +730,74 @@ message AllocationReleaseResponse {
   TerminationType terminationType = 2;
   // Any other human-readable message
   string message = 3;
+}
+```
+
+### Scheduler administration
+
+Queue configuration administration.
+
+```protobuf
+// Update config is a synchronized, idempotent operation
+// it only allows one update at a time, one update can be either succeed, or failed
+// we don't want to deal with the complex scenarios where partial updates are succeed,
+// at least not on the server side. The updates should be done all or nothing. 
+message UpdateConfigRequest {
+   oneof updateRequest {
+     AddQueueRequest addQueue = 1;
+     DeleteQueueRequest deleteQueue = 2;
+     UpdateQueueRequest updateQueue = 3;
+   }
+}
+
+// update config is a synchronized operation
+// client is depending on the response to determine the follow up actions
+message UpdateConfigResponse {
+  // some useful info returns back to the client,
+  // e.g what's the changes have been made to the queue.
+  string message = 1;
+}
+
+message AddQueueRequest {
+  // name of the queue
+  string queueName = 1;
+
+  // the full qualified path for this queue
+  string fullQualitiedName = 2;
+
+  // queue properties
+  map<string, string> properties = 3;
+
+  // guaranteed resources
+  Resource minQueueResource = 4;
+
+  // max resources
+  Resource maxQueueResource = 5;
+}
+
+message DeleteQueueRequest {
+  // name of the queue
+  string queueName = 1;
+  
+  // the full qualified path for this queue
+  string fullQualitiedName = 2;
+}
+
+message UpdateQueueRequest {
+  // name of the queue
+  string queueName = 1;
+
+  // the full qualified path for this queue
+  string fullQualitiedName = 2;
+
+  // queue properties
+  map<string, string> properties = 3;
+
+  // guaranteed resources
+  Resource minQueueResource = 4;
+
+  // max resources
+  Resource maxQueueResource = 5;
 }
 ```
 
