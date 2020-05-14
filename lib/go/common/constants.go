@@ -25,14 +25,11 @@ const (
 // Cluster
 const DefaultNodeAttributeHostNameKey = "si.io/hostname"
 const DefaultNodeAttributeRackNameKey = "si.io/rackname"
-const DefaultRackName = "/rack-default"
 
 // Application
 const LabelApp = "app"
 const LabelApplicationID = "applicationId"
 const LabelQueueName = "queue"
-const ApplicationDefaultQueue = "root.sandbox"
-const DefaultPartition = "default"
 
 // Resource
 const Memory = "memory"
@@ -42,6 +39,3 @@ const CPU = "vcore"
 const SparkLabelAppID = "spark-app-selector"
 const SparkLabelRole = "spark-role"
 const SparkLabelRoleDriver = "driver"
-
-// Configuration
-const DefaultConfigMapName = "yunikorn-configs"
