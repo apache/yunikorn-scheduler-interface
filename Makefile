@@ -28,7 +28,8 @@ BASE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 SI_SPEC := scheduler-interface-spec.md
 SI_PROTO := si.proto
 
-COMMON_LIB := lib/go/common
+LIB_DIR := lib/go
+COMMON_LIB := $(LIB_DIR)/common
 CONSTANTS_GO := $(COMMON_LIB)/constants.go
 
 all:
@@ -50,7 +51,7 @@ $(CONSTANTS_GO): $(SI_SPEC)
 
 # Build the go language bindings from the spec via a generated proto
 build: $(SI_PROTO).tmp $(CONSTANTS_GO)
-	$(MAKE) -C lib/go
+	$(MAKE) -C $(LIB_DIR)
 
 # Set a empty recipe used in the internal build
 .PHONY: test
@@ -61,11 +62,11 @@ test:
 .PHONY: clean
 clean:
 	cd $(BASE_DIR) && \
-	$(MAKE) -C lib/go $@
+	$(MAKE) -C $(LIB_DIR) $@
 
 # Remove all non versioned files,
 # Running this target will trigger a re-install of protoc etc in te next build cycle.
 .PHONY: clobber
 clobber:
 	cd $(BASE_DIR) && \
-	$(MAKE) -C lib/go $@
+	$(MAKE) -C $(LIB_DIR) $@
