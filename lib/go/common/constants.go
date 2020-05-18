@@ -3,7 +3,7 @@
 
 package common
 
-// Constants for node attribtues
+// Constants for node attributes
 const (
 	ARCH                = "si.io/arch"
 	HostName            = "si.io/hostname"
@@ -16,7 +16,7 @@ const (
 	NodePartition       = "si.io/node-partition"
 )
 
-// Constants for allocation attribtues
+// Constants for allocation attributes
 const (
 	ApplicationID  = "si.io/application-id"
 	ContainerImage = "si.io/container-image"
