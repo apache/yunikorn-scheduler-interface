@@ -757,10 +757,6 @@ const (
 Default constants:
 
 ```go
-// Cluster
-const DefaultNodeAttributeHostNameKey = "si.io/hostname"
-const DefaultNodeAttributeRackNameKey = "si.io/rackname"
-
 // Application
 const LabelApp = "app"
 const LabelApplicationID = "applicationId"

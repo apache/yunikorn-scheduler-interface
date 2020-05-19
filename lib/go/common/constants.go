@@ -22,10 +22,6 @@ const (
 	ContainerImage = "si.io/container-image"
 	ContainerPorts = "si.io/container-ports"
 )
-// Cluster
-const DefaultNodeAttributeHostNameKey = "si.io/hostname"
-const DefaultNodeAttributeRackNameKey = "si.io/rackname"
-
 // Application
 const LabelApp = "app"
 const LabelApplicationID = "applicationId"
