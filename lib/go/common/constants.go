@@ -5,22 +5,22 @@ package common
 
 // Constants for node attributes
 const (
-	ARCH                = "si.io/arch"
-	HostName            = "si.io/hostname"
-	RackName            = "si.io/rackname"
-	OS                  = "si.io/os"
-	InstanceType        = "si.io/instance-type"
-	FailureDomainZone   = "si.io/zone"
-	FailureDomainRegion = "si.io/region"
-	LocalImages         = "si.io/local-images"
-	NodePartition       = "si.io/node-partition"
+	ARCH                = "si/arch"
+	HostName            = "si/hostname"
+	RackName            = "si/rackname"
+	OS                  = "si/os"
+	InstanceType        = "si/instance-type"
+	FailureDomainZone   = "si/zone"
+	FailureDomainRegion = "si/region"
+	LocalImages         = "si/local-images"
+	NodePartition       = "si/node-partition"
 )
 
 // Constants for allocation attributes
 const (
-	ApplicationID  = "si.io/application-id"
-	ContainerImage = "si.io/container-image"
-	ContainerPorts = "si.io/container-ports"
+	ApplicationID  = "si/application-id"
+	ContainerImage = "si/container-image"
+	ContainerPorts = "si/container-ports"
 )
 // Application
 const LabelApp = "app"
