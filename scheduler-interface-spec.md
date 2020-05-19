@@ -733,7 +733,7 @@ message AllocationReleaseResponse {
 Scheduler Interface reserved all attribute in si.io namespace, e.g. known attribute names for nodes and applications.
 
 ```go
-// Constants for node attribtues
+// Constants for node attributes
 const (
 	ARCH                = "si.io/arch"
 	HostName            = "si.io/hostname"
@@ -746,7 +746,7 @@ const (
 	NodePartition       = "si.io/node-partition"
 )
 
-// Constants for allocation attribtues
+// Constants for allocation attributes
 const (
 	ApplicationID  = "si.io/application-id"
 	ContainerImage = "si.io/container-image"
@@ -760,14 +760,11 @@ Default constants:
 // Cluster
 const DefaultNodeAttributeHostNameKey = "si.io/hostname"
 const DefaultNodeAttributeRackNameKey = "si.io/rackname"
-const DefaultRackName = "/rack-default"
 
 // Application
 const LabelApp = "app"
 const LabelApplicationID = "applicationId"
 const LabelQueueName = "queue"
-const ApplicationDefaultQueue = "root.sandbox"
-const DefaultPartition = "default"
 
 // Resource
 const Memory = "memory"
@@ -777,9 +774,6 @@ const CPU = "vcore"
 const SparkLabelAppID = "spark-app-selector"
 const SparkLabelRole = "spark-role"
 const SparkLabelRoleDriver = "driver"
-
-// Configuration
-const DefaultConfigMapName = "yunikorn-configs"
 ```
 
 ### Scheduler plugin

@@ -45,14 +45,17 @@ $(SI_PROTO).tmp: $(SI_SPEC)
 	(diff $@ $(SI_PROTO) > /dev/null 2>&1 || mv -f $@ $(SI_PROTO)) && \
 		rm -f $@
 
-$(CONSTANTS_GO): $(SI_SPEC)
+$(CONSTANTS_GO).tmp: $(SI_SPEC)
 	test -d $(COMMON_LIB) || mkdir -p $(COMMON_LIB)
 	@echo $(GENERATED_HEADER) > $@
 	@echo "package common\n" >> $@
 	cat $< | sed -n -e '/```go$$/,/^```$$/ p' | sed '/^```/d' >> $@
+	awk '{ if (length > 200) print NR, $$0 }' $@ | diff - /dev/null
+	(diff $@ $(CONSTANTS_GO) > /dev/null 2>&1 || mv -f $@ $(CONSTANTS_GO)) && \
+			rm -f $@m
 
 # Build the go language bindings from the spec via a generated proto
-build: $(SI_PROTO).tmp $(CONSTANTS_GO)
+build: $(SI_PROTO).tmp $(CONSTANTS_GO).tmp
 	$(MAKE) -C $(LIB_DIR)
 
 # Set a empty recipe used in the internal build
@@ -63,6 +66,7 @@ test:
 # Simple clean of generated files only (no local cleanup).
 .PHONY: clean
 clean:
+	rm -rf $(COMMON_LIB)
 	cd $(BASE_DIR) && \
 	$(MAKE) -C $(LIB_DIR) $@
 
