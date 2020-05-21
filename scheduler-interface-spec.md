@@ -730,30 +730,46 @@ message AllocationReleaseResponse {
 
 ### Following are constant of spec
 
-Scheduler Interface reserved all attribute in si.io namespace.
+Scheduler Interface attributes start with the si prefix. Such constants are for example known attribute names for nodes and applications.
 
-Known attribute names for nodes and applications.
-
-```golang
-// Constants for node attribtues
+```go
+// Constants for node attributes
 const (
-    ARCH="si.io/arch"
-    HOSTNAME="si.io/hostname"
-    RACKNAME="si.io/rackname"
-    OS="si.io/os"
-    INSTANCE_TYPE="si.io/instance-type"
-    FAILURE_DOMAIN_ZONE="si.io/zone"
-    FAILURE_DOMAIN_REGION="si.io/region"
-    LOCAL_IMAGES="si.io/local-images"
-    NODE_PARTITION="si.io/node-partition"
+	ARCH                = "si/arch"
+	HostName            = "si/hostname"
+	RackName            = "si/rackname"
+	OS                  = "si/os"
+	InstanceType        = "si/instance-type"
+	FailureDomainZone   = "si/zone"
+	FailureDomainRegion = "si/region"
+	LocalImages         = "si/local-images"
+	NodePartition       = "si/node-partition"
 )
 
-// Constants for allocation attribtues
+// Constants for allocation attributes
 const (
-    APPLICATION_ID="si.io/application-id"
-    CONTAINER_IMAGE="si.io/container-image"
-    CONTAINER_PORTS="si.io/container-ports"
+	ApplicationID  = "si/application-id"
+	ContainerImage = "si/container-image"
+	ContainerPorts = "si/container-ports"
 )
+```
+
+Default constants:
+
+```go
+// Application
+const LabelApp = "app"
+const LabelApplicationID = "applicationId"
+const LabelQueueName = "queue"
+
+// Resource
+const Memory = "memory"
+const CPU = "vcore"
+
+// Spark
+const SparkLabelAppID = "spark-app-selector"
+const SparkLabelRole = "spark-role"
+const SparkLabelRoleDriver = "driver"
 ```
 
 ### Scheduler plugin
