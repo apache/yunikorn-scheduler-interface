@@ -471,6 +471,23 @@ message ForgotAllocation {
    // allocation key used to identify a container.
    string allocationKey = 1;
 }
+message EventMessage {
+   enum Type {
+      REQUEST = 0;
+      APP = 1;
+      NODE = 2;
+      QUEUE = 3;
+   }
+
+   // the type of the object associated with the event
+   Type type = 1;
+   // ID of the object associated with the event
+   string ID = 2;
+   // the reason of this event
+   string reason = 3;
+   // the detailed message as string
+   string message = 4;
+}
 // auto scaling metrics at a certain point of time
 message AutoScalingMetrics {
   // a list of outstanding requests that desires for additional resources

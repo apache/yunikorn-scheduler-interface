@@ -792,6 +792,31 @@ message ForgotAllocation {
 }
 ```
 
+#### Event Cache
+
+The Event Cache is a SchedulerPlugin that exposes events about scheduler objects aiming to help the end user to
+see these events from the shim side. An event is sent to the shim side through the callback in a form of an `EventMessage`.
+
+```protobuf
+message EventMessage {
+   enum Type {
+      REQUEST = 0;
+      APP = 1;
+      NODE = 2;
+      QUEUE = 3;
+   }
+
+   // the type of the object associated with the event
+   Type type = 1;
+   // ID of the object associated with the event
+   string ID = 2;
+   // the reason of this event
+   string reason = 3;
+   // the detailed message as string
+   string message = 4;
+}
+```
+
 ### Auto Scaling Metrics
 
 Auto scaling metrics can be monitored and collected by a 3rd party auto-scaler and used as the
