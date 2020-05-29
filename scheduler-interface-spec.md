@@ -732,7 +732,7 @@ message AllocationReleaseResponse {
 
 Scheduler Interface attributes start with the si prefix. Such constants are for example known attribute names for nodes and applications.
 
-```go
+```constants
 // Constants for node attributes
 const (
 	ARCH                = "si/arch"
@@ -752,24 +752,6 @@ const (
 	ContainerImage = "si/container-image"
 	ContainerPorts = "si/container-ports"
 )
-```
-
-Default constants:
-
-```go
-// Application
-const LabelApp = "app"
-const LabelApplicationID = "applicationId"
-const LabelQueueName = "queue"
-
-// Resource
-const Memory = "memory"
-const CPU = "vcore"
-
-// Spark
-const SparkLabelAppID = "spark-app-selector"
-const SparkLabelRole = "spark-role"
-const SparkLabelRoleDriver = "driver"
 ```
 
 ### Scheduler plugin
