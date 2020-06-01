@@ -62,6 +62,16 @@ build: $(SI_PROTO).tmp $(CONSTANTS_GO).tmp
 test:
 	@echo ""
 
+# Check for missing license headers
+.PHONY: check-license
+check-license:
+	@echo "checking license header"
+	@licRes=$$(grep -Lr --exclude-dir=lib --include=*.{go,sh,md,yaml,mod} "Licensed to the Apache Software Foundation" .) ; \
+	if [ -n "$${licRes}" ]; then \
+		echo "following files have incorrect license header:\n$${licRes}" ; \
+		exit 1; \
+	fi
+
 # Simple clean of generated files only (no local cleanup).
 .PHONY: clean
 clean:
