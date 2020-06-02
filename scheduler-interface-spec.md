@@ -1,3 +1,21 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
 # Scheduler Interface Spec
 
 Authors: The Yunikorn Scheduler Authors
@@ -730,30 +748,46 @@ message AllocationReleaseResponse {
 
 ### Following are constant of spec
 
-Scheduler Interface reserved all attribute in si.io namespace.
+Scheduler Interface attributes start with the si prefix. Such constants are for example known attribute names for nodes and applications.
 
-Known attribute names for nodes and applications.
-
-```golang
-// Constants for node attribtues
+```go
+// Constants for node attributes
 const (
-    ARCH="si.io/arch"
-    HOSTNAME="si.io/hostname"
-    RACKNAME="si.io/rackname"
-    OS="si.io/os"
-    INSTANCE_TYPE="si.io/instance-type"
-    FAILURE_DOMAIN_ZONE="si.io/zone"
-    FAILURE_DOMAIN_REGION="si.io/region"
-    LOCAL_IMAGES="si.io/local-images"
-    NODE_PARTITION="si.io/node-partition"
+	ARCH                = "si/arch"
+	HostName            = "si/hostname"
+	RackName            = "si/rackname"
+	OS                  = "si/os"
+	InstanceType        = "si/instance-type"
+	FailureDomainZone   = "si/zone"
+	FailureDomainRegion = "si/region"
+	LocalImages         = "si/local-images"
+	NodePartition       = "si/node-partition"
 )
 
-// Constants for allocation attribtues
+// Constants for allocation attributes
 const (
-    APPLICATION_ID="si.io/application-id"
-    CONTAINER_IMAGE="si.io/container-image"
-    CONTAINER_PORTS="si.io/container-ports"
+	ApplicationID  = "si/application-id"
+	ContainerImage = "si/container-image"
+	ContainerPorts = "si/container-ports"
 )
+```
+
+Default constants:
+
+```go
+// Application
+const LabelApp = "app"
+const LabelApplicationID = "applicationId"
+const LabelQueueName = "queue"
+
+// Resource
+const Memory = "memory"
+const CPU = "vcore"
+
+// Spark
+const SparkLabelAppID = "spark-app-selector"
+const SparkLabelRole = "spark-role"
+const SparkLabelRoleDriver = "driver"
 ```
 
 ### Scheduler plugin
