@@ -798,7 +798,7 @@ The Event Cache is a SchedulerPlugin that exposes events about scheduler objects
 see these events from the shim side. An event is sent to the shim side through the callback in a form of an `EventMessage`.
 
 ```protobuf
-message EventMessage {
+message EventRecord {
    enum Type {
       REQUEST = 0;
       APP = 1;
@@ -809,11 +809,17 @@ message EventMessage {
    // the type of the object associated with the event
    Type type = 1;
    // ID of the object associated with the event
-   string ID = 2;
+   string objectID = 2;
+   // the group this object belongs to
+   // it specifies the application ID for allocations, the queue for applications and 
+   // it's the name of the partition for queues and nodes
+   string group = 3;
    // the reason of this event
-   string reason = 3;
+   string reason = 4;
    // the detailed message as string
-   string message = 4;
+   string message = 5;
+   // timestamp of the event
+   int64 timestampNano = 6;
 }
 ```
 

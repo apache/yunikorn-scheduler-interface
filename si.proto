@@ -471,7 +471,7 @@ message ForgotAllocation {
    // allocation key used to identify a container.
    string allocationKey = 1;
 }
-message EventMessage {
+message EventRecord {
    enum Type {
       REQUEST = 0;
       APP = 1;
@@ -482,11 +482,17 @@ message EventMessage {
    // the type of the object associated with the event
    Type type = 1;
    // ID of the object associated with the event
-   string ID = 2;
+   string objectID = 2;
+   // the group this object belongs to
+   // it specifies the application ID for allocations, the queue for applications and 
+   // it's the name of the partition for queues and nodes
+   string group = 3;
    // the reason of this event
-   string reason = 3;
+   string reason = 4;
    // the detailed message as string
-   string message = 4;
+   string message = 5;
+   // timestamp of the event
+   int64 timestampNano = 6;
 }
 // auto scaling metrics at a certain point of time
 message AutoScalingMetrics {
