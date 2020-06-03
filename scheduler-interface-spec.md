@@ -846,9 +846,8 @@ message EventRecord {
    // ID of the object associated with the event
    string objectID = 2;
    // the group this object belongs to
-   // it specifies the application ID for allocations, the queue for applications and 
-   // it's the name of the partition for queues and nodes
-   string group = 3;
+   // it specifies the application ID for allocations and the queue for applications
+   string groupID = 3;
    // the reason of this event
    string reason = 4;
    // the detailed message as string
