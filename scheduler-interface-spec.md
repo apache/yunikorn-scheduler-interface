@@ -829,7 +829,8 @@ message ForgotAllocation {
 #### Event Plugin
 
 The Event Cache is a SchedulerPlugin that exposes events about scheduler objects aiming to help the end user to
-see these events from the shim side. An event is sent to the shim side through the callback in a form of an `EventMessage`.
+see these events from the shim side. An event is sent to the shim through the callback as an `EventRecord`.
+An `EventRecord` consists of the following fields:
 
 ```protobuf
 message EventRecord {
