@@ -100,8 +100,15 @@ $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 		(cd $(BASE) && \
 		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(PKG_ROOT)/$(<F))
 
+# Syntax check contants to make sure it passes
+COMMON_DIR := ./common
+.PHONY: syntax_check
+syntax_check:
+	@echo "\nsyntax check for constants code"
+	@go build $(COMMON_DIR) > /dev/null
+
 # Build the go language bindings from the generated proto.
-build: $(SI_GO_TMP)
+build: $(SI_GO_TMP) syntax_check
 	@cp -f $(SI_GO_TMP) $(SI_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 

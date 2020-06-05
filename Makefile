@@ -48,11 +48,10 @@ $(SI_PROTO).tmp: $(SI_SPEC)
 $(CONSTANTS_GO).tmp: $(SI_SPEC)
 	test -d $(COMMON_LIB) || mkdir -p $(COMMON_LIB)
 	@echo $(GENERATED_HEADER) > $@
-	@echo "package common\n" >> $@
-	cat $< | sed -n -e '/```go$$/,/^```$$/ p' | sed '/^```/d' >> $@
-	awk '{ if (length > 200) print NR, $$0 }' $@ | diff - /dev/null
+	@echo "\npackage common\n" >> $@
+	cat $< | sed -n -e '/``constants$$/,/^```$$/ p' | sed '/^```/d' >> $@
 	(diff $@ $(CONSTANTS_GO) > /dev/null 2>&1 || mv -f $@ $(CONSTANTS_GO)) && \
-			rm -f $@m
+			rm -f $@
 
 # Build the go language bindings from the spec via a generated proto
 build: $(SI_PROTO).tmp $(CONSTANTS_GO).tmp
