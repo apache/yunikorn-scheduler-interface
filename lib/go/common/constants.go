@@ -23,3 +23,18 @@ const (
 	ContainerImage = "si/container-image"
 	ContainerPorts = "si/container-ports"
 )
+// Constants for allocation tags
+const (
+	// Domains
+	DomainK8s      = "kubernetes.io/"
+	DomainYuniKorn = "yunikorn.apache.org/"
+
+	// Groups
+	GroupMeta       = "meta/"
+	GroupLabel      = "label/"
+	GroupAnnotation = "annotation/"
+
+	// Keys
+	KeyPodName   = "podName"
+	KeyNamespace = "namespace"
+)
