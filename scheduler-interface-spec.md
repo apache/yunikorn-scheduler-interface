@@ -772,6 +772,28 @@ const (
 )
 ```
 
+Allocation tags are key-value pairs, where the key should contain a domain, and optionally a group part.
+These parts should precede the name of the key (and should be in that order) and separated by a "/" character.
+Example allocation key: `kubernetes.io/meta/namespace`.
+
+```constants
+// Constants for allocation tags
+const (
+	// Domains
+	DomainK8s      = "kubernetes.io/"
+	DomainYuniKorn = "yunikorn.apache.org/"
+
+	// Groups
+	GroupMeta       = "meta/"
+	GroupLabel      = "label/"
+	GroupAnnotation = "annotation/"
+
+	// Keys
+	KeyPodName   = "podName"
+	KeyNamespace = "namespace"
+)
+```
+
 ### Scheduler plugin
 
 SchedulerPlugin is a way to extend scheduler capabilities. Scheduler shim can implement such plugin and register itself to
