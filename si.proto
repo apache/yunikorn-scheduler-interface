@@ -486,14 +486,17 @@ message UpdateContainerSchedulingStateRequest {
      FAILED = 3;
    }
 
+   // application ID
+   string applicartionID = 1;
+   
    // allocation key used to identify a container.
-   string allocationKey = 1;
+   string allocationKey = 2;
 
    // container scheduling state
-   SchedulingState state = 2;
+   SchedulingState state = 3;
 
    // an optional plain message to explain why it is in such state
-   string reason = 3;
+   string reason = 4;
 }
 message EventRecord {
    enum Type {
