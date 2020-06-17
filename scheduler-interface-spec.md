@@ -828,6 +828,30 @@ message ForgotAllocation {
    // allocation key used to identify a container.
    string allocationKey = 1;
 }
+
+message UpdateContainerSchedulingStateRequest {
+   // container scheduling states
+   enum SchedulingState {
+     // the container is being skipped by the scheduler
+     SKIPPED = 0;
+     // the container is scheduled and it has been assigned to a node
+     SCHEDULED = 1;
+     // the container is reserved on some node, but not yet assigned
+     RESERVED = 2;
+     // scheduler has visited all candidate nodes for this container
+     // but non of them could satisfy this container's requirement
+     FAILED = 3;
+   }
+
+   // allocation key used to identify a container.
+   string allocationKey = 1;
+
+   // container scheduling state
+   SchedulingState state = 2;
+
+   // an optional plain message to explain why it is in such state
+   string reason = 3;
+}
 ```
 
 #### Event Plugin
