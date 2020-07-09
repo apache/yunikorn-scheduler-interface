@@ -136,6 +136,16 @@ message UpdateResponse {
 
   // Accepted Node Registrations
   repeated AcceptedNode acceptedNodes = 9;
+
+  // Updated Applications
+  repeated UpdatedApplication updatedApplications = 10;
+}
+
+message UpdatedApplication {
+  // The application ID that was rejected
+  string applicationID = 1;
+  // State of the application
+  string state = 2;
 }
 
 message RejectedApplication {
