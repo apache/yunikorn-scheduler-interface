@@ -146,6 +146,10 @@ message UpdatedApplication {
   string applicationID = 1;
   // State of the application
   string state = 2;
+  // Timestamp of the state transition
+  int64 stateTransitionTimestamp = 3;
+  // Detailed message
+  string message = 4;
 }
 
 message RejectedApplication {
