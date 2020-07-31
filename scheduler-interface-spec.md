@@ -270,11 +270,25 @@ message UpdateResponse {
   // Accepted Applications
   repeated AcceptedApplication acceptedApplications = 7;
 
+  // Updated Applications
+  repeated UpdatedApplication updatedApplications = 8;
+
   // Rejected Node Registrations
-  repeated RejectedNode rejectedNodes = 8;
+  repeated RejectedNode rejectedNodes = 9;
 
   // Accepted Node Registrations
-  repeated AcceptedNode acceptedNodes = 9;
+  repeated AcceptedNode acceptedNodes = 10;
+}
+
+message UpdatedApplication {
+  // The application ID that was updated
+  string applicationID = 1;
+  // State of the application
+  string state = 2;
+  // Timestamp of the state transition
+  int64 stateTransitionTimestamp = 3;
+  // Detailed message
+  string message = 4;
 }
 
 message RejectedApplication {
