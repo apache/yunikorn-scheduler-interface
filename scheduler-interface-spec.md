@@ -869,6 +869,11 @@ message UpdateContainerSchedulingStateRequest {
    // an optional plain message to explain why it is in such state
    string reason = 4;
 }
+
+message ConfigMapArgs {
+    // New config what needs to be saved
+    string configs = 1;
+}
 ```
 
 #### Event Plugin
