@@ -870,9 +870,20 @@ message UpdateContainerSchedulingStateRequest {
    string reason = 4;
 }
 
-message ConfigMapArgs {
+message UpdateConfigurationRequest {
     // New config what needs to be saved
     string configs = 1;
+}
+
+message UpdateConfigurationResponse {
+    // flag that marks the config update success or failure
+    bool success = 1;
+    
+    // the old configuration what was changed
+    string oldConfig = 2;
+    
+    // reason in case of failure
+    string reason = 3;
 }
 ```
 
