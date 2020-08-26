@@ -9,6 +9,8 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -2988,6 +2990,17 @@ type SchedulerServer interface {
 	// updates, etc. And receive updates from scheduler for allocation changes,
 	// any required status changes, etc.
 	Update(Scheduler_UpdateServer) error
+}
+
+// UnimplementedSchedulerServer can be embedded to have forward compatible implementations.
+type UnimplementedSchedulerServer struct {
+}
+
+func (*UnimplementedSchedulerServer) RegisterResourceManager(ctx context.Context, req *RegisterResourceManagerRequest) (*RegisterResourceManagerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterResourceManager not implemented")
+}
+func (*UnimplementedSchedulerServer) Update(srv Scheduler_UpdateServer) error {
+	return status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 
 func RegisterSchedulerServer(s *grpc.Server, srv SchedulerServer) {
