@@ -22,6 +22,10 @@ ifdef GO_VERSION
 $(error Build requires go 1.11 or later)
 endif
 
+ifndef PROTOBUF_VERSION
+$(error PROTOBUF_VERSION is missing)
+endif
+
 all: build
 
 # Build everything under the local directory.
@@ -67,7 +71,6 @@ $(PROTOC):
 
 # Get and install the go plug-in for protoc.
 PROTOBUF_PKG := github.com/golang/protobuf
-PROTOBUF_VERSION := v1.3.1
 PROTOC_GEN_GO := protoc-gen-go
 PROTOC_GEN_GO_PKG := $(PROTOBUF_PKG)/$(PROTOC_GEN_GO)
 PROTOC_GEN_GO_SRC := src
