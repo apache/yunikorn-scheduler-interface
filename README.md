@@ -91,4 +91,11 @@ The exact procedure is language dependent. Check the build instructions for deta
 
 ## How do I contribute code?
 
-See how to contribute code from [this guide](docs/how-to-contribute.md).
+The scheduler interface specification provides the definition for the communication between
+different components in YuniKorn. Changes in the interface have flow on effects in all other
+components.
+
+Please keep in mind that changes in the interface specification will be highly scrutinised and 
+are not really suited as a simple start to become familiar with YuniKorn.
+
+See how to contribute code in [our website](http://yunikorn.apache.org/community/how_to_contribute).
