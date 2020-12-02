@@ -16,12 +16,6 @@
 # limitations under the License.
 #
 
-# Check if this is at least GO 1.11 for Go Modules
-GO_VERSION := $(shell go version | awk '$$3 ~ /go1.(10|0-9])/ {print $$3}')
-ifdef GO_VERSION
-$(error Build requires go 1.11 or later)
-endif
-
 ifndef PROTOBUF_VERSION
 $(error PROTOBUF_VERSION is missing)
 endif
