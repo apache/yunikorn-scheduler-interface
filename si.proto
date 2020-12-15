@@ -110,9 +110,9 @@ message UpdateResponse {
   // New allocations
   repeated Allocation newAllocations = 2;
 
-  // Released allocations, this could be either ack from scheduler when RM asks to terminate some allocations. Or
-  // it could be decision made by scheduler (such as preemption).
-  repeated AllocationReleaseResponse releasedAllocations = 3;
+  // Released allocations, this could be either ack from scheduler when RM asks to terminate some allocations.
+  // Or it could be decision made by scheduler (such as preemption or timeout).
+  repeated AllocationRelease releasedAllocations = 3;
 
   // Rejected allocation requests
   repeated RejectedAllocationAsk rejectedAllocations = 4;
@@ -223,6 +223,11 @@ message AllocationAsk {
   // Placement constraint defines how this allocation should be placed in the cluster.
   // if not set, no placement constraint will be applied.
   PlacementConstraint placementConstraint = 9;
+    // The name of the TaskGroup this ask belongs to
+  string taskGroupName = 10;
+  // Is this a placeholder ask (true) or a real ask (false), defaults to false
+  // ignored if the taskGroupName is not set
+  bool placeholder = 11;
 }
 message AddApplicationRequest {
   // The ID of the application, must be unique
@@ -241,6 +246,8 @@ message AddApplicationRequest {
   // Execution timeout: How long this application can be in a running state
   // 0 or negative value means never expire.
   int64 executionTimeoutMilliSeconds = 6;
+  // The total amount of resources gang placeholders will request
+  Resource placeholderAsk = 7;
 }
 
 message RemoveApplicationRequest {
@@ -323,22 +330,33 @@ message AffinityTargetExpression {
 }
 message AllocationReleasesRequest {
   // The allocations to release
-  repeated AllocationReleaseRequest allocationsToRelease = 1;
+  repeated AllocationRelease allocationsToRelease = 1;
   // The asks to release
   repeated AllocationAskReleaseRequest allocationAsksToRelease = 2;
 }
 
-// Release allocation
-message AllocationReleaseRequest {
-  // Which partition to release the allocation from, required.
+// Release allocation: this is a bidirectional message. The Terminationtype defines the origin, or creator,
+// as per the comment. The confirmation or response from the receiver is the same message with the same
+// termination type set.  
+message AllocationRelease {
+  enum TerminationType {
+    STOPPED_BY_RM = 0;          // Stopped or killed by ResourceManager (created by RM)
+    TIMEOUT = 1;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
+    PREEMPTED_BY_SCHEDULER = 2; // Preempted allocation by scheduler (created by core)
+    PLACEHOLDER_REPLACED = 3;   // Placeholder allocation replaced by real allocation (created by core)
+  }
+
+  // The name of the partition the allocation belongs to
   string partitionName = 1;
-  // optional, when this is set, filter allocations by application id.
-  // when application id is set and UUID is not set, release all allocations under the application id.
+  // The application the allocation belongs to
   string applicationID = 2;
-  // optional, when this is set, only release allocation by given UUID.
+  // The UUID of the allocation to release, if not set all allocations are released for
+  // the applicationID
   string UUID = 3;
-  // For human-readable message
-  string message = 4;
+  // Termination type of the released allocation
+  TerminationType terminationType = 4;
+  // human-readable message
+  string message = 5;
 }
 
 // Release ask
@@ -435,27 +453,6 @@ message NodeRecommendation {
 
   // Any other human-readable message
   string message = 2;
-}
-// When allocation released, either by RM or preempted by scheduler. It will be sent back to RM.
-message AllocationReleaseResponse {
-
-  enum TerminationType {
-    // STOPPED by ResourceManager.
-    STOPPED_BY_RM = 0;
-
-    // TIMEOUT based on the executionTimeoutMilliSeconds
-    TIMEOUT = 1;
-
-    // PREEMPTED by scheduler
-    PREEMPTED_BY_SCHEDULER = 2;
-  }
-
-  // UUID of the allocation that is released
-  string UUID = 1;
-  // Termination type of the released allocation
-  TerminationType terminationType = 2;
-  // Any other human-readable message
-  string message = 3;
 }
 message PredicatesArgs {
     // allocation key identifies a container, the predicates function is going to check
