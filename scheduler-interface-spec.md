@@ -407,21 +407,15 @@ message AllocationAsk {
   int32 maxAllocations = 5;
   // Priority of ask
   Priority priority = 6;
-  // Execution timeout: How long this allocation will be terminated (by scheduler)
-  // once allocated by scheduler, 0 or negative value means never expire.
-  int64 executionTimeoutMilliSeconds = 7;
   // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
   // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
   // These tags are optional.
   map<string, string> tags = 8;
-  // Placement constraint defines how this allocation should be placed in the cluster.
-  // if not set, no placement constraint will be applied.
-  PlacementConstraint placementConstraint = 9;
   // The name of the TaskGroup this ask belongs to
-  string taskGroupName = 10;
+  string taskGroupName = 9;
   // Is this a placeholder ask (true) or a real ask (false), defaults to false
   // ignored if the taskGroupName is not set
-  bool placeholder = 11;
+  bool placeholder = 10;
 }
 ```
 
@@ -465,112 +459,6 @@ message UserGroupInformation {
   string user = 1;
   // the list of groups of the user, can be empty
   repeated string groups = 2;
-}
-```
-
-PlacementConstraint: (Reference to works have been done in YARN-6592). And here is design doc:
-https://issues.apache.org/jira/secure/attachment/12867869/YARN-6592-Rich-Placement-Constraints-Design-V1.pdf
-
-```protobuf
-// PlacementConstraint could have simplePlacementConstraint or
-// CompositePlacementConstraint. One of them will be set.
-message PlacementConstraint {
-  oneof constraint {
-    SimplePlacementConstraint simpleConstraint = 1;
-
-    // This protocol can extended to support complex constraints
-    // To make an easier scheduler implementation and avoid confusing user.
-    // Protocol related to CompositePlacementConstraints will be
-    // commented and only for your references.
-    // CompositePlacementConstraint compositeConstraint = 2;
-  }
-}
-
-// Simple placement constraint represent constraint for affinity/anti-affinity
-// to node attribute or allocation tags.
-// When both of NodeAffinityConstraints and AllocationAffinityConstraints
-// specified, both will be checked and verified while scheduling.
-message SimplePlacementConstraint {
-  // Constraint
-  NodeAffinityConstraints nodeAffinityConstraint = 1;
-  AllocationAffinityConstraints allocationAffinityAttribute = 2;
-}
-
-// Affinity to node, multiple AffinityTargetExpression will be specified,
-// They will be connected by AND.
-message NodeAffinityConstraints {
-  repeated AffinityTargetExpression targetExpressions = 2;
-}
-
-// Affinity to allocations (containers).
-// Affinity is single-direction, which means if RM wants to do mutual affinity/
-// anti-affinity between allocations, same constraints need to be added
-// to all allocation asks.
-message AllocationAffinityConstraints {
-  // Scope: scope is key of node attribute, which determines if >1 allocations
-  // in the same group or not.
-  // When allocations on node(s) which have same node attribute value
-  // for given node attribute key == scope. They're in the same group.
-  //
-  // e.g. when user wants to do anti-affinity between allocation on node
-  // basis, scope can be set to "hostname", max-cardinality = 1;
-  string scope = 1;
-  repeated AffinityTargetExpression tragetExpressions = 2;
-  int32 minCardinality = 3;
-  int32 maxCardinality = 4;
-
-  // Is this a required (hard) or preferred (soft) request.
-  bool required = 5;
-}
-
-message AffinityTargetExpression {
-  // Following 4 operators can be specified, by default is "IN".
-  // When EXIST/NOT_EXISTS specified, scheduler only check if given targetKey
-  // appears on node attribute or allocation tag.
-  enum AffinityTargetOperator {
-    IN = 0;
-    NOT_IN = 1;
-    EXIST = 2;
-    NOT_EXIST = 3;
-  }
-
-  AffinityTargetExpression targetOperator = 1;
-  string targetKey = 2;
-  repeated string targetValues = 3;
-}
-```
-
-As mentioned above, the intention is to support Composite Placement Constraint in the future.
-
-The following protocol block is not marked as `protobuf` code and is added as a reference only and will not be processed as part of the protocol generation.
-
-```
-message CompositePlacementConstraintProto {
-  enum CompositeType {
-    // All children constraints have to be satisfied.
-    AND = 0;
-    // One of the children constraints has to be satisfied.
-    OR = 1;
-    // Attempt to satisfy the first child constraint for delays[0] units (e.g.,
-    // millisec or heartbeats). If this fails, try to satisfy the second child
-    // constraint for delays[1] units and so on.
-    DELAYED_OR = 2;
-  }
-
-  CompositeType compositeType = 1;
-  repeated PlacementConstraintProto childConstraints = 2;
-  repeated TimedPlacementConstraintProto timedChildConstraints = 3;
-}
-
-message TimedPlacementConstraintProto {
-  enum DelayUnit {
-    MILLISECONDS = 0;
-    OPPORTUNITIES = 1;
-  }
-
-  required PlacementConstraintProto placementConstraint = 1;
-  required int64 schedulingDelay = 2;
-  DelayUnit delayUnit = 3 [ default = MILLISECONDS ];
 }
 ```
 
@@ -728,18 +616,6 @@ message UpdateNodeInfo {
 }
 ```
 
-#### Utilization report
-
-```protobuf
-message UtilizationReport {
-  // it could be either a nodeID or allocation UUID.
-  string ID = 1;
-
-  // Actual used resource
-  Resource actualUsedResource = 2;
-}
-```
-
 #### Feedback from Scheduler
 
 Following is feedback from scheduler to RM:
@@ -753,17 +629,6 @@ message RejectedAllocationAsk {
   string applicationID = 2;
   // A human-readable reason message
   string reason = 3;
-}
-```
-
-Scheduler can notify suggestions to RM about node. This can be either human-readable or actions can be taken.
-
-```protobuf
-message NodeRecommendation {
-  Resource recommendedSchedulableResource = 1;
-
-  // Any other human-readable message
-  string message = 2;
 }
 ```
 
@@ -925,27 +790,3 @@ message EventRecord {
 }
 ```
 
-### Auto Scaling Metrics
-
-Auto scaling metrics can be monitored and collected by a 3rd party auto-scaler and used as the
-supplementary metrics while making auto-scaling decisions. These metrics are indicating how many
-outstanding resource requests are there in the cluster, due to the shortage of node resources.
-This has excluded requests could not be satisfied because of other reasons, such as hitting queue
-resource limit, user/app limit, desire on certain placement constraints, etc.
-
-```protobuf
-// auto scaling metrics at a certain point of time
-message AutoScalingMetrics {
-  // a list of outstanding requests that desires for additional resources
-  repeated OutstandingResourceRequest outstandingRequests = 1;
-}
-
-message OutstandingResourceRequest {
-  // an unique ID
-  string requestID = 1;
-  // resource specification
-  Resource resource = 2;
-  // an arbitrary map for tags, this stores some useful information that can help the decision
-  map<string, string> tags = 3;
-}
-``` 
