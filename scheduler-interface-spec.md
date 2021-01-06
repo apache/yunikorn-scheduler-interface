@@ -414,7 +414,7 @@ message AllocationAsk {
   // Placement constraint defines how this allocation should be placed in the cluster.
   // if not set, no placement constraint will be applied.
   PlacementConstraint placementConstraint = 9;
-    // The name of the TaskGroup this ask belongs to
+  // The name of the TaskGroup this ask belongs to
   string taskGroupName = 10;
   // Is this a placeholder ask (true) or a real ask (false), defaults to false
   // ignored if the taskGroupName is not set
@@ -571,6 +571,40 @@ message TimedPlacementConstraintProto {
 }
 ```
 
+### Allocation of resources
+
+The Allocation message is used in two cases:
+1. A recovered allocation send from the RM to the scheduler
+2. A newly created allocation from the scheduler.
+
+```protobuf
+message Allocation {
+  // AllocationKey from AllocationAsk
+  string allocationKey = 1;
+  // Allocation tags from AllocationAsk
+  map<string, string> allocationTags = 2;
+  // UUID of the allocation
+  string UUID = 3;
+  // Resource for each allocation
+  Resource resourcePerAlloc = 5;
+  // Priority of ask
+  Priority priority = 6;
+  // Queue which the allocation belongs to
+  string queueName = 7;
+  // Node which the allocation belongs to
+  string nodeID = 8;
+  // The ID of the application
+  string applicationID = 9;
+  // Partition of the allocation
+  string partitionName = 10;
+  // The name of the TaskGroup this allocation belongs to
+  string taskGroupName = 11;
+  // Is this a placeholder allocation (true) or a real allocation (false), defaults to false
+  // ignored if the taskGroupName is not set
+  bool placeholder = 12;
+}
+```
+
 #### Release previously allocated resources
 
 ```protobuf
@@ -703,31 +737,6 @@ message UtilizationReport {
 #### Feedback from Scheduler
 
 Following is feedback from scheduler to RM:
-
-Allocation is allocated allocations from scheduler.
-
-```protobuf
-message Allocation {
-  // AllocationKey from AllocationAsk
-  string allocationKey = 1;
-  // Allocation tags from AllocationAsk
-  map<string, string> allocationTags = 2;
-  // UUID of the allocation
-  string UUID = 3;
-  // Resource for each allocation
-  Resource resourcePerAlloc = 5;
-  // Priority of ask
-  Priority priority = 6;
-  // Queue which the allocation belongs to
-  string queueName = 7;
-  // Node which the allocation belongs to
-  string nodeID = 8;
-  // The ID of the application
-  string applicationID = 9;
-  // Partition of the allocation
-  string partitionName = 10;
-}
-```
 
 When allocation ask rejected by scheduler, information will be shared by scheduler.
 
