@@ -223,7 +223,7 @@ message AllocationAsk {
   // Placement constraint defines how this allocation should be placed in the cluster.
   // if not set, no placement constraint will be applied.
   PlacementConstraint placementConstraint = 9;
-    // The name of the TaskGroup this ask belongs to
+  // The name of the TaskGroup this ask belongs to
   string taskGroupName = 10;
   // Is this a placeholder ask (true) or a real ask (false), defaults to false
   // ignored if the taskGroupName is not set
@@ -328,6 +328,31 @@ message AffinityTargetExpression {
   string targetKey = 2;
   repeated string targetValues = 3;
 }
+message Allocation {
+  // AllocationKey from AllocationAsk
+  string allocationKey = 1;
+  // Allocation tags from AllocationAsk
+  map<string, string> allocationTags = 2;
+  // UUID of the allocation
+  string UUID = 3;
+  // Resource for each allocation
+  Resource resourcePerAlloc = 5;
+  // Priority of ask
+  Priority priority = 6;
+  // Queue which the allocation belongs to
+  string queueName = 7;
+  // Node which the allocation belongs to
+  string nodeID = 8;
+  // The ID of the application
+  string applicationID = 9;
+  // Partition of the allocation
+  string partitionName = 10;
+  // The name of the TaskGroup this ask belongs to
+  string taskGroupName = 11;
+  // Is this a placeholder ask (true) or a real ask (false), defaults to false
+  // ignored if the taskGroupName is not set
+  bool placeholder = 12;
+}
 message AllocationReleasesRequest {
   // The allocations to release
   repeated AllocationRelease allocationsToRelease = 1;
@@ -420,26 +445,6 @@ message UtilizationReport {
 
   // Actual used resource
   Resource actualUsedResource = 2;
-}
-message Allocation {
-  // AllocationKey from AllocationAsk
-  string allocationKey = 1;
-  // Allocation tags from AllocationAsk
-  map<string, string> allocationTags = 2;
-  // UUID of the allocation
-  string UUID = 3;
-  // Resource for each allocation
-  Resource resourcePerAlloc = 5;
-  // Priority of ask
-  Priority priority = 6;
-  // Queue which the allocation belongs to
-  string queueName = 7;
-  // Node which the allocation belongs to
-  string nodeID = 8;
-  // The ID of the application
-  string applicationID = 9;
-  // Partition of the allocation
-  string partitionName = 10;
 }
 message RejectedAllocationAsk {
   string allocationKey = 1;
