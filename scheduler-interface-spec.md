@@ -407,6 +407,9 @@ message AllocationAsk {
   int32 maxAllocations = 5;
   // Priority of ask
   Priority priority = 6;
+  // Execution timeout: How long this allocation will be terminated (by scheduler)
+  // once allocated by scheduler, 0 or negative value means never expire.
+  int64 executionTimeoutMilliSeconds = 7;
   // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
   // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
   // These tags are optional.
