@@ -253,8 +253,11 @@ message UpdateResponse {
   // Or it could be decision made by scheduler (such as preemption or timeout).
   repeated AllocationRelease releasedAllocations = 3;
 
+  // Released allocation asks(placeholder), when the placeholder allocation times out
+  repeated AllocationAskRelease releasedAllocationAsks = 4;
+
   // Rejected allocation requests
-  repeated RejectedAllocationAsk rejectedAllocations = 4;
+  repeated RejectedAllocationAsk rejectedAllocations = 5;
 
   // Suggested node update.
   // This could include:
@@ -262,22 +265,22 @@ message UpdateResponse {
   //    two resource management systems side-by-side. For example, YARN/K8s running side by side.
   //    and update YARN NodeManager / Kubelet resource dynamically.
   // 2) Other recommendations.
-  repeated NodeRecommendation nodeRecommendations = 5;
+  repeated NodeRecommendation nodeRecommendations = 6;
 
   // Rejected Applications
-  repeated RejectedApplication rejectedApplications = 6;
+  repeated RejectedApplication rejectedApplications = 7;
 
   // Accepted Applications
-  repeated AcceptedApplication acceptedApplications = 7;
+  repeated AcceptedApplication acceptedApplications = 8;
 
   // Updated Applications
-  repeated UpdatedApplication updatedApplications = 8;
+  repeated UpdatedApplication updatedApplications = 9;
 
   // Rejected Node Registrations
-  repeated RejectedNode rejectedNodes = 9;
+  repeated RejectedNode rejectedNodes = 10;
 
   // Accepted Node Registrations
-  repeated AcceptedNode acceptedNodes = 10;
+  repeated AcceptedNode acceptedNodes = 11;
 }
 
 message UpdatedApplication {
@@ -612,19 +615,20 @@ message AllocationReleasesRequest {
   // The allocations to release
   repeated AllocationRelease allocationsToRelease = 1;
   // The asks to release
-  repeated AllocationAskReleaseRequest allocationAsksToRelease = 2;
+  repeated AllocationAskRelease allocationAsksToRelease = 2;
+}
+
+enum TerminationType {
+    STOPPED_BY_RM = 0;          // Stopped or killed by ResourceManager (created by RM)
+    TIMEOUT = 1;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
+    PREEMPTED_BY_SCHEDULER = 2; // Preempted allocation by scheduler (created by core)
+    PLACEHOLDER_REPLACED = 3;   // Placeholder allocation replaced by real allocation (created by core)
 }
 
 // Release allocation: this is a bidirectional message. The Terminationtype defines the origin, or creator,
 // as per the comment. The confirmation or response from the receiver is the same message with the same
 // termination type set.  
 message AllocationRelease {
-  enum TerminationType {
-    STOPPED_BY_RM = 0;          // Stopped or killed by ResourceManager (created by RM)
-    TIMEOUT = 1;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
-    PREEMPTED_BY_SCHEDULER = 2; // Preempted allocation by scheduler (created by core)
-    PLACEHOLDER_REPLACED = 3;   // Placeholder allocation replaced by real allocation (created by core)
-  }
 
   // The name of the partition the allocation belongs to
   string partitionName = 1;
@@ -640,7 +644,7 @@ message AllocationRelease {
 }
 
 // Release ask
-message AllocationAskReleaseRequest {
+message AllocationAskRelease {
   // Which partition to release the ask from, required.
   string partitionName = 1;
   // optional, when this is set, filter allocation key by application id.
@@ -648,8 +652,10 @@ message AllocationAskReleaseRequest {
   string applicationID = 2;
   // optional, when this is set, only release allocation ask by specified
   string allocationkey = 3;
+  // Termination type of the released allocation ask
+  TerminationType terminationType = 4;
   // For human-readable message
-  string message = 4;
+  string message = 5;
 }
 ```
 
