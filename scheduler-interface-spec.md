@@ -218,18 +218,15 @@ message UpdateRequest {
   // - Realtime Utilizations.
   repeated UpdateNodeInfo updatedNodes = 4;
 
-  // UtilizationReports for allocation and nodes.
-  repeated UtilizationReport utilizationReports = 5;
-
   // ID of RM, this will be used to identify which RM of the request comes from.
-  string rmID = 6;
+  string rmID = 5;
 
   // RM should explicitly add application when allocation request also explictly belongs to application.
   // This is optional if allocation request doesn't belong to a application. (Independent allocation)
-  repeated AddApplicationRequest newApplications = 8;
+  repeated AddApplicationRequest newApplications = 6;
 
   // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
-  repeated RemoveApplicationRequest removeApplications = 9;
+  repeated RemoveApplicationRequest removeApplications = 7;
 }
 
 message UpdateResponse {
@@ -259,28 +256,20 @@ message UpdateResponse {
   // Rejected allocation requests
   repeated RejectedAllocationAsk rejectedAllocations = 5;
 
-  // Suggested node update.
-  // This could include:
-  // 1) Schedulable resources on each node. This can be used when we want to run
-  //    two resource management systems side-by-side. For example, YARN/K8s running side by side.
-  //    and update YARN NodeManager / Kubelet resource dynamically.
-  // 2) Other recommendations.
-  repeated NodeRecommendation nodeRecommendations = 6;
-
   // Rejected Applications
-  repeated RejectedApplication rejectedApplications = 7;
+  repeated RejectedApplication rejectedApplications = 6;
 
   // Accepted Applications
-  repeated AcceptedApplication acceptedApplications = 8;
+  repeated AcceptedApplication acceptedApplications = 7;
 
   // Updated Applications
-  repeated UpdatedApplication updatedApplications = 9;
+  repeated UpdatedApplication updatedApplications = 8;
 
   // Rejected Node Registrations
-  repeated RejectedNode rejectedNodes = 10;
+  repeated RejectedNode rejectedNodes = 9;
 
   // Accepted Node Registrations
-  repeated AcceptedNode acceptedNodes = 11;
+  repeated AcceptedNode acceptedNodes = 10;
 }
 
 message UpdatedApplication {
