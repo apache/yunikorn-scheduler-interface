@@ -134,14 +134,17 @@ package api
 
 import "github.com/apache/incubator-yunikorn-scheduler-interface/lib/go/si"
 
-type SchedulerApi interface {
+type SchedulerAPI interface {
     // Register a new RM, if it is a reconnect from previous RM, cleanup
     // all in-memory data and resync with RM.
-    RegisterResourceManager(request *si.RegisterResourceManagerRequest, callback *ResourceManagerCallback) (*si.RegisterResourceManagerResponse, error)
+    RegisterResourceManager(request *si.RegisterResourceManagerRequest, callback ResourceManagerCallback) (*si.RegisterResourceManagerResponse, error)
 
     // Update Scheduler status (including node status update, allocation request
     // updates, etc.
     Update(request *si.UpdateRequest) error
+
+    // Notify scheduler to reload configuration and hot-refresh in-memory state based on configuration changes
+    ReloadConfiguration(clusterID string) error
 }
 
 // RM side needs to implement this API
@@ -396,6 +399,9 @@ message AllocationAsk {
   int32 maxAllocations = 5;
   // Priority of ask
   Priority priority = 6;
+  // Execution timeout: How long this allocation will be terminated (by scheduler)
+  // once allocated by scheduler, 0 or negative value means never expire.
+  int64 executionTimeoutMilliSeconds = 7;
   // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
   // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
   // These tags are optional.

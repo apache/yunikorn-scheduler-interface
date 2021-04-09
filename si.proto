@@ -79,18 +79,15 @@ message UpdateRequest {
   // - Realtime Utilizations.
   repeated UpdateNodeInfo updatedNodes = 4;
 
-  // UtilizationReports for allocation and nodes.
-  repeated UtilizationReport utilizationReports = 5;
-
   // ID of RM, this will be used to identify which RM of the request comes from.
-  string rmID = 6;
+  string rmID = 5;
 
   // RM should explicitly add application when allocation request also explictly belongs to application.
   // This is optional if allocation request doesn't belong to a application. (Independent allocation)
-  repeated AddApplicationRequest newApplications = 8;
+  repeated AddApplicationRequest newApplications = 6;
 
   // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
-  repeated RemoveApplicationRequest removeApplications = 9;
+  repeated RemoveApplicationRequest removeApplications = 7;
 }
 
 message UpdateResponse {
@@ -120,28 +117,20 @@ message UpdateResponse {
   // Rejected allocation requests
   repeated RejectedAllocationAsk rejectedAllocations = 5;
 
-  // Suggested node update.
-  // This could include:
-  // 1) Schedulable resources on each node. This can be used when we want to run
-  //    two resource management systems side-by-side. For example, YARN/K8s running side by side.
-  //    and update YARN NodeManager / Kubelet resource dynamically.
-  // 2) Other recommendations.
-  repeated NodeRecommendation nodeRecommendations = 6;
-
   // Rejected Applications
-  repeated RejectedApplication rejectedApplications = 7;
+  repeated RejectedApplication rejectedApplications = 6;
 
   // Accepted Applications
-  repeated AcceptedApplication acceptedApplications = 8;
+  repeated AcceptedApplication acceptedApplications = 7;
 
   // Updated Applications
-  repeated UpdatedApplication updatedApplications = 9;
+  repeated UpdatedApplication updatedApplications = 8;
 
   // Rejected Node Registrations
-  repeated RejectedNode rejectedNodes = 10;
+  repeated RejectedNode rejectedNodes = 9;
 
   // Accepted Node Registrations
-  repeated AcceptedNode acceptedNodes = 11;
+  repeated AcceptedNode acceptedNodes = 10;
 }
 
 message UpdatedApplication {
@@ -223,14 +212,11 @@ message AllocationAsk {
   // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
   // These tags are optional.
   map<string, string> tags = 8;
-  // Placement constraint defines how this allocation should be placed in the cluster.
-  // if not set, no placement constraint will be applied.
-  PlacementConstraint placementConstraint = 9;
   // The name of the TaskGroup this ask belongs to
-  string taskGroupName = 10;
+  string taskGroupName = 9;
   // Is this a placeholder ask (true) or a real ask (false), defaults to false
   // ignored if the taskGroupName is not set
-  bool placeholder = 11;
+  bool placeholder = 10;
 }
 message AddApplicationRequest {
   // The ID of the application, must be unique
@@ -264,72 +250,6 @@ message UserGroupInformation {
   string user = 1;
   // the list of groups of the user, can be empty
   repeated string groups = 2;
-}
-// PlacementConstraint could have simplePlacementConstraint or
-// CompositePlacementConstraint. One of them will be set.
-message PlacementConstraint {
-  oneof constraint {
-    SimplePlacementConstraint simpleConstraint = 1;
-
-    // This protocol can extended to support complex constraints
-    // To make an easier scheduler implementation and avoid confusing user.
-    // Protocol related to CompositePlacementConstraints will be
-    // commented and only for your references.
-    // CompositePlacementConstraint compositeConstraint = 2;
-  }
-}
-
-// Simple placement constraint represent constraint for affinity/anti-affinity
-// to node attribute or allocation tags.
-// When both of NodeAffinityConstraints and AllocationAffinityConstraints
-// specified, both will be checked and verified while scheduling.
-message SimplePlacementConstraint {
-  // Constraint
-  NodeAffinityConstraints nodeAffinityConstraint = 1;
-  AllocationAffinityConstraints allocationAffinityAttribute = 2;
-}
-
-// Affinity to node, multiple AffinityTargetExpression will be specified,
-// They will be connected by AND.
-message NodeAffinityConstraints {
-  repeated AffinityTargetExpression targetExpressions = 2;
-}
-
-// Affinity to allocations (containers).
-// Affinity is single-direction, which means if RM wants to do mutual affinity/
-// anti-affinity between allocations, same constraints need to be added
-// to all allocation asks.
-message AllocationAffinityConstraints {
-  // Scope: scope is key of node attribute, which determines if >1 allocations
-  // in the same group or not.
-  // When allocations on node(s) which have same node attribute value
-  // for given node attribute key == scope. They're in the same group.
-  //
-  // e.g. when user wants to do anti-affinity between allocation on node
-  // basis, scope can be set to "hostname", max-cardinality = 1;
-  string scope = 1;
-  repeated AffinityTargetExpression tragetExpressions = 2;
-  int32 minCardinality = 3;
-  int32 maxCardinality = 4;
-
-  // Is this a required (hard) or preferred (soft) request.
-  bool required = 5;
-}
-
-message AffinityTargetExpression {
-  // Following 4 operators can be specified, by default is "IN".
-  // When EXIST/NOT_EXISTS specified, scheduler only check if given targetKey
-  // appears on node attribute or allocation tag.
-  enum AffinityTargetOperator {
-    IN = 0;
-    NOT_IN = 1;
-    EXIST = 2;
-    NOT_EXIST = 3;
-  }
-
-  AffinityTargetExpression targetOperator = 1;
-  string targetKey = 2;
-  repeated string targetValues = 3;
 }
 message Allocation {
   // AllocationKey from AllocationAsk
@@ -445,25 +365,12 @@ message UpdateNodeInfo {
   // Action to perform by the scheduler
   ActionFromRM action = 5;
 }
-message UtilizationReport {
-  // it could be either a nodeID or allocation UUID.
-  string ID = 1;
-
-  // Actual used resource
-  Resource actualUsedResource = 2;
-}
 message RejectedAllocationAsk {
   string allocationKey = 1;
   // The ID of the application
   string applicationID = 2;
   // A human-readable reason message
   string reason = 3;
-}
-message NodeRecommendation {
-  Resource recommendedSchedulableResource = 1;
-
-  // Any other human-readable message
-  string message = 2;
 }
 message PredicatesArgs {
     // allocation key identifies a container, the predicates function is going to check
@@ -557,18 +464,4 @@ message EventRecord {
    string message = 5;
    // timestamp of the event
    int64 timestampNano = 6;
-}
-// auto scaling metrics at a certain point of time
-message AutoScalingMetrics {
-  // a list of outstanding requests that desires for additional resources
-  repeated OutstandingResourceRequest outstandingRequests = 1;
-}
-
-message OutstandingResourceRequest {
-  // an unique ID
-  string requestID = 1;
-  // resource specification
-  Resource resource = 2;
-  // an arbitrary map for tags, this stores some useful information that can help the decision
-  map<string, string> tags = 3;
 }
