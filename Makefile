@@ -51,6 +51,8 @@ SI_PROTO := si.proto
 LIB_DIR := lib/go
 COMMON_LIB := $(LIB_DIR)/common
 CONSTANTS_GO := $(COMMON_LIB)/constants.go
+API_LIB := $(LIB_DIR)/api
+INTERFACE_GO := $(API_LIB)/interface.go
 
 define GENERATED_HEADER
 
@@ -84,8 +86,15 @@ $(CONSTANTS_GO).tmp: $(SI_SPEC)
 	(diff $@ $(CONSTANTS_GO) > /dev/null 2>&1 || mv -f $@ $(CONSTANTS_GO)) && \
 		rm -f $@
 
+$(INTERFACE_GO).tmp: $(SI_SPEC)
+	test -d $(API_LIB) || mkdir -p $(API_LIB)
+	@echo "$$GENERATED_HEADER" > $@
+	cat $< | sed -n -e '/``golang$$/,/^```$$/ p' | sed '/^```/d' >> $@
+	(diff $@ $(INTERFACE_GO) > /dev/null 2>&1 || mv -f $@ $(INTERFACE_GO)) && \
+		rm -f $@
+
 # Build the go language bindings from the spec via a generated proto
-build: $(SI_PROTO).tmp $(CONSTANTS_GO).tmp
+build: $(SI_PROTO).tmp $(CONSTANTS_GO).tmp $(INTERFACE_GO).tmp 
 	$(MAKE) -C $(LIB_DIR)
 
 # Set a empty recipe
