@@ -19,6 +19,7 @@
 ifndef PROTOBUF_VERSION
 $(error PROTOBUF_VERSION is missing)
 endif
+PROTOBUF_VERSION := v1.20.0
 
 all: build
 
@@ -35,7 +36,7 @@ export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.5.1
+PROTOC_VER := 3.14
 endif
 
 # Fix OS string for Mac builds.
@@ -65,8 +66,8 @@ $(PROTOC):
 
 # Get and install the go plug-in for protoc.
 GIT_NO_ADVICE := "-c advice.detachedHead=false"
-PROTOBUF_PKG := github.com/golang/protobuf
-PROTOC_GEN_GO := protoc-gen-go
+PROTOBUF_PKG := github.com/protocolbuffers/protobuf-go
+PROTOC_GEN_GO := cmd/protoc-gen-go
 PROTOC_GEN_GO_PKG := $(PROTOBUF_PKG)/$(PROTOC_GEN_GO)
 PROTOC_GEN_GO_SRC := src
 $(PROTOC_GEN_GO):

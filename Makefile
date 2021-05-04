@@ -36,9 +36,9 @@ endif
 
 # Retrieve the protobuf version defined in the go module, and download the same version of binary for the build
 # This variable will be exported and accessed from lib/go/Makefile
-PROTOBUF_VERSION := $(shell go list -m 'github.com/golang/protobuf' | cut -d' ' -f 2)
+PROTOBUF_VERSION := $(shell go list -m 'google.golang.org/protobuf' | cut -d' ' -f 2)
 ifndef PROTOBUF_VERSION
-$(error Build requires to set a proper version of github.com/golang/protobuf in go.mod file)
+$(error Build requires to set a proper version of google.golang.org/protobuf in go.mod file)
 endif
 export PROTOBUF_VERSION
 
