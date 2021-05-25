@@ -252,6 +252,9 @@ message AddApplicationRequest {
   int64 executionTimeoutMilliSeconds = 6;
   // The total amount of resources gang placeholders will request
   Resource placeholderAsk = 7;
+  // Gang scheduling style can be hard (the application will fail after placeholder timeout)
+  // or soft (after the timeout the application will be scheduled as a normal application)
+  //string gangSchedulingStyle = 8;
 }
 
 message RemoveApplicationRequest {
