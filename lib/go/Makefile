@@ -40,18 +40,18 @@ endif
 
 # Fix OS string for Mac builds.
 PROTOC_OS := $(shell uname -s)
+PROTOGEN_OS := $(shell uname -s)
 ifeq (Darwin,$(PROTOC_OS))
 PROTOC_OS := osx
 endif
 
 # Allow building on 32 bit machines.
 PROTOC_ARCH := $(shell uname -m)
+PROTOGEN_ARCH := amd64 #or 386 for 32 bits
 ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
+PROTOGEN_ARCH := 386
 endif
-
-PROTOGEN_OS := $(shell uname -s)
-PROTOGEN_ARCH := amd64 #or 386 for 32 bits
 
 # Get and install the protoc binary.
 PROTOC_ZIP := protoc-$(PROTOC_VER)-$(PROTOC_OS)-$(PROTOC_ARCH).zip
