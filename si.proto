@@ -254,7 +254,7 @@ message AddApplicationRequest {
   Resource placeholderAsk = 7;
   // Gang scheduling style can be hard (the application will fail after placeholder timeout)
   // or soft (after the timeout the application will be scheduled as a normal application)
-  //string gangSchedulingStyle = 8;
+  string gangSchedulingStyle = 8;
 }
 
 message RemoveApplicationRequest {
