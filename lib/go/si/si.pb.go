@@ -4,10 +4,10 @@
 package si
 
 import (
-	descriptor "/descriptor"
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
