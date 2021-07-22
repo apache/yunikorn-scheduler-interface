@@ -35,7 +35,7 @@ export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.16
+PROTOC_VER := 3.16.0
 endif
 
 # Fix OS string for Mac builds.
