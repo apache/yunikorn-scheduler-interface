@@ -37,6 +37,7 @@ const (
 	ContainerImage = "si/container-image"
 	ContainerPorts = "si/container-ports"
 )
+
 // Constants for allocation tags
 const (
 	// Domains
@@ -49,6 +50,7 @@ const (
 	GroupAnnotation = "annotation/"
 
 	// Keys
-	KeyPodName   = "podName"
-	KeyNamespace = "namespace"
+	KeyPodName             = "podName"
+	KeyNamespace           = "namespace"
+	KeyIgnoreUnschedulable = "ignoreUnschedulableNodes"
 )
