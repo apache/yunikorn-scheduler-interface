@@ -35,7 +35,7 @@ export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.16
+PROTOC_VER := 3.16.0
 endif
 
 # Fix OS string for Mac builds.
@@ -47,7 +47,7 @@ endif
 
 # Allow building on 32 bit machines.
 PROTOC_ARCH := $(shell uname -m)
-PROTOGEN_ARCH := amd64 #or 386 for 32 bits
+PROTOGEN_ARCH := amd64
 ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
 PROTOGEN_ARCH := 386
@@ -67,14 +67,14 @@ $(PROTOC):
 	stat $@ > /dev/null 2>&1
 
 # Get and install the go plug-in for protoc.
-PROTO_GEN_GO_TAR := protoc-gen-go.$(PROTOBUF_VERSION).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
-PROTO_GEN_URL    := https://github.com/protocolbuffers/protobuf-go/releases/download/$(PROTOBUF_VERSION)/$(PROTO_GEN_GO_TAR)
-PROTO_GEN_GO     := $(PROTO_BIN_DIR)/protoc-gen-go
-$(PROTO_GEN_GO):
-        mkdir -p $(PROTO_TMP_DIR) && \
-                curl -L $(PROTO_GEN_URL) -o $(PROTO_TMP_DIR)/$(PROTO_GEN_GO_TAR) && \
-                tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTO_TMP_DIR)/$(PROTO_GEN_GO_TAR) protoc-gen-go && \
-                chmod 0755 $(PROTO_GEN_GO)
+PROTOC_GEN_GO_TAR := protoc-gen-go.$(PROTOBUF_VERSION).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
+PROTOC_GEN_URL    := https://github.com/protocolbuffers/protobuf-go/releases/download/$(PROTOBUF_VERSION)/$(PROTOC_GEN_GO_TAR)
+PROTOC_GEN_GO     := $(PROTOC_BIN_DIR)/protoc-gen-go
+$(PROTOC_GEN_GO):
+	mkdir -p $(PROTOC_TMP_DIR) && \
+                curl -L $(PROTOC_GEN_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) && \
+                tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) protoc-gen-go && \
+                chmod 0755 $(PROTOC_GEN_GO)
 	stat $@ > /dev/null 2>&1
 
 # Update PATH with the protoc bin dir which contains protoc and its plug-in
@@ -85,17 +85,14 @@ SI_PROTO := ../../si.proto
 SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
 SI_GO := $(SI_PKG_SUB)/si.pb.go
+GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
-$(SI_GO_TMP): GO_OUT := plugins=grpc
-$(SI_GO_TMP): GO_OUT := $(GO_OUT),Mgoogle/protobuf/descriptor.proto=$(PROTOC_GEN_GO_PKG)/descriptor
-$(SI_GO_TMP): GO_OUT := $(GO_OUT):$(HERE)/$(SI_BUILD)
-$(SI_GO_TMP): INCLUDE := -I$(BASE) -I$(HERE)/$(PROTOC_TMP_DIR)/include
 $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && \
-		$(HERE)/$(PROTOC) $(INCLUDE) --go_out=$(GO_OUT) $(PKG_ROOT)/$(<F))
+		$(HERE)/$(PROTOC) --go_opt=paths=source_relative --go_out=$(GO_OUT) $(PKG_ROOT)/$(<F))
 
-# Syntax check contants to make sure it passes
+# Syntax check constants to make sure it passes
 COMMON_DIR := ./common
 .PHONY: syntax_check
 syntax_check:
@@ -108,11 +105,11 @@ build: $(SI_GO_TMP) syntax_check
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 
 # Simple clean of generated file language binding.
+.PHONY: clean
 clean:
-	rm -rf $(SI_GO)
+	rm -rf $(SI_GO) $(SI_GO_TMP)
 
 # Remove all non versioned files (including compiler and cache)
+.PHONY: clobber
 clobber: clean
 	rm -rf $(PROTOC_TMP_DIR) $(PROTOC_GEN_GO_SRC) $(SI_BUILD)
-
-.PHONY: clean clobber
