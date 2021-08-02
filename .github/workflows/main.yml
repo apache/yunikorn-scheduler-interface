@@ -4,9 +4,7 @@ on:
   pull_request:
     branches: 
       - master
-  push:
-    branches:
-      - YUNIKORN-761
+
 jobs:
   build:
     runs-on: ubuntu-latest
