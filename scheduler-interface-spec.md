@@ -56,7 +56,7 @@ package si.v1;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "si";
+option go_package = "lib/go/si";
 
 extend google.protobuf.FieldOptions {
   // Indicates that a field MAY contain information that is sensitive
@@ -436,6 +436,9 @@ message AddApplicationRequest {
   int64 executionTimeoutMilliSeconds = 6;
   // The total amount of resources gang placeholders will request
   Resource placeholderAsk = 7;
+  // Gang scheduling style can be hard (the application will fail after placeholder timeout)
+  // or soft (after the timeout the application will be scheduled as a normal application)
+  string gangSchedulingStyle = 8;
 }
 
 message RemoveApplicationRequest {
