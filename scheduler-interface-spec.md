@@ -56,7 +56,7 @@ package si.v1;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "si";
+option go_package = "lib/go/si";
 
 extend google.protobuf.FieldOptions {
   // Indicates that a field MAY contain information that is sensitive
