@@ -20,9 +20,7 @@ import "github.com/apache/incubator-yunikorn-scheduler-interface/lib/go/si"
 
 type SchedulerAPI interface {
 	RegisterResourceManager(request *si.RegisterResourceManagerRequest, callback ResourceManagerCallback) (*si.RegisterResourceManagerResponse, error)
-
 	Update(request *si.UpdateRequest) error
-
 	ReloadConfiguration(clusterID string) error
 }
 
