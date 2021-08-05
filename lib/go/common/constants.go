@@ -35,6 +35,7 @@ const (
 	ContainerImage = "si/container-image"
 	ContainerPorts = "si/container-ports"
 )
+
 // Constants for allocation tags
 const (
 	// Domains
