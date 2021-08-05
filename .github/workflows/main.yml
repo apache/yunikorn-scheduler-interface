@@ -1,0 +1,16 @@
+name: Pre-commit checks
+
+on:
+  pull_request:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      
+      - name: Run Makefile
+        run: make 
