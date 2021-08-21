@@ -60,8 +60,8 @@ PROTOC_TMP_DIR := protoc
 PROTOC_BIN_DIR := $(PROTOC_TMP_DIR)/bin
 PROTOC := $(PROTOC_BIN_DIR)/protoc
 $(PROTOC):
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-	go install github.com/golang/protobuf/protoc-gen-go
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install github.com/golang/protobuf/protoc-gen-go
 	mkdir -p $(PROTOC_TMP_DIR) && \
 		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
 		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
