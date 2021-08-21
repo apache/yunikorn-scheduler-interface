@@ -70,8 +70,7 @@ $(PROTOC):
 	stat $@ > /dev/null 2>&1
 
 # Update PATH with the protoc bin dir which contains protoc and its plug-in
-setup_env:
-	export PATH=$(HERE)/$(PROTOC_BIN_DIR):$(PATH)
+export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
 # Generate the go language bindings.
 SI_PROTO := ../../si.proto
