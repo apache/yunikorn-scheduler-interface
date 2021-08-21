@@ -60,6 +60,7 @@ PROTOC_TMP_DIR := protoc
 PROTOC_BIN_DIR := $(PROTOC_TMP_DIR)/bin
 PROTOC := $(PROTOC_BIN_DIR)/protoc
 $(PROTOC):
+	go install google.golang.org/protobuf/cmd/protoc-gen-go
 	mkdir -p $(PROTOC_TMP_DIR) && \
 		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
 		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
