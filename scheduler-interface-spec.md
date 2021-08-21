@@ -673,8 +673,9 @@ const (
 	GroupAnnotation = "annotation/"
 
 	// Keys
-	KeyPodName   = "podName"
-	KeyNamespace = "namespace"
+	KeyPodName      = "podName"
+	KeyNamespace    = "namespace"
+	KeyRequiredNode = "requiredNode"
 )
 ```
 

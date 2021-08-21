@@ -85,12 +85,16 @@ SI_PROTO := ../../si.proto
 SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
 SI_GO := $(SI_PKG_SUB)/si.pb.go
+SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
+SI_GRPC_TMP := $(SI_BUILD)/$(PKG_ROOT)/si_grpc.pb.go
 $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 	mkdir -p $(SI_BUILD) && \
-		(cd $(BASE) && \
-		$(HERE)/$(PROTOC) --go_opt=paths=source_relative --go_out=$(GO_OUT) $(PKG_ROOT)/$(<F))
+		(cd $(BASE) && $(HERE)/$(PROTOC) \
+		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
+		--go-grpc_out=$(GO_OUT) --go-grpc_opt=paths=source_relative \
+		$(PKG_ROOT)/$(<F))
 
 # Syntax check constants to make sure it passes
 COMMON_DIR := ./common
@@ -101,13 +105,16 @@ syntax_check:
 
 # Build the go language bindings from the generated proto.
 build: $(SI_GO_TMP) syntax_check
-	@cp -f $(SI_GO_TMP) $(SI_GO)
+	cp -f $(SI_GO_TMP) $(SI_GO)
+	cp -f $(SI_GRPC_TMP) $(SI_GRPC_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 
 # Simple clean of generated file language binding.
 .PHONY: clean
 clean:
 	rm -rf $(SI_GO) $(SI_GO_TMP)
+	rm -rf $(PROTOC_TMP_DIR)
+	rm -rf $(GO_OUT)
 
 # Remove all non versioned files (including compiler and cache)
 .PHONY: clobber
