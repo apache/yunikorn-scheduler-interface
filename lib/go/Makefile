@@ -108,6 +108,7 @@ build: $(SI_GO_TMP) syntax_check
 	cp -f $(SI_GO_TMP) $(SI_GO)
 	cp -f $(SI_GRPC_TMP) $(SI_GRPC_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
+	@echo "\ngRPC go source generated:\n\t$(HERE)/$(SI_GRPC_GO)\n"
 
 # Simple clean of generated file language binding.
 .PHONY: clean
