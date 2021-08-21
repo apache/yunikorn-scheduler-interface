@@ -66,6 +66,17 @@ $(PROTOC):
 		chmod 0755 $(PROTOC)
 	stat $@ > /dev/null 2>&1
 
+# Get and install the go plug-in for protoc.
+PROTOC_GEN_GO_TAR := protoc-gen-go.$(PROTOBUF_VERSION).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
+PROTOC_GEN_URL    := https://github.com/protocolbuffers/protobuf-go/releases/download/$(PROTOBUF_VERSION)/$(PROTOC_GEN_GO_TAR)
+PROTOC_GEN_GO     := $(PROTOC_BIN_DIR)/protoc-gen-go
+$(PROTOC_GEN_GO):
+	mkdir -p $(PROTOC_TMP_DIR) && \
+                curl -L $(PROTOC_GEN_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) && \
+                tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) protoc-gen-go && \
+                chmod 0755 $(PROTOC_GEN_GO)
+	stat $@ > /dev/null 2>&1
+
 # Update PATH with the protoc bin dir which contains protoc and its plug-in
 export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
@@ -78,7 +89,7 @@ SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
 SI_GRPC_TMP := $(SI_BUILD)/$(PKG_ROOT)/si_grpc.pb.go
-$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
+$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
 		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
