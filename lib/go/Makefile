@@ -60,7 +60,7 @@ PROTOC_TMP_DIR := protoc
 PROTOC_BIN_DIR := $(PROTOC_TMP_DIR)/bin
 PROTOC := $(PROTOC_BIN_DIR)/protoc
 $(PROTOC):
-	GOBIN=$(HERE)/$(PROTOC_TMP_DIR)/bin go install google.golang.org/protobuf/cmd/protoc-gen-go
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	mkdir -p $(PROTOC_TMP_DIR) && \
 		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
 		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
@@ -68,7 +68,8 @@ $(PROTOC):
 	stat $@ > /dev/null 2>&1
 
 # Update PATH with the protoc bin dir which contains protoc and its plug-in
-export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
+setup_env:
+	export PATH=$(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
 # Generate the go language bindings.
 SI_PROTO := ../../si.proto
@@ -79,7 +80,7 @@ SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
 SI_GRPC_TMP := $(SI_BUILD)/$(PKG_ROOT)/si_grpc.pb.go
-$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
+$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) setup_env
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
 		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
