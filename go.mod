@@ -19,7 +19,7 @@
 
 module github.com/apache/incubator-yunikorn-scheduler-interface
 
-go 1.15
+go 1.12
 
 require (
 	google.golang.org/grpc v1.32.0

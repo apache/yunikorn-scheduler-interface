@@ -675,7 +675,6 @@ const (
 	// Keys
 	KeyPodName      = "podName"
 	KeyNamespace    = "namespace"
-	KeyRequiredNode = "requiredNode"
 )
 ```
 
