@@ -60,21 +60,13 @@ PROTOC_TMP_DIR := protoc
 PROTOC_BIN_DIR := $(PROTOC_TMP_DIR)/bin
 PROTOC := $(PROTOC_BIN_DIR)/protoc
 $(PROTOC):
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install github.com/golang/protobuf/protoc-gen-go
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	ls -al $(HERE)/$(PROTOC_BIN_DIR)
 	mkdir -p $(PROTOC_TMP_DIR) && \
 		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
 		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
 		chmod 0755 $(PROTOC)
-	stat $@ > /dev/null 2>&1
-
-# Get and install the go plug-in for protoc.
-PROTOC_GEN_GO_TAR := protoc-gen-go.$(PROTOBUF_VERSION).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
-PROTOC_GEN_URL    := https://github.com/protocolbuffers/protobuf-go/releases/download/$(PROTOBUF_VERSION)/$(PROTOC_GEN_GO_TAR)
-PROTOC_GEN_GO     := $(PROTOC_BIN_DIR)/protoc-gen-go
-$(PROTOC_GEN_GO):
-	mkdir -p $(PROTOC_TMP_DIR) && \
-                curl -L $(PROTOC_GEN_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) && \
-                tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) protoc-gen-go && \
-                chmod 0755 $(PROTOC_GEN_GO)
 	stat $@ > /dev/null 2>&1
 
 # Update PATH with the protoc bin dir which contains protoc and its plug-in
@@ -85,12 +77,16 @@ SI_PROTO := ../../si.proto
 SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
 SI_GO := $(SI_PKG_SUB)/si.pb.go
+SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
-$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO)
+SI_GRPC_TMP := $(SI_BUILD)/$(PKG_ROOT)/si_grpc.pb.go
+$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
 	mkdir -p $(SI_BUILD) && \
-		(cd $(BASE) && \
-		$(HERE)/$(PROTOC) --go_opt=paths=source_relative --go_out=$(GO_OUT) $(PKG_ROOT)/$(<F))
+		(cd $(BASE) && $(HERE)/$(PROTOC) \
+		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
+		--go-grpc_out=$(GO_OUT) --go-grpc_opt=paths=source_relative \
+		$(PKG_ROOT)/$(<F))
 
 # Syntax check constants to make sure it passes
 COMMON_DIR := ./common
@@ -101,13 +97,17 @@ syntax_check:
 
 # Build the go language bindings from the generated proto.
 build: $(SI_GO_TMP) syntax_check
-	@cp -f $(SI_GO_TMP) $(SI_GO)
+	cp -f $(SI_GO_TMP) $(SI_GO)
+	cp -f $(SI_GRPC_TMP) $(SI_GRPC_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
+	@echo "\ngRPC go source generated:\n\t$(HERE)/$(SI_GRPC_GO)\n"
 
 # Simple clean of generated file language binding.
 .PHONY: clean
 clean:
 	rm -rf $(SI_GO) $(SI_GO_TMP)
+	rm -rf $(PROTOC_TMP_DIR)
+	rm -rf $(GO_OUT)
 
 # Remove all non versioned files (including compiler and cache)
 .PHONY: clobber
