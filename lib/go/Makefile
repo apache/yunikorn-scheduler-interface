@@ -78,7 +78,7 @@ SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
 $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
-	GOBIN=$(PROTOC_BIN_DIR) get -u github.com/golang/protobuf/protoc-gen-go
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go get -u github.com/golang/protobuf/protoc-gen-go
 	ls -al $(PROTOC_BIN_DIR)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
