@@ -60,9 +60,6 @@ PROTOC_TMP_DIR := protoc
 PROTOC_BIN_DIR := $(PROTOC_TMP_DIR)/bin
 PROTOC := $(PROTOC_BIN_DIR)/protoc
 $(PROTOC):
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install github.com/golang/protobuf/protoc-gen-go
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
-	ls -al $(HERE)/$(PROTOC_BIN_DIR)
 	mkdir -p $(PROTOC_TMP_DIR) && \
 		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
 		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
@@ -73,6 +70,12 @@ $(PROTOC):
 export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
 # Generate the go language bindings.
+# Note: before updating gRPC to later versions (e.g v1.32+), need to use
+# --go_out=plugins=grpc option to generate the gRPC code, otherwise
+# the generated code will have compile issues. We need to explicitly install
+# an older version of protoc-gen-go to make sure the generated code is
+# compatible with the current version of gRPC. See more details in
+# https://issues.apache.org/jira/browse/YUNIKORN-815.
 SI_PROTO := ../../si.proto
 SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
@@ -80,12 +83,12 @@ SI_GO := $(SI_PKG_SUB)/si.pb.go
 SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
-SI_GRPC_TMP := $(SI_BUILD)/$(PKG_ROOT)/si_grpc.pb.go
 $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go get github.com/golang/protobuf/protoc-gen-go@v1.2.0
+	ls -al $(PROTOC_BIN_DIR)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
-		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
-		--go-grpc_out=$(GO_OUT) --go-grpc_opt=paths=source_relative \
+		--go_out=plugins=grpc:$(GO_OUT) --go_opt=paths=source_relative \
 		$(PKG_ROOT)/$(<F))
 
 # Syntax check constants to make sure it passes
@@ -98,9 +101,7 @@ syntax_check:
 # Build the go language bindings from the generated proto.
 build: $(SI_GO_TMP) syntax_check
 	cp -f $(SI_GO_TMP) $(SI_GO)
-	cp -f $(SI_GRPC_TMP) $(SI_GRPC_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
-	@echo "\ngRPC go source generated:\n\t$(HERE)/$(SI_GRPC_GO)\n"
 
 # Simple clean of generated file language binding.
 .PHONY: clean

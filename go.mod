@@ -22,7 +22,10 @@ module github.com/apache/incubator-yunikorn-scheduler-interface
 go 1.12
 
 require (
-	google.golang.org/grpc v1.32.0
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0 // indirect
+	google.golang.org/grpc v1.26.0
 	google.golang.org/protobuf v1.26.0
+)
+
+replace (
+	github.com/golang/protobuf => github.com/golang/protobuf v1.2.0
 )
