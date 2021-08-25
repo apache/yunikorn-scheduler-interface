@@ -60,9 +60,6 @@ PROTOC_TMP_DIR := protoc
 PROTOC_BIN_DIR := $(PROTOC_TMP_DIR)/bin
 PROTOC := $(PROTOC_BIN_DIR)/protoc
 $(PROTOC):
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install github.com/golang/protobuf/protoc-gen-go
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
-	ls -al $(HERE)/$(PROTOC_BIN_DIR)
 	mkdir -p $(PROTOC_TMP_DIR) && \
 		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
 		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
@@ -84,8 +81,7 @@ SI_GRPC_TMP := $(SI_BUILD)/$(PKG_ROOT)/si_grpc.pb.go
 $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
-		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
-		--go-grpc_out=$(GO_OUT) --go-grpc_opt=paths=source_relative \
+		--go_out=plugins=grpc:$(GO_OUT) --go_opt=paths=source_relative \
 		$(PKG_ROOT)/$(<F))
 
 # Syntax check constants to make sure it passes
@@ -98,9 +94,7 @@ syntax_check:
 # Build the go language bindings from the generated proto.
 build: $(SI_GO_TMP) syntax_check
 	cp -f $(SI_GO_TMP) $(SI_GO)
-	cp -f $(SI_GRPC_TMP) $(SI_GRPC_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
-	@echo "\ngRPC go source generated:\n\t$(HERE)/$(SI_GRPC_GO)\n"
 
 # Simple clean of generated file language binding.
 .PHONY: clean
