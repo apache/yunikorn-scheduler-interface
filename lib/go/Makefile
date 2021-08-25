@@ -70,6 +70,12 @@ $(PROTOC):
 export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
 # Generate the go language bindings.
+# Note: before updating gRPC to later versions (e.g v1.32+), need to use
+# --go_out=plugins=grpc option to generate the gRPC code, otherwise
+# the generated code will have compile issues. We need to explicitly install
+# an older version of protoc-gen-go to make sure the generated code is
+# compatible with the current version of gRPC. See more details in
+# https://issues.apache.org/jira/browse/YUNIKORN-815.
 SI_PROTO := ../../si.proto
 SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
@@ -78,7 +84,7 @@ SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
 $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go get -u github.com/golang/protobuf/protoc-gen-go
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go get github.com/golang/protobuf/protoc-gen-go@v1.2.0
 	ls -al $(PROTOC_BIN_DIR)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
