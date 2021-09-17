@@ -21,7 +21,7 @@ const (
 	ARCH                = "si/arch"
 	HostName            = "si/hostname"
 	RackName            = "si/rackname"
-  LabelName           = "si/labelname"
+       LabelName           = "si/labelname"
 	OS                  = "si/os"
 	InstanceType        = "si/instance-type"
 	FailureDomainZone   = "si/zone"
