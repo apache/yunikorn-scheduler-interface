@@ -55,6 +55,7 @@ syntax = "proto3";
 package si.v1;
 
 import "google/protobuf/descriptor.proto";
+import "google/protobuf/any.proto";
 
 option go_package = "lib/go/si";
 
@@ -569,7 +570,7 @@ message NewNodeInfo {
   // ID of node, must be unique
   string nodeID = 1;
   // node attributes
-  map<string, string> attributes = 2;
+  map<string, google.protobuf.Any> attributes = 2;
   // Schedulable Resource
   Resource schedulableResource = 3;
   // Occupied Resource
@@ -602,7 +603,7 @@ message UpdateNodeInfo {
   // ID of node, the node must exist to be updated
   string nodeID = 1;
   // New attributes of node, which will replace previously reported attribute.
-  map<string, string> attributes = 2;
+  map<string, google.protobuf.Any> attributes = 2;
   // new schedulable resource, scheduler may preempt allocations on the
   // node or schedule more allocations accordingly.
   Resource schedulableResource = 3;
@@ -640,6 +641,7 @@ const (
 	ARCH                = "si/arch"
 	HostName            = "si/hostname"
 	RackName            = "si/rackname"
+  LabelName           = "si/labelname"
 	OS                  = "si/os"
 	InstanceType        = "si/instance-type"
 	FailureDomainZone   = "si/zone"
