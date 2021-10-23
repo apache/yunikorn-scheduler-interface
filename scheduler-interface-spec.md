@@ -95,8 +95,17 @@ service Scheduler {
   // Update Scheduler status (this includes node status update, allocation request
   // updates, etc. And receive updates from scheduler for allocation changes,
   // any required status changes, etc.
-  rpc Update (stream UpdateRequest)
-    returns (stream UpdateResponse) { }
+  // Update allocation request
+  rpc UpdateAllocation(stream AllocationRequest)
+    returns (stream AllocationResponse) { }
+
+  // Update application request 
+  rpc UpdateApplication(stream ApplicationRequest) 
+    returns (stream ApplicationResponse) { }
+
+  // Update node info 
+  rpc UpdateNode(stream NodeRequest) 
+    returns (stream NodeResponse) { }
 }
 
 /*
@@ -139,9 +148,14 @@ type SchedulerAPI interface {
 	// all in-memory data and resync with RM. 
 	RegisterResourceManager(request *si.RegisterResourceManagerRequest, callback ResourceManagerCallback) (*si.RegisterResourceManagerResponse, error)
 
-	// Update Scheduler status (including node status update, allocation request 
-	// updates, etc. 
-	Update(request *si.UpdateRequest) error
+	// Update allocation request
+	UpdateAllocation(request *si.AllocationRequest) error
+
+	// Update application request 
+	UpdateApplication(request *si.ApplicationRequest) error
+
+	// Update node info 
+	UpdateNode(request *si.NodeRequest) error
 
 	// Notify scheduler to reload configuration and hot-refresh in-memory state based on configuration changes 
 	ReloadConfiguration(clusterID string) error
@@ -149,7 +163,15 @@ type SchedulerAPI interface {
 
 // RM side needs to implement this API
 type ResourceManagerCallback interface {
-	RecvUpdateResponse(response *si.UpdateResponse) error
+
+	//Receive Allocation Update Response
+	UpdateAllocation(response *si.AllocationResponse) error
+
+	//Receive Application Update Response
+	UpdateApplication(response *si.ApplicationResponse) error
+
+	//Receive Node Update Response
+	UpdateNode(response *si.NodeResponse) error
 }
 ```
 
@@ -201,78 +223,69 @@ message RegisterResourceManagerResponse {
 Below is overview of how scheduler/RM keep connection and updates.
 
 ```protobuf
-message UpdateRequest {
+message AllocationRequest {
   // New allocation requests or replace existing allocation request (if allocationID is same)
   repeated AllocationAsk asks = 1;
 
   // Allocations can be released.
   AllocationReleasesRequest releases = 2;
-
-  // New node can be scheduled. If a node is notified to be "unscheduable", it needs to be part of this field as well.
-  repeated NewNodeInfo newSchedulableNodes = 3;
-
-  // Update nodes for existing schedulable nodes.
-  // May include:
-  // - Node resource changes. (Like grows/shrinks node resource)
-  // - Node attribute changes. (Including node-partition concept like YARN, and concept like "local images".
-  //
-  // Should not include:
-  // - Allocation-related changes with the node.
-  // - Realtime Utilizations.
-  repeated UpdateNodeInfo updatedNodes = 4;
-
+  
   // ID of RM, this will be used to identify which RM of the request comes from.
-  string rmID = 5;
-
-  // RM should explicitly add application when allocation request also explictly belongs to application.
-  // This is optional if allocation request doesn't belong to a application. (Independent allocation)
-  repeated AddApplicationRequest newApplications = 6;
-
-  // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
-  repeated RemoveApplicationRequest removeApplications = 7;
+  string rmID = 3;
 }
 
-message UpdateResponse {
-  // Scheduler can send action to RM.
-  enum ActionFromScheduler {
-    // Nothing needs to do
-    NOACTION = 0;
+message ApplicationRequest {
+  // RM should explicitly add application when allocation request also explictly belongs to application.
+  // This is optional if allocation request doesn't belong to a application. (Independent allocation)
+  repeated AddApplicationRequest new = 1;
 
-    // Something is wrong, RM needs to stop the RM, and re-register with scheduler.
-    RESYNC = 1;
-  }
+  // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
+  repeated RemoveApplicationRequest remove = 2;
+  
+  // ID of RM, this will be used to identify which RM of the request comes from.
+  string rmID = 3;
+}
 
-  // What RM needs to do, scheduler can send control code to RM when something goes wrong.
-  // Don't use/expand this field for other general purposed actions. (Like kill a remote container process).
-  ActionFromScheduler action = 1;
+message NodeRequest {
+  // New node can be scheduled. If a node is notified to be "unscheduable", it needs to be part of this field as well.
+  repeated NodeInfo nodes = 1;
 
+  // ID of RM, this will be used to identify which RM of the request comes from.
+  string rmID = 2;
+}
+
+message AllocationResponse {
   // New allocations
-  repeated Allocation newAllocations = 2;
+  repeated Allocation new = 11;
 
   // Released allocations, this could be either ack from scheduler when RM asks to terminate some allocations.
   // Or it could be decision made by scheduler (such as preemption or timeout).
-  repeated AllocationRelease releasedAllocations = 3;
+  repeated AllocationRelease released = 2;
 
   // Released allocation asks(placeholder), when the placeholder allocation times out
-  repeated AllocationAskRelease releasedAllocationAsks = 4;
+  repeated AllocationAskRelease releasedAsks = 3;
 
   // Rejected allocation requests
-  repeated RejectedAllocationAsk rejectedAllocations = 5;
+  repeated RejectedAllocationAsk rejected = 4;
+}
 
+message ApplicationResponse {
   // Rejected Applications
-  repeated RejectedApplication rejectedApplications = 6;
+  repeated RejectedApplication rejected = 1;
 
   // Accepted Applications
-  repeated AcceptedApplication acceptedApplications = 7;
+  repeated AcceptedApplication accepted = 2;
 
   // Updated Applications
-  repeated UpdatedApplication updatedApplications = 8;
+  repeated UpdatedApplication updated = 3;
+}
 
+message NodeResponse {
   // Rejected Node Registrations
-  repeated RejectedNode rejectedNodes = 9;
+  repeated RejectedNode rejected = 1;
 
   // Accepted Node Registrations
-  repeated AcceptedNode acceptedNodes = 10;
+  repeated AcceptedNode accepted = 2;
 }
 
 message UpdatedApplication {
@@ -450,7 +463,7 @@ message RemoveApplicationRequest {
 ```
 
 User information:
-The user that owns the application. Group information can be empty. If the group information is empty the groups will be resolved by the scheduler when needed. 
+The user that owns the application. Group information can be empty. If the group information is empty the groups will be resolved by the scheduler when needed.
 ```protobuf
 message UserGroupInformation {
   // the user name
@@ -563,54 +576,50 @@ State transition of node:
 
 See protocol below:
 
-Registration of a new node with the scheduler. If the node exists then the request will be rejected.
+During new node registration with the scheduler, request will be rejected if the node exist already.
+While updating registered node with the scheduler, request will fail if the node doesn't exist.
 ```protobuf
-message NewNodeInfo {
-  // ID of node, must be unique
-  string nodeID = 1;
-  // node attributes
-  map<string, string> attributes = 2;
-  // Schedulable Resource
-  Resource schedulableResource = 3;
-  // Occupied Resource
-  Resource occupiedResource = 4;
-  // Allocated resources, this will be added when node registered to RM (recovery)
-  repeated Allocation existingAllocations = 5;
-}
-```
-
-Update of a registered node with the scheduler. If the node does not exist the update will fail.
-```protobuf
-message UpdateNodeInfo {
+message NodeInfo {
   // Action from RM
   enum ActionFromRM {
+  
+    // Create Node
+    CREATE = 0;
+    
     // Update node resources, attributes.
-    UPDATE = 0;
+    UPDATE = 1;
 
     // Do not allocate new allocations on the node.
-    DRAIN_NODE = 1;
+    DRAIN_NODE = 2;
 
     // Decomission node, it will immediately stop allocations on the node and
     // remove the node from schedulable lists.
-    DECOMISSION = 2;
+    DECOMISSION = 3;
 
     // From Draining state to SCHEDULABLE state.
     // If node is not in draining state, error will be thrown
-    DRAIN_TO_SCHEDULABLE = 3;
+    DRAIN_TO_SCHEDULABLE = 4;
   }
 
   // ID of node, the node must exist to be updated
   string nodeID = 1;
+
+  // Action to perform by the scheduler
+  ActionFromRM action = 2;
+    
   // New attributes of node, which will replace previously reported attribute.
-  map<string, string> attributes = 2;
+  map<string, string> attributes = 3;
+  
   // new schedulable resource, scheduler may preempt allocations on the
   // node or schedule more allocations accordingly.
-  Resource schedulableResource = 3;
+  Resource schedulableResource = 4;
+  
   // when the scheduler is co-exist with some other schedulers, some node
   // resources might be occupied (allocated) by other schedulers.
-  Resource occupiedResource = 4;
-  // Action to perform by the scheduler
-  ActionFromRM action = 5;
+  Resource occupiedResource = 5;
+  
+  // Allocated resources, this will be added when node registered to RM (recovery)
+  repeated Allocation existingAllocations = 6;
 }
 ```
 
@@ -788,4 +797,3 @@ message EventRecord {
    int64 timestampNano = 6;
 }
 ```
-
