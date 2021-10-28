@@ -278,7 +278,7 @@ message NodeRequest {
 
 message AllocationResponse {
   // New allocations
-  repeated Allocation new = 11;
+  repeated Allocation new = 1;
 
   // Released allocations, this could be either ack from scheduler when RM asks to terminate some allocations.
   // Or it could be decision made by scheduler (such as preemption or timeout).
@@ -540,10 +540,11 @@ message AllocationReleasesRequest {
 }
 
 enum TerminationType {
-    STOPPED_BY_RM = 0;          // Stopped or killed by ResourceManager (created by RM)
-    TIMEOUT = 1;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
-    PREEMPTED_BY_SCHEDULER = 2; // Preempted allocation by scheduler (created by core)
-    PLACEHOLDER_REPLACED = 3;   // Placeholder allocation replaced by real allocation (created by core)
+    UNKNOWN_TERMINATION_TYPE = 0;//TerminationType not set
+    STOPPED_BY_RM = 1;          // Stopped or killed by ResourceManager (created by RM)
+    TIMEOUT = 2;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
+    PREEMPTED_BY_SCHEDULER = 3; // Preempted allocation by scheduler (created by core)
+    PLACEHOLDER_REPLACED = 4;   // Placeholder allocation replaced by real allocation (created by core)
 }
 
 // Release allocation: this is a bidirectional message. The Terminationtype defines the origin, or creator,
@@ -605,22 +606,25 @@ message NodeInfo {
   // Action from RM
   enum ActionFromRM {
   
+    //ActionFromRM not set
+    UNKNOWN_ACTION_FROM_RM = 0;
+    
     // Create Node
-    CREATE = 0;
+    CREATE = 1;
     
     // Update node resources, attributes.
-    UPDATE = 1;
+    UPDATE = 2;
 
     // Do not allocate new allocations on the node.
-    DRAIN_NODE = 2;
+    DRAIN_NODE = 3;
 
     // Decomission node, it will immediately stop allocations on the node and
     // remove the node from schedulable lists.
-    DECOMISSION = 3;
+    DECOMISSION = 4;
 
     // From Draining state to SCHEDULABLE state.
     // If node is not in draining state, error will be thrown
-    DRAIN_TO_SCHEDULABLE = 4;
+    DRAIN_TO_SCHEDULABLE = 5;
   }
 
   // ID of node, the node must exist to be updated
@@ -748,15 +752,17 @@ message ForgotAllocation {
 message UpdateContainerSchedulingStateRequest {
    // container scheduling states
    enum SchedulingState {
+     //SchedulingState not set
+     UNKNOWN_SCHEDULING_STATE = 0;
      // the container is being skipped by the scheduler
-     SKIPPED = 0;
+     SKIPPED = 1;
      // the container is scheduled and it has been assigned to a node
-     SCHEDULED = 1;
+     SCHEDULED = 2;
      // the container is reserved on some node, but not yet assigned
-     RESERVED = 2;
+     RESERVED = 3;
      // scheduler has visited all candidate nodes for this container
      // but non of them could satisfy this container's requirement
-     FAILED = 3;
+     FAILED = 4;
    }
 
    // application ID
@@ -798,10 +804,12 @@ An `EventRecord` consists of the following fields:
 ```protobuf
 message EventRecord {
    enum Type {
-      REQUEST = 0;
-      APP = 1;
-      NODE = 2;
-      QUEUE = 3;
+      //EventRecord Type not set
+      UNKNOWN_EVENTRECORD_TYPE = 0;
+      REQUEST = 1;
+      APP = 2;
+      NODE = 3;
+      QUEUE = 4;
    }
 
    // the type of the object associated with the event
