@@ -22,10 +22,15 @@ module github.com/apache/incubator-yunikorn-scheduler-interface
 go 1.15
 
 require (
-	google.golang.org/grpc v1.26.0
-	google.golang.org/protobuf v1.26.0
+	github.com/census-instrumentation/opencensus-proto v0.2.1 // indirect
+	github.com/envoyproxy/go-control-plane v0.7.1 // indirect
+	github.com/envoyproxy/protoc-gen-validate v0.1.0 // indirect
+	github.com/golang/protobuf v1.2.0 // indirect
+	github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4 // indirect
+	golang.org/x/exp v0.0.0-20190121172915-509febef88a4 // indirect
+	google.golang.org/appengine v1.4.0 // indirect
+	google.golang.org/grpc v1.23.1
+	google.golang.org/protobuf v1.26.0-rc.1
 )
 
-replace (
-	github.com/golang/protobuf => github.com/golang/protobuf v1.2.0
-)
+replace github.com/golang/protobuf => github.com/golang/protobuf v1.2.0

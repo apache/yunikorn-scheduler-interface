@@ -95,8 +95,17 @@ service Scheduler {
   // Update Scheduler status (this includes node status update, allocation request
   // updates, etc. And receive updates from scheduler for allocation changes,
   // any required status changes, etc.
-  rpc Update (stream UpdateRequest)
-    returns (stream UpdateResponse) { }
+  // Update allocation request
+  rpc UpdateAllocation(stream AllocationRequest)
+    returns (stream AllocationResponse) { }
+
+  // Update application request
+  rpc UpdateApplication(stream ApplicationRequest)
+    returns (stream ApplicationResponse) { }
+
+  // Update node info
+  rpc UpdateNode(stream NodeRequest)
+    returns (stream NodeResponse) { }
 }
 
 /*
@@ -135,21 +144,59 @@ package api
 import "github.com/apache/incubator-yunikorn-scheduler-interface/lib/go/si"
 
 type SchedulerAPI interface {
-    // Register a new RM, if it is a reconnect from previous RM, cleanup 
-	// all in-memory data and resync with RM. 
+	// Register a new RM, if it is a reconnect from previous RM, cleanup
+	// all in-memory data and resync with RM.
 	RegisterResourceManager(request *si.RegisterResourceManagerRequest, callback ResourceManagerCallback) (*si.RegisterResourceManagerResponse, error)
 
-	// Update Scheduler status (including node status update, allocation request 
-	// updates, etc. 
-	Update(request *si.UpdateRequest) error
+	// Update allocation request
+	UpdateAllocation(request *si.AllocationRequest) error
 
-	// Notify scheduler to reload configuration and hot-refresh in-memory state based on configuration changes 
-	ReloadConfiguration(clusterID string) error
+	// Update application request
+	UpdateApplication(request *si.ApplicationRequest) error
+
+	// Update node info
+	UpdateNode(request *si.NodeRequest) error
+
+	// Notify scheduler to reload configuration and hot-refresh in-memory state based on configuration changes
+	UpdateConfiguration(clusterID string) error
 }
 
 // RM side needs to implement this API
 type ResourceManagerCallback interface {
-	RecvUpdateResponse(response *si.UpdateResponse) error
+
+	//Receive Allocation Update Response
+	UpdateAllocation(response *si.AllocationResponse) error
+
+	//Receive Application Update Response
+	UpdateApplication(response *si.ApplicationResponse) error
+
+	//Receive Node Update Response
+	UpdateNode(response *si.NodeResponse) error
+
+	// Run a certain set of predicate functions to determine if a proposed allocation
+	// can be allocated onto a node.
+	Predicates(args *si.PredicatesArgs) error
+
+	// RM side implements this API when it can provide plugin for reconciling
+	// Re-sync scheduler cache can sync some in-cache (yunikorn-core side) state changes
+	// to scheduler cache (shim-side), such as assumed allocations.
+	ReSyncSchedulerCache(args *si.ReSyncSchedulerCacheArgs) error
+
+	// This plugin is responsible for transmitting events to the shim side.
+	// Events can be further exposed from the shim.
+	SendEvent(events []*si.EventRecord)
+
+	// Scheduler core can update container scheduling state to the RM,
+	// the shim side can determine what to do incorporate with the scheduling state
+
+	// update container scheduling state to the shim side
+	// this might be called even the container scheduling state is unchanged
+	// the shim side cannot assume to only receive updates on state changes
+	// the shim side implementation must be thread safe
+	UpdateContainerSchedulingState(request *si.UpdateContainerSchedulingStateRequest)
+
+	// Update configuration
+	UpdateConfiguration(args *si.UpdateConfigurationRequest) *si.UpdateConfigurationResponse
 }
 ```
 
@@ -201,78 +248,69 @@ message RegisterResourceManagerResponse {
 Below is overview of how scheduler/RM keep connection and updates.
 
 ```protobuf
-message UpdateRequest {
+message AllocationRequest {
   // New allocation requests or replace existing allocation request (if allocationID is same)
   repeated AllocationAsk asks = 1;
 
   // Allocations can be released.
   AllocationReleasesRequest releases = 2;
 
-  // New node can be scheduled. If a node is notified to be "unscheduable", it needs to be part of this field as well.
-  repeated NewNodeInfo newSchedulableNodes = 3;
-
-  // Update nodes for existing schedulable nodes.
-  // May include:
-  // - Node resource changes. (Like grows/shrinks node resource)
-  // - Node attribute changes. (Including node-partition concept like YARN, and concept like "local images".
-  //
-  // Should not include:
-  // - Allocation-related changes with the node.
-  // - Realtime Utilizations.
-  repeated UpdateNodeInfo updatedNodes = 4;
-
   // ID of RM, this will be used to identify which RM of the request comes from.
-  string rmID = 5;
-
-  // RM should explicitly add application when allocation request also explictly belongs to application.
-  // This is optional if allocation request doesn't belong to a application. (Independent allocation)
-  repeated AddApplicationRequest newApplications = 6;
-
-  // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
-  repeated RemoveApplicationRequest removeApplications = 7;
+  string rmID = 3;
 }
 
-message UpdateResponse {
-  // Scheduler can send action to RM.
-  enum ActionFromScheduler {
-    // Nothing needs to do
-    NOACTION = 0;
+message ApplicationRequest {
+  // RM should explicitly add application when allocation request also explictly belongs to application.
+  // This is optional if allocation request doesn't belong to a application. (Independent allocation)
+  repeated AddApplicationRequest new = 1;
 
-    // Something is wrong, RM needs to stop the RM, and re-register with scheduler.
-    RESYNC = 1;
-  }
+  // RM can also remove applications, all allocation/allocation requests associated with the application will be removed
+  repeated RemoveApplicationRequest remove = 2;
 
-  // What RM needs to do, scheduler can send control code to RM when something goes wrong.
-  // Don't use/expand this field for other general purposed actions. (Like kill a remote container process).
-  ActionFromScheduler action = 1;
+  // ID of RM, this will be used to identify which RM of the request comes from.
+  string rmID = 3;
+}
 
+message NodeRequest {
+  // New node can be scheduled. If a node is notified to be "unscheduable", it needs to be part of this field as well.
+  repeated NodeInfo nodes = 1;
+
+  // ID of RM, this will be used to identify which RM of the request comes from.
+  string rmID = 2;
+}
+
+message AllocationResponse {
   // New allocations
-  repeated Allocation newAllocations = 2;
+  repeated Allocation new = 1;
 
   // Released allocations, this could be either ack from scheduler when RM asks to terminate some allocations.
   // Or it could be decision made by scheduler (such as preemption or timeout).
-  repeated AllocationRelease releasedAllocations = 3;
+  repeated AllocationRelease released = 2;
 
   // Released allocation asks(placeholder), when the placeholder allocation times out
-  repeated AllocationAskRelease releasedAllocationAsks = 4;
+  repeated AllocationAskRelease releasedAsks = 3;
 
   // Rejected allocation requests
-  repeated RejectedAllocationAsk rejectedAllocations = 5;
+  repeated RejectedAllocationAsk rejected = 4;
+}
 
+message ApplicationResponse {
   // Rejected Applications
-  repeated RejectedApplication rejectedApplications = 6;
+  repeated RejectedApplication rejected = 1;
 
   // Accepted Applications
-  repeated AcceptedApplication acceptedApplications = 7;
+  repeated AcceptedApplication accepted = 2;
 
   // Updated Applications
-  repeated UpdatedApplication updatedApplications = 8;
+  repeated UpdatedApplication updated = 3;
+}
 
+message NodeResponse {
   // Rejected Node Registrations
-  repeated RejectedNode rejectedNodes = 9;
+  repeated RejectedNode rejected = 1;
 
   // Accepted Node Registrations
-  repeated AcceptedNode acceptedNodes = 10;
+  repeated AcceptedNode accepted = 2;
 }
 
 message UpdatedApplication {
@@ -386,7 +424,7 @@ message AllocationAsk {
   // Allocation key is used by both of scheduler and RM to track allocations.
   // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerID of YARN).
   // Allocations from the same AllocationAsk which are returned to the RM at the same time will have the same allocationKey.
-  // The request is considered an update of the existing AllocationAsk if an ALlocationAsk with the same allocationKey 
+  // The request is considered an update of the existing AllocationAsk if an ALlocationAsk with the same allocationKey
   // already exists.
   string allocationKey = 1;
   // The application ID this allocation ask belongs to
@@ -450,7 +488,7 @@ message RemoveApplicationRequest {
 ```
 
 User information:
-The user that owns the application. Group information can be empty. If the group information is empty the groups will be resolved by the scheduler when needed. 
+The user that owns the application. Group information can be empty. If the group information is empty the groups will be resolved by the scheduler when needed.
 ```protobuf
 message UserGroupInformation {
   // the user name
@@ -505,15 +543,16 @@ message AllocationReleasesRequest {
 }
 
 enum TerminationType {
-    STOPPED_BY_RM = 0;          // Stopped or killed by ResourceManager (created by RM)
-    TIMEOUT = 1;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
-    PREEMPTED_BY_SCHEDULER = 2; // Preempted allocation by scheduler (created by core)
-    PLACEHOLDER_REPLACED = 3;   // Placeholder allocation replaced by real allocation (created by core)
+    UNKNOWN_TERMINATION_TYPE = 0;//TerminationType not set
+    STOPPED_BY_RM = 1;          // Stopped or killed by ResourceManager (created by RM)
+    TIMEOUT = 2;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
+    PREEMPTED_BY_SCHEDULER = 3; // Preempted allocation by scheduler (created by core)
+    PLACEHOLDER_REPLACED = 4;   // Placeholder allocation replaced by real allocation (created by core)
 }
 
 // Release allocation: this is a bidirectional message. The Terminationtype defines the origin, or creator,
 // as per the comment. The confirmation or response from the receiver is the same message with the same
-// termination type set.  
+// termination type set.
 message AllocationRelease {
 
   // The name of the partition the allocation belongs to
@@ -563,54 +602,53 @@ State transition of node:
 
 See protocol below:
 
-Registration of a new node with the scheduler. If the node exists then the request will be rejected.
+During new node registration with the scheduler, request will be rejected if the node exist already.
+While updating registered node with the scheduler, request will fail if the node doesn't exist.
 ```protobuf
-message NewNodeInfo {
-  // ID of node, must be unique
-  string nodeID = 1;
-  // node attributes
-  map<string, string> attributes = 2;
-  // Schedulable Resource
-  Resource schedulableResource = 3;
-  // Occupied Resource
-  Resource occupiedResource = 4;
-  // Allocated resources, this will be added when node registered to RM (recovery)
-  repeated Allocation existingAllocations = 5;
-}
-```
-
-Update of a registered node with the scheduler. If the node does not exist the update will fail.
-```protobuf
-message UpdateNodeInfo {
+message NodeInfo {
   // Action from RM
   enum ActionFromRM {
+
+    //ActionFromRM not set
+    UNKNOWN_ACTION_FROM_RM = 0;
+
+    // Create Node
+    CREATE = 1;
+
     // Update node resources, attributes.
-    UPDATE = 0;
+    UPDATE = 2;
 
     // Do not allocate new allocations on the node.
-    DRAIN_NODE = 1;
+    DRAIN_NODE = 3;
 
     // Decomission node, it will immediately stop allocations on the node and
     // remove the node from schedulable lists.
-    DECOMISSION = 2;
+    DECOMISSION = 4;
 
     // From Draining state to SCHEDULABLE state.
     // If node is not in draining state, error will be thrown
-    DRAIN_TO_SCHEDULABLE = 3;
+    DRAIN_TO_SCHEDULABLE = 5;
   }
 
   // ID of node, the node must exist to be updated
   string nodeID = 1;
+
+  // Action to perform by the scheduler
+  ActionFromRM action = 2;
+
   // New attributes of node, which will replace previously reported attribute.
-  map<string, string> attributes = 2;
+  map<string, string> attributes = 3;
+
   // new schedulable resource, scheduler may preempt allocations on the
   // node or schedule more allocations accordingly.
-  Resource schedulableResource = 3;
+  Resource schedulableResource = 4;
+
   // when the scheduler is co-exist with some other schedulers, some node
   // resources might be occupied (allocated) by other schedulers.
-  Resource occupiedResource = 4;
-  // Action to perform by the scheduler
-  ActionFromRM action = 5;
+  Resource occupiedResource = 5;
+
+  // Allocated resources, this will be added when node registered to RM (recovery)
+  repeated Allocation existingAllocations = 6;
 }
 ```
 
@@ -717,20 +755,22 @@ message ForgotAllocation {
 message UpdateContainerSchedulingStateRequest {
    // container scheduling states
    enum SchedulingState {
+     //SchedulingState not set
+     UNKNOWN_SCHEDULING_STATE = 0;
      // the container is being skipped by the scheduler
-     SKIPPED = 0;
+     SKIPPED = 1;
      // the container is scheduled and it has been assigned to a node
-     SCHEDULED = 1;
+     SCHEDULED = 2;
      // the container is reserved on some node, but not yet assigned
-     RESERVED = 2;
+     RESERVED = 3;
      // scheduler has visited all candidate nodes for this container
      // but non of them could satisfy this container's requirement
-     FAILED = 3;
+     FAILED = 4;
    }
 
    // application ID
    string applicartionID = 1;
-   
+
    // allocation key used to identify a container.
    string allocationKey = 2;
 
@@ -749,10 +789,10 @@ message UpdateConfigurationRequest {
 message UpdateConfigurationResponse {
     // flag that marks the config update success or failure
     bool success = 1;
-    
+
     // the old configuration what was changed
     string oldConfig = 2;
-    
+
     // reason in case of failure
     string reason = 3;
 }
@@ -767,10 +807,12 @@ An `EventRecord` consists of the following fields:
 ```protobuf
 message EventRecord {
    enum Type {
-      REQUEST = 0;
-      APP = 1;
-      NODE = 2;
-      QUEUE = 3;
+      //EventRecord Type not set
+      UNKNOWN_EVENTRECORD_TYPE = 0;
+      REQUEST = 1;
+      APP = 2;
+      NODE = 3;
+      QUEUE = 4;
    }
 
    // the type of the object associated with the event
@@ -788,4 +830,3 @@ message EventRecord {
    int64 timestampNano = 6;
 }
 ```
-

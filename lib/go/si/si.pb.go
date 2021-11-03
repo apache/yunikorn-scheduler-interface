@@ -27,156 +27,149 @@ const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 type TerminationType int32
 
 const (
-	TerminationType_STOPPED_BY_RM          TerminationType = 0
-	TerminationType_TIMEOUT                TerminationType = 1
-	TerminationType_PREEMPTED_BY_SCHEDULER TerminationType = 2
-	TerminationType_PLACEHOLDER_REPLACED   TerminationType = 3
+	TerminationType_UNKNOWN_TERMINATION_TYPE TerminationType = 0
+	TerminationType_STOPPED_BY_RM            TerminationType = 1
+	TerminationType_TIMEOUT                  TerminationType = 2
+	TerminationType_PREEMPTED_BY_SCHEDULER   TerminationType = 3
+	TerminationType_PLACEHOLDER_REPLACED     TerminationType = 4
 )
 
 var TerminationType_name = map[int32]string{
-	0: "STOPPED_BY_RM",
-	1: "TIMEOUT",
-	2: "PREEMPTED_BY_SCHEDULER",
-	3: "PLACEHOLDER_REPLACED",
+	0: "UNKNOWN_TERMINATION_TYPE",
+	1: "STOPPED_BY_RM",
+	2: "TIMEOUT",
+	3: "PREEMPTED_BY_SCHEDULER",
+	4: "PLACEHOLDER_REPLACED",
 }
 var TerminationType_value = map[string]int32{
-	"STOPPED_BY_RM":          0,
-	"TIMEOUT":                1,
-	"PREEMPTED_BY_SCHEDULER": 2,
-	"PLACEHOLDER_REPLACED":   3,
+	"UNKNOWN_TERMINATION_TYPE": 0,
+	"STOPPED_BY_RM":            1,
+	"TIMEOUT":                  2,
+	"PREEMPTED_BY_SCHEDULER":   3,
+	"PLACEHOLDER_REPLACED":     4,
 }
 
 func (x TerminationType) String() string {
 	return proto.EnumName(TerminationType_name, int32(x))
 }
 func (TerminationType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{0}
-}
-
-// Scheduler can send action to RM.
-type UpdateResponse_ActionFromScheduler int32
-
-const (
-	// Nothing needs to do
-	UpdateResponse_NOACTION UpdateResponse_ActionFromScheduler = 0
-	// Something is wrong, RM needs to stop the RM, and re-register with scheduler.
-	UpdateResponse_RESYNC UpdateResponse_ActionFromScheduler = 1
-)
-
-var UpdateResponse_ActionFromScheduler_name = map[int32]string{
-	0: "NOACTION",
-	1: "RESYNC",
-}
-var UpdateResponse_ActionFromScheduler_value = map[string]int32{
-	"NOACTION": 0,
-	"RESYNC":   1,
-}
-
-func (x UpdateResponse_ActionFromScheduler) String() string {
-	return proto.EnumName(UpdateResponse_ActionFromScheduler_name, int32(x))
-}
-func (UpdateResponse_ActionFromScheduler) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{3, 0}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{0}
 }
 
 // Action from RM
-type UpdateNodeInfo_ActionFromRM int32
+type NodeInfo_ActionFromRM int32
 
 const (
+	// ActionFromRM not set
+	NodeInfo_UNKNOWN_ACTION_FROM_RM NodeInfo_ActionFromRM = 0
+	// Create Node
+	NodeInfo_CREATE NodeInfo_ActionFromRM = 1
 	// Update node resources, attributes.
-	UpdateNodeInfo_UPDATE UpdateNodeInfo_ActionFromRM = 0
+	NodeInfo_UPDATE NodeInfo_ActionFromRM = 2
 	// Do not allocate new allocations on the node.
-	UpdateNodeInfo_DRAIN_NODE UpdateNodeInfo_ActionFromRM = 1
+	NodeInfo_DRAIN_NODE NodeInfo_ActionFromRM = 3
 	// Decomission node, it will immediately stop allocations on the node and
 	// remove the node from schedulable lists.
-	UpdateNodeInfo_DECOMISSION UpdateNodeInfo_ActionFromRM = 2
+	NodeInfo_DECOMISSION NodeInfo_ActionFromRM = 4
 	// From Draining state to SCHEDULABLE state.
 	// If node is not in draining state, error will be thrown
-	UpdateNodeInfo_DRAIN_TO_SCHEDULABLE UpdateNodeInfo_ActionFromRM = 3
+	NodeInfo_DRAIN_TO_SCHEDULABLE NodeInfo_ActionFromRM = 5
 )
 
-var UpdateNodeInfo_ActionFromRM_name = map[int32]string{
-	0: "UPDATE",
-	1: "DRAIN_NODE",
-	2: "DECOMISSION",
-	3: "DRAIN_TO_SCHEDULABLE",
+var NodeInfo_ActionFromRM_name = map[int32]string{
+	0: "UNKNOWN_ACTION_FROM_RM",
+	1: "CREATE",
+	2: "UPDATE",
+	3: "DRAIN_NODE",
+	4: "DECOMISSION",
+	5: "DRAIN_TO_SCHEDULABLE",
 }
-var UpdateNodeInfo_ActionFromRM_value = map[string]int32{
-	"UPDATE":               0,
-	"DRAIN_NODE":           1,
-	"DECOMISSION":          2,
-	"DRAIN_TO_SCHEDULABLE": 3,
+var NodeInfo_ActionFromRM_value = map[string]int32{
+	"UNKNOWN_ACTION_FROM_RM": 0,
+	"CREATE":                 1,
+	"UPDATE":                 2,
+	"DRAIN_NODE":             3,
+	"DECOMISSION":            4,
+	"DRAIN_TO_SCHEDULABLE":   5,
 }
 
-func (x UpdateNodeInfo_ActionFromRM) String() string {
-	return proto.EnumName(UpdateNodeInfo_ActionFromRM_name, int32(x))
+func (x NodeInfo_ActionFromRM) String() string {
+	return proto.EnumName(NodeInfo_ActionFromRM_name, int32(x))
 }
-func (UpdateNodeInfo_ActionFromRM) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{21, 0}
+func (NodeInfo_ActionFromRM) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{24, 0}
 }
 
 // container scheduling states
 type UpdateContainerSchedulingStateRequest_SchedulingState int32
 
 const (
+	// SchedulingState not set
+	UpdateContainerSchedulingStateRequest_UNKNOWN_SCHEDULING_STATE UpdateContainerSchedulingStateRequest_SchedulingState = 0
 	// the container is being skipped by the scheduler
-	UpdateContainerSchedulingStateRequest_SKIPPED UpdateContainerSchedulingStateRequest_SchedulingState = 0
+	UpdateContainerSchedulingStateRequest_SKIPPED UpdateContainerSchedulingStateRequest_SchedulingState = 1
 	// the container is scheduled and it has been assigned to a node
-	UpdateContainerSchedulingStateRequest_SCHEDULED UpdateContainerSchedulingStateRequest_SchedulingState = 1
+	UpdateContainerSchedulingStateRequest_SCHEDULED UpdateContainerSchedulingStateRequest_SchedulingState = 2
 	// the container is reserved on some node, but not yet assigned
-	UpdateContainerSchedulingStateRequest_RESERVED UpdateContainerSchedulingStateRequest_SchedulingState = 2
+	UpdateContainerSchedulingStateRequest_RESERVED UpdateContainerSchedulingStateRequest_SchedulingState = 3
 	// scheduler has visited all candidate nodes for this container
 	// but non of them could satisfy this container's requirement
-	UpdateContainerSchedulingStateRequest_FAILED UpdateContainerSchedulingStateRequest_SchedulingState = 3
+	UpdateContainerSchedulingStateRequest_FAILED UpdateContainerSchedulingStateRequest_SchedulingState = 4
 )
 
 var UpdateContainerSchedulingStateRequest_SchedulingState_name = map[int32]string{
-	0: "SKIPPED",
-	1: "SCHEDULED",
-	2: "RESERVED",
-	3: "FAILED",
+	0: "UNKNOWN_SCHEDULING_STATE",
+	1: "SKIPPED",
+	2: "SCHEDULED",
+	3: "RESERVED",
+	4: "FAILED",
 }
 var UpdateContainerSchedulingStateRequest_SchedulingState_value = map[string]int32{
-	"SKIPPED":   0,
-	"SCHEDULED": 1,
-	"RESERVED":  2,
-	"FAILED":    3,
+	"UNKNOWN_SCHEDULING_STATE": 0,
+	"SKIPPED":                  1,
+	"SCHEDULED":                2,
+	"RESERVED":                 3,
+	"FAILED":                   4,
 }
 
 func (x UpdateContainerSchedulingStateRequest_SchedulingState) String() string {
 	return proto.EnumName(UpdateContainerSchedulingStateRequest_SchedulingState_name, int32(x))
 }
 func (UpdateContainerSchedulingStateRequest_SchedulingState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{27, 0}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{30, 0}
 }
 
 type EventRecord_Type int32
 
 const (
-	EventRecord_REQUEST EventRecord_Type = 0
-	EventRecord_APP     EventRecord_Type = 1
-	EventRecord_NODE    EventRecord_Type = 2
-	EventRecord_QUEUE   EventRecord_Type = 3
+	// EventRecord Type not set
+	EventRecord_UNKNOWN_EVENTRECORD_TYPE EventRecord_Type = 0
+	EventRecord_REQUEST                  EventRecord_Type = 1
+	EventRecord_APP                      EventRecord_Type = 2
+	EventRecord_NODE                     EventRecord_Type = 3
+	EventRecord_QUEUE                    EventRecord_Type = 4
 )
 
 var EventRecord_Type_name = map[int32]string{
-	0: "REQUEST",
-	1: "APP",
-	2: "NODE",
-	3: "QUEUE",
+	0: "UNKNOWN_EVENTRECORD_TYPE",
+	1: "REQUEST",
+	2: "APP",
+	3: "NODE",
+	4: "QUEUE",
 }
 var EventRecord_Type_value = map[string]int32{
-	"REQUEST": 0,
-	"APP":     1,
-	"NODE":    2,
-	"QUEUE":   3,
+	"UNKNOWN_EVENTRECORD_TYPE": 0,
+	"REQUEST":                  1,
+	"APP":                      2,
+	"NODE":                     3,
+	"QUEUE":                    4,
 }
 
 func (x EventRecord_Type) String() string {
 	return proto.EnumName(EventRecord_Type_name, int32(x))
 }
 func (EventRecord_Type) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{30, 0}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{33, 0}
 }
 
 //
@@ -201,7 +194,7 @@ func (m *RegisterResourceManagerRequest) Reset()         { *m = RegisterResource
 func (m *RegisterResourceManagerRequest) String() string { return proto.CompactTextString(m) }
 func (*RegisterResourceManagerRequest) ProtoMessage()    {}
 func (*RegisterResourceManagerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{0}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{0}
 }
 func (m *RegisterResourceManagerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RegisterResourceManagerRequest.Unmarshal(m, b)
@@ -253,7 +246,7 @@ func (m *RegisterResourceManagerResponse) Reset()         { *m = RegisterResourc
 func (m *RegisterResourceManagerResponse) String() string { return proto.CompactTextString(m) }
 func (*RegisterResourceManagerResponse) ProtoMessage()    {}
 func (*RegisterResourceManagerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{1}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{1}
 }
 func (m *RegisterResourceManagerResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RegisterResourceManagerResponse.Unmarshal(m, b)
@@ -273,225 +266,337 @@ func (m *RegisterResourceManagerResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RegisterResourceManagerResponse proto.InternalMessageInfo
 
-type UpdateRequest struct {
+type AllocationRequest struct {
 	// New allocation requests or replace existing allocation request (if allocationID is same)
 	Asks []*AllocationAsk `protobuf:"bytes,1,rep,name=asks,proto3" json:"asks,omitempty"`
 	// Allocations can be released.
 	Releases *AllocationReleasesRequest `protobuf:"bytes,2,opt,name=releases,proto3" json:"releases,omitempty"`
-	// New node can be scheduled. If a node is notified to be "unscheduable", it needs to be part of this field as well.
-	NewSchedulableNodes []*NewNodeInfo `protobuf:"bytes,3,rep,name=newSchedulableNodes,proto3" json:"newSchedulableNodes,omitempty"`
-	// Update nodes for existing schedulable nodes.
-	// May include:
-	// - Node resource changes. (Like grows/shrinks node resource)
-	// - Node attribute changes. (Including node-partition concept like YARN, and concept like "local images".
-	//
-	// Should not include:
-	// - Allocation-related changes with the node.
-	// - Realtime Utilizations.
-	UpdatedNodes []*UpdateNodeInfo `protobuf:"bytes,4,rep,name=updatedNodes,proto3" json:"updatedNodes,omitempty"`
 	// ID of RM, this will be used to identify which RM of the request comes from.
-	RmID string `protobuf:"bytes,5,opt,name=rmID,proto3" json:"rmID,omitempty"`
-	// RM should explicitly add application when allocation request also explictly belongs to application.
-	// This is optional if allocation request doesn't belong to a application. (Independent allocation)
-	NewApplications []*AddApplicationRequest `protobuf:"bytes,6,rep,name=newApplications,proto3" json:"newApplications,omitempty"`
-	// RM can also remove applications, all allocation/allocation requests associated with the application will be removed
-	RemoveApplications   []*RemoveApplicationRequest `protobuf:"bytes,7,rep,name=removeApplications,proto3" json:"removeApplications,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
-	XXX_unrecognized     []byte                      `json:"-"`
-	XXX_sizecache        int32                       `json:"-"`
+	RmID                 string   `protobuf:"bytes,3,opt,name=rmID,proto3" json:"rmID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *UpdateRequest) Reset()         { *m = UpdateRequest{} }
-func (m *UpdateRequest) String() string { return proto.CompactTextString(m) }
-func (*UpdateRequest) ProtoMessage()    {}
-func (*UpdateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{2}
+func (m *AllocationRequest) Reset()         { *m = AllocationRequest{} }
+func (m *AllocationRequest) String() string { return proto.CompactTextString(m) }
+func (*AllocationRequest) ProtoMessage()    {}
+func (*AllocationRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{2}
 }
-func (m *UpdateRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateRequest.Unmarshal(m, b)
+func (m *AllocationRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AllocationRequest.Unmarshal(m, b)
 }
-func (m *UpdateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateRequest.Marshal(b, m, deterministic)
+func (m *AllocationRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AllocationRequest.Marshal(b, m, deterministic)
 }
-func (dst *UpdateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UpdateRequest.Merge(dst, src)
+func (dst *AllocationRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AllocationRequest.Merge(dst, src)
 }
-func (m *UpdateRequest) XXX_Size() int {
-	return xxx_messageInfo_UpdateRequest.Size(m)
+func (m *AllocationRequest) XXX_Size() int {
+	return xxx_messageInfo_AllocationRequest.Size(m)
 }
-func (m *UpdateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_UpdateRequest.DiscardUnknown(m)
+func (m *AllocationRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AllocationRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_UpdateRequest proto.InternalMessageInfo
+var xxx_messageInfo_AllocationRequest proto.InternalMessageInfo
 
-func (m *UpdateRequest) GetAsks() []*AllocationAsk {
+func (m *AllocationRequest) GetAsks() []*AllocationAsk {
 	if m != nil {
 		return m.Asks
 	}
 	return nil
 }
 
-func (m *UpdateRequest) GetReleases() *AllocationReleasesRequest {
+func (m *AllocationRequest) GetReleases() *AllocationReleasesRequest {
 	if m != nil {
 		return m.Releases
 	}
 	return nil
 }
 
-func (m *UpdateRequest) GetNewSchedulableNodes() []*NewNodeInfo {
-	if m != nil {
-		return m.NewSchedulableNodes
-	}
-	return nil
-}
-
-func (m *UpdateRequest) GetUpdatedNodes() []*UpdateNodeInfo {
-	if m != nil {
-		return m.UpdatedNodes
-	}
-	return nil
-}
-
-func (m *UpdateRequest) GetRmID() string {
+func (m *AllocationRequest) GetRmID() string {
 	if m != nil {
 		return m.RmID
 	}
 	return ""
 }
 
-func (m *UpdateRequest) GetNewApplications() []*AddApplicationRequest {
+type ApplicationRequest struct {
+	// RM should explicitly add application when allocation request also explictly belongs to application.
+	// This is optional if allocation request doesn't belong to a application. (Independent allocation)
+	New []*AddApplicationRequest `protobuf:"bytes,1,rep,name=new,proto3" json:"new,omitempty"`
+	// RM can also remove applications, all allocation/allocation requests associated with the application will be removed
+	Remove []*RemoveApplicationRequest `protobuf:"bytes,2,rep,name=remove,proto3" json:"remove,omitempty"`
+	// ID of RM, this will be used to identify which RM of the request comes from.
+	RmID                 string   `protobuf:"bytes,3,opt,name=rmID,proto3" json:"rmID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ApplicationRequest) Reset()         { *m = ApplicationRequest{} }
+func (m *ApplicationRequest) String() string { return proto.CompactTextString(m) }
+func (*ApplicationRequest) ProtoMessage()    {}
+func (*ApplicationRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{3}
+}
+func (m *ApplicationRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ApplicationRequest.Unmarshal(m, b)
+}
+func (m *ApplicationRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ApplicationRequest.Marshal(b, m, deterministic)
+}
+func (dst *ApplicationRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApplicationRequest.Merge(dst, src)
+}
+func (m *ApplicationRequest) XXX_Size() int {
+	return xxx_messageInfo_ApplicationRequest.Size(m)
+}
+func (m *ApplicationRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApplicationRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ApplicationRequest proto.InternalMessageInfo
+
+func (m *ApplicationRequest) GetNew() []*AddApplicationRequest {
 	if m != nil {
-		return m.NewApplications
+		return m.New
 	}
 	return nil
 }
 
-func (m *UpdateRequest) GetRemoveApplications() []*RemoveApplicationRequest {
+func (m *ApplicationRequest) GetRemove() []*RemoveApplicationRequest {
 	if m != nil {
-		return m.RemoveApplications
+		return m.Remove
 	}
 	return nil
 }
 
-type UpdateResponse struct {
-	// What RM needs to do, scheduler can send control code to RM when something goes wrong.
-	// Don't use/expand this field for other general purposed actions. (Like kill a remote container process).
-	Action UpdateResponse_ActionFromScheduler `protobuf:"varint,1,opt,name=action,proto3,enum=si.v1.UpdateResponse_ActionFromScheduler" json:"action,omitempty"`
+func (m *ApplicationRequest) GetRmID() string {
+	if m != nil {
+		return m.RmID
+	}
+	return ""
+}
+
+type NodeRequest struct {
+	// New node can be scheduled. If a node is notified to be "unscheduable", it needs to be part of this field as well.
+	Nodes []*NodeInfo `protobuf:"bytes,1,rep,name=nodes,proto3" json:"nodes,omitempty"`
+	// ID of RM, this will be used to identify which RM of the request comes from.
+	RmID                 string   `protobuf:"bytes,2,opt,name=rmID,proto3" json:"rmID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *NodeRequest) Reset()         { *m = NodeRequest{} }
+func (m *NodeRequest) String() string { return proto.CompactTextString(m) }
+func (*NodeRequest) ProtoMessage()    {}
+func (*NodeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{4}
+}
+func (m *NodeRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NodeRequest.Unmarshal(m, b)
+}
+func (m *NodeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NodeRequest.Marshal(b, m, deterministic)
+}
+func (dst *NodeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NodeRequest.Merge(dst, src)
+}
+func (m *NodeRequest) XXX_Size() int {
+	return xxx_messageInfo_NodeRequest.Size(m)
+}
+func (m *NodeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NodeRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NodeRequest proto.InternalMessageInfo
+
+func (m *NodeRequest) GetNodes() []*NodeInfo {
+	if m != nil {
+		return m.Nodes
+	}
+	return nil
+}
+
+func (m *NodeRequest) GetRmID() string {
+	if m != nil {
+		return m.RmID
+	}
+	return ""
+}
+
+type AllocationResponse struct {
 	// New allocations
-	NewAllocations []*Allocation `protobuf:"bytes,2,rep,name=newAllocations,proto3" json:"newAllocations,omitempty"`
+	New []*Allocation `protobuf:"bytes,1,rep,name=new,proto3" json:"new,omitempty"`
 	// Released allocations, this could be either ack from scheduler when RM asks to terminate some allocations.
 	// Or it could be decision made by scheduler (such as preemption or timeout).
-	ReleasedAllocations []*AllocationRelease `protobuf:"bytes,3,rep,name=releasedAllocations,proto3" json:"releasedAllocations,omitempty"`
+	Released []*AllocationRelease `protobuf:"bytes,2,rep,name=released,proto3" json:"released,omitempty"`
 	// Released allocation asks(placeholder), when the placeholder allocation times out
-	ReleasedAllocationAsks []*AllocationAskRelease `protobuf:"bytes,4,rep,name=releasedAllocationAsks,proto3" json:"releasedAllocationAsks,omitempty"`
+	ReleasedAsks []*AllocationAskRelease `protobuf:"bytes,3,rep,name=releasedAsks,proto3" json:"releasedAsks,omitempty"`
 	// Rejected allocation requests
-	RejectedAllocations []*RejectedAllocationAsk `protobuf:"bytes,5,rep,name=rejectedAllocations,proto3" json:"rejectedAllocations,omitempty"`
+	Rejected             []*RejectedAllocationAsk `protobuf:"bytes,4,rep,name=rejected,proto3" json:"rejected,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
+	XXX_unrecognized     []byte                   `json:"-"`
+	XXX_sizecache        int32                    `json:"-"`
+}
+
+func (m *AllocationResponse) Reset()         { *m = AllocationResponse{} }
+func (m *AllocationResponse) String() string { return proto.CompactTextString(m) }
+func (*AllocationResponse) ProtoMessage()    {}
+func (*AllocationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{5}
+}
+func (m *AllocationResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AllocationResponse.Unmarshal(m, b)
+}
+func (m *AllocationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AllocationResponse.Marshal(b, m, deterministic)
+}
+func (dst *AllocationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AllocationResponse.Merge(dst, src)
+}
+func (m *AllocationResponse) XXX_Size() int {
+	return xxx_messageInfo_AllocationResponse.Size(m)
+}
+func (m *AllocationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AllocationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AllocationResponse proto.InternalMessageInfo
+
+func (m *AllocationResponse) GetNew() []*Allocation {
+	if m != nil {
+		return m.New
+	}
+	return nil
+}
+
+func (m *AllocationResponse) GetReleased() []*AllocationRelease {
+	if m != nil {
+		return m.Released
+	}
+	return nil
+}
+
+func (m *AllocationResponse) GetReleasedAsks() []*AllocationAskRelease {
+	if m != nil {
+		return m.ReleasedAsks
+	}
+	return nil
+}
+
+func (m *AllocationResponse) GetRejected() []*RejectedAllocationAsk {
+	if m != nil {
+		return m.Rejected
+	}
+	return nil
+}
+
+type ApplicationResponse struct {
 	// Rejected Applications
-	RejectedApplications []*RejectedApplication `protobuf:"bytes,6,rep,name=rejectedApplications,proto3" json:"rejectedApplications,omitempty"`
+	Rejected []*RejectedApplication `protobuf:"bytes,1,rep,name=rejected,proto3" json:"rejected,omitempty"`
 	// Accepted Applications
-	AcceptedApplications []*AcceptedApplication `protobuf:"bytes,7,rep,name=acceptedApplications,proto3" json:"acceptedApplications,omitempty"`
+	Accepted []*AcceptedApplication `protobuf:"bytes,2,rep,name=accepted,proto3" json:"accepted,omitempty"`
 	// Updated Applications
-	UpdatedApplications []*UpdatedApplication `protobuf:"bytes,8,rep,name=updatedApplications,proto3" json:"updatedApplications,omitempty"`
+	Updated              []*UpdatedApplication `protobuf:"bytes,3,rep,name=updated,proto3" json:"updated,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
+	XXX_unrecognized     []byte                `json:"-"`
+	XXX_sizecache        int32                 `json:"-"`
+}
+
+func (m *ApplicationResponse) Reset()         { *m = ApplicationResponse{} }
+func (m *ApplicationResponse) String() string { return proto.CompactTextString(m) }
+func (*ApplicationResponse) ProtoMessage()    {}
+func (*ApplicationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{6}
+}
+func (m *ApplicationResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ApplicationResponse.Unmarshal(m, b)
+}
+func (m *ApplicationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ApplicationResponse.Marshal(b, m, deterministic)
+}
+func (dst *ApplicationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ApplicationResponse.Merge(dst, src)
+}
+func (m *ApplicationResponse) XXX_Size() int {
+	return xxx_messageInfo_ApplicationResponse.Size(m)
+}
+func (m *ApplicationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ApplicationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ApplicationResponse proto.InternalMessageInfo
+
+func (m *ApplicationResponse) GetRejected() []*RejectedApplication {
+	if m != nil {
+		return m.Rejected
+	}
+	return nil
+}
+
+func (m *ApplicationResponse) GetAccepted() []*AcceptedApplication {
+	if m != nil {
+		return m.Accepted
+	}
+	return nil
+}
+
+func (m *ApplicationResponse) GetUpdated() []*UpdatedApplication {
+	if m != nil {
+		return m.Updated
+	}
+	return nil
+}
+
+type NodeResponse struct {
 	// Rejected Node Registrations
-	RejectedNodes []*RejectedNode `protobuf:"bytes,9,rep,name=rejectedNodes,proto3" json:"rejectedNodes,omitempty"`
+	Rejected []*RejectedNode `protobuf:"bytes,1,rep,name=rejected,proto3" json:"rejected,omitempty"`
 	// Accepted Node Registrations
-	AcceptedNodes        []*AcceptedNode `protobuf:"bytes,10,rep,name=acceptedNodes,proto3" json:"acceptedNodes,omitempty"`
+	Accepted             []*AcceptedNode `protobuf:"bytes,2,rep,name=accepted,proto3" json:"accepted,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
 	XXX_unrecognized     []byte          `json:"-"`
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *UpdateResponse) Reset()         { *m = UpdateResponse{} }
-func (m *UpdateResponse) String() string { return proto.CompactTextString(m) }
-func (*UpdateResponse) ProtoMessage()    {}
-func (*UpdateResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{3}
+func (m *NodeResponse) Reset()         { *m = NodeResponse{} }
+func (m *NodeResponse) String() string { return proto.CompactTextString(m) }
+func (*NodeResponse) ProtoMessage()    {}
+func (*NodeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{7}
 }
-func (m *UpdateResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateResponse.Unmarshal(m, b)
+func (m *NodeResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NodeResponse.Unmarshal(m, b)
 }
-func (m *UpdateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateResponse.Marshal(b, m, deterministic)
+func (m *NodeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NodeResponse.Marshal(b, m, deterministic)
 }
-func (dst *UpdateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UpdateResponse.Merge(dst, src)
+func (dst *NodeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NodeResponse.Merge(dst, src)
 }
-func (m *UpdateResponse) XXX_Size() int {
-	return xxx_messageInfo_UpdateResponse.Size(m)
+func (m *NodeResponse) XXX_Size() int {
+	return xxx_messageInfo_NodeResponse.Size(m)
 }
-func (m *UpdateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_UpdateResponse.DiscardUnknown(m)
+func (m *NodeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_NodeResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_UpdateResponse proto.InternalMessageInfo
+var xxx_messageInfo_NodeResponse proto.InternalMessageInfo
 
-func (m *UpdateResponse) GetAction() UpdateResponse_ActionFromScheduler {
+func (m *NodeResponse) GetRejected() []*RejectedNode {
 	if m != nil {
-		return m.Action
-	}
-	return UpdateResponse_NOACTION
-}
-
-func (m *UpdateResponse) GetNewAllocations() []*Allocation {
-	if m != nil {
-		return m.NewAllocations
+		return m.Rejected
 	}
 	return nil
 }
 
-func (m *UpdateResponse) GetReleasedAllocations() []*AllocationRelease {
+func (m *NodeResponse) GetAccepted() []*AcceptedNode {
 	if m != nil {
-		return m.ReleasedAllocations
-	}
-	return nil
-}
-
-func (m *UpdateResponse) GetReleasedAllocationAsks() []*AllocationAskRelease {
-	if m != nil {
-		return m.ReleasedAllocationAsks
-	}
-	return nil
-}
-
-func (m *UpdateResponse) GetRejectedAllocations() []*RejectedAllocationAsk {
-	if m != nil {
-		return m.RejectedAllocations
-	}
-	return nil
-}
-
-func (m *UpdateResponse) GetRejectedApplications() []*RejectedApplication {
-	if m != nil {
-		return m.RejectedApplications
-	}
-	return nil
-}
-
-func (m *UpdateResponse) GetAcceptedApplications() []*AcceptedApplication {
-	if m != nil {
-		return m.AcceptedApplications
-	}
-	return nil
-}
-
-func (m *UpdateResponse) GetUpdatedApplications() []*UpdatedApplication {
-	if m != nil {
-		return m.UpdatedApplications
-	}
-	return nil
-}
-
-func (m *UpdateResponse) GetRejectedNodes() []*RejectedNode {
-	if m != nil {
-		return m.RejectedNodes
-	}
-	return nil
-}
-
-func (m *UpdateResponse) GetAcceptedNodes() []*AcceptedNode {
-	if m != nil {
-		return m.AcceptedNodes
+		return m.Accepted
 	}
 	return nil
 }
@@ -514,7 +619,7 @@ func (m *UpdatedApplication) Reset()         { *m = UpdatedApplication{} }
 func (m *UpdatedApplication) String() string { return proto.CompactTextString(m) }
 func (*UpdatedApplication) ProtoMessage()    {}
 func (*UpdatedApplication) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{4}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{8}
 }
 func (m *UpdatedApplication) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdatedApplication.Unmarshal(m, b)
@@ -576,7 +681,7 @@ func (m *RejectedApplication) Reset()         { *m = RejectedApplication{} }
 func (m *RejectedApplication) String() string { return proto.CompactTextString(m) }
 func (*RejectedApplication) ProtoMessage()    {}
 func (*RejectedApplication) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{5}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{9}
 }
 func (m *RejectedApplication) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RejectedApplication.Unmarshal(m, b)
@@ -622,7 +727,7 @@ func (m *AcceptedApplication) Reset()         { *m = AcceptedApplication{} }
 func (m *AcceptedApplication) String() string { return proto.CompactTextString(m) }
 func (*AcceptedApplication) ProtoMessage()    {}
 func (*AcceptedApplication) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{6}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{10}
 }
 func (m *AcceptedApplication) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AcceptedApplication.Unmarshal(m, b)
@@ -663,7 +768,7 @@ func (m *RejectedNode) Reset()         { *m = RejectedNode{} }
 func (m *RejectedNode) String() string { return proto.CompactTextString(m) }
 func (*RejectedNode) ProtoMessage()    {}
 func (*RejectedNode) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{7}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{11}
 }
 func (m *RejectedNode) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RejectedNode.Unmarshal(m, b)
@@ -709,7 +814,7 @@ func (m *AcceptedNode) Reset()         { *m = AcceptedNode{} }
 func (m *AcceptedNode) String() string { return proto.CompactTextString(m) }
 func (*AcceptedNode) ProtoMessage()    {}
 func (*AcceptedNode) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{8}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{12}
 }
 func (m *AcceptedNode) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AcceptedNode.Unmarshal(m, b)
@@ -750,7 +855,7 @@ func (m *Priority) Reset()         { *m = Priority{} }
 func (m *Priority) String() string { return proto.CompactTextString(m) }
 func (*Priority) ProtoMessage()    {}
 func (*Priority) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{9}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{13}
 }
 func (m *Priority) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Priority.Unmarshal(m, b)
@@ -884,7 +989,7 @@ func (m *Resource) Reset()         { *m = Resource{} }
 func (m *Resource) String() string { return proto.CompactTextString(m) }
 func (*Resource) ProtoMessage()    {}
 func (*Resource) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{10}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{14}
 }
 func (m *Resource) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Resource.Unmarshal(m, b)
@@ -923,7 +1028,7 @@ func (m *Quantity) Reset()         { *m = Quantity{} }
 func (m *Quantity) String() string { return proto.CompactTextString(m) }
 func (*Quantity) ProtoMessage()    {}
 func (*Quantity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{11}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{15}
 }
 func (m *Quantity) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Quantity.Unmarshal(m, b)
@@ -988,7 +1093,7 @@ func (m *AllocationAsk) Reset()         { *m = AllocationAsk{} }
 func (m *AllocationAsk) String() string { return proto.CompactTextString(m) }
 func (*AllocationAsk) ProtoMessage()    {}
 func (*AllocationAsk) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{12}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{16}
 }
 func (m *AllocationAsk) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AllocationAsk.Unmarshal(m, b)
@@ -1109,7 +1214,7 @@ func (m *AddApplicationRequest) Reset()         { *m = AddApplicationRequest{} }
 func (m *AddApplicationRequest) String() string { return proto.CompactTextString(m) }
 func (*AddApplicationRequest) ProtoMessage()    {}
 func (*AddApplicationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{13}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{17}
 }
 func (m *AddApplicationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AddApplicationRequest.Unmarshal(m, b)
@@ -1199,7 +1304,7 @@ func (m *RemoveApplicationRequest) Reset()         { *m = RemoveApplicationReque
 func (m *RemoveApplicationRequest) String() string { return proto.CompactTextString(m) }
 func (*RemoveApplicationRequest) ProtoMessage()    {}
 func (*RemoveApplicationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{14}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{18}
 }
 func (m *RemoveApplicationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RemoveApplicationRequest.Unmarshal(m, b)
@@ -1247,7 +1352,7 @@ func (m *UserGroupInformation) Reset()         { *m = UserGroupInformation{} }
 func (m *UserGroupInformation) String() string { return proto.CompactTextString(m) }
 func (*UserGroupInformation) ProtoMessage()    {}
 func (*UserGroupInformation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{15}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{19}
 }
 func (m *UserGroupInformation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserGroupInformation.Unmarshal(m, b)
@@ -1314,7 +1419,7 @@ func (m *Allocation) Reset()         { *m = Allocation{} }
 func (m *Allocation) String() string { return proto.CompactTextString(m) }
 func (*Allocation) ProtoMessage()    {}
 func (*Allocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{16}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{20}
 }
 func (m *Allocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Allocation.Unmarshal(m, b)
@@ -1425,7 +1530,7 @@ func (m *AllocationReleasesRequest) Reset()         { *m = AllocationReleasesReq
 func (m *AllocationReleasesRequest) String() string { return proto.CompactTextString(m) }
 func (*AllocationReleasesRequest) ProtoMessage()    {}
 func (*AllocationReleasesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{17}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{21}
 }
 func (m *AllocationReleasesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AllocationReleasesRequest.Unmarshal(m, b)
@@ -1483,7 +1588,7 @@ func (m *AllocationRelease) Reset()         { *m = AllocationRelease{} }
 func (m *AllocationRelease) String() string { return proto.CompactTextString(m) }
 func (*AllocationRelease) ProtoMessage()    {}
 func (*AllocationRelease) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{18}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{22}
 }
 func (m *AllocationRelease) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AllocationRelease.Unmarshal(m, b)
@@ -1528,7 +1633,7 @@ func (m *AllocationRelease) GetTerminationType() TerminationType {
 	if m != nil {
 		return m.TerminationType
 	}
-	return TerminationType_STOPPED_BY_RM
+	return TerminationType_UNKNOWN_TERMINATION_TYPE
 }
 
 func (m *AllocationRelease) GetMessage() string {
@@ -1560,7 +1665,7 @@ func (m *AllocationAskRelease) Reset()         { *m = AllocationAskRelease{} }
 func (m *AllocationAskRelease) String() string { return proto.CompactTextString(m) }
 func (*AllocationAskRelease) ProtoMessage()    {}
 func (*AllocationAskRelease) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{19}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{23}
 }
 func (m *AllocationAskRelease) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AllocationAskRelease.Unmarshal(m, b)
@@ -1605,7 +1710,7 @@ func (m *AllocationAskRelease) GetTerminationType() TerminationType {
 	if m != nil {
 		return m.TerminationType
 	}
-	return TerminationType_STOPPED_BY_RM
+	return TerminationType_UNKNOWN_TERMINATION_TYPE
 }
 
 func (m *AllocationAskRelease) GetMessage() string {
@@ -1615,156 +1720,90 @@ func (m *AllocationAskRelease) GetMessage() string {
 	return ""
 }
 
-type NewNodeInfo struct {
-	// ID of node, must be unique
+type NodeInfo struct {
+	// ID of node, the node must exist to be updated
 	NodeID string `protobuf:"bytes,1,opt,name=nodeID,proto3" json:"nodeID,omitempty"`
-	// node attributes
-	Attributes map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// Schedulable Resource
-	SchedulableResource *Resource `protobuf:"bytes,3,opt,name=schedulableResource,proto3" json:"schedulableResource,omitempty"`
-	// Occupied Resource
-	OccupiedResource *Resource `protobuf:"bytes,4,opt,name=occupiedResource,proto3" json:"occupiedResource,omitempty"`
+	// Action to perform by the scheduler
+	Action NodeInfo_ActionFromRM `protobuf:"varint,2,opt,name=action,proto3,enum=si.v1.NodeInfo_ActionFromRM" json:"action,omitempty"`
+	// New attributes of node, which will replace previously reported attribute.
+	Attributes map[string]string `protobuf:"bytes,3,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// new schedulable resource, scheduler may preempt allocations on the
+	// node or schedule more allocations accordingly.
+	SchedulableResource *Resource `protobuf:"bytes,4,opt,name=schedulableResource,proto3" json:"schedulableResource,omitempty"`
+	// when the scheduler is co-exist with some other schedulers, some node
+	// resources might be occupied (allocated) by other schedulers.
+	OccupiedResource *Resource `protobuf:"bytes,5,opt,name=occupiedResource,proto3" json:"occupiedResource,omitempty"`
 	// Allocated resources, this will be added when node registered to RM (recovery)
-	ExistingAllocations  []*Allocation `protobuf:"bytes,5,rep,name=existingAllocations,proto3" json:"existingAllocations,omitempty"`
+	ExistingAllocations  []*Allocation `protobuf:"bytes,6,rep,name=existingAllocations,proto3" json:"existingAllocations,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
 	XXX_unrecognized     []byte        `json:"-"`
 	XXX_sizecache        int32         `json:"-"`
 }
 
-func (m *NewNodeInfo) Reset()         { *m = NewNodeInfo{} }
-func (m *NewNodeInfo) String() string { return proto.CompactTextString(m) }
-func (*NewNodeInfo) ProtoMessage()    {}
-func (*NewNodeInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{20}
+func (m *NodeInfo) Reset()         { *m = NodeInfo{} }
+func (m *NodeInfo) String() string { return proto.CompactTextString(m) }
+func (*NodeInfo) ProtoMessage()    {}
+func (*NodeInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_si_4f9e5b3a38832831, []int{24}
 }
-func (m *NewNodeInfo) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NewNodeInfo.Unmarshal(m, b)
+func (m *NodeInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_NodeInfo.Unmarshal(m, b)
 }
-func (m *NewNodeInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NewNodeInfo.Marshal(b, m, deterministic)
+func (m *NodeInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_NodeInfo.Marshal(b, m, deterministic)
 }
-func (dst *NewNodeInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NewNodeInfo.Merge(dst, src)
+func (dst *NodeInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NodeInfo.Merge(dst, src)
 }
-func (m *NewNodeInfo) XXX_Size() int {
-	return xxx_messageInfo_NewNodeInfo.Size(m)
+func (m *NodeInfo) XXX_Size() int {
+	return xxx_messageInfo_NodeInfo.Size(m)
 }
-func (m *NewNodeInfo) XXX_DiscardUnknown() {
-	xxx_messageInfo_NewNodeInfo.DiscardUnknown(m)
+func (m *NodeInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_NodeInfo.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NewNodeInfo proto.InternalMessageInfo
+var xxx_messageInfo_NodeInfo proto.InternalMessageInfo
 
-func (m *NewNodeInfo) GetNodeID() string {
+func (m *NodeInfo) GetNodeID() string {
 	if m != nil {
 		return m.NodeID
 	}
 	return ""
 }
 
-func (m *NewNodeInfo) GetAttributes() map[string]string {
+func (m *NodeInfo) GetAction() NodeInfo_ActionFromRM {
+	if m != nil {
+		return m.Action
+	}
+	return NodeInfo_UNKNOWN_ACTION_FROM_RM
+}
+
+func (m *NodeInfo) GetAttributes() map[string]string {
 	if m != nil {
 		return m.Attributes
 	}
 	return nil
 }
 
-func (m *NewNodeInfo) GetSchedulableResource() *Resource {
+func (m *NodeInfo) GetSchedulableResource() *Resource {
 	if m != nil {
 		return m.SchedulableResource
 	}
 	return nil
 }
 
-func (m *NewNodeInfo) GetOccupiedResource() *Resource {
+func (m *NodeInfo) GetOccupiedResource() *Resource {
 	if m != nil {
 		return m.OccupiedResource
 	}
 	return nil
 }
 
-func (m *NewNodeInfo) GetExistingAllocations() []*Allocation {
+func (m *NodeInfo) GetExistingAllocations() []*Allocation {
 	if m != nil {
 		return m.ExistingAllocations
 	}
 	return nil
-}
-
-type UpdateNodeInfo struct {
-	// ID of node, the node must exist to be updated
-	NodeID string `protobuf:"bytes,1,opt,name=nodeID,proto3" json:"nodeID,omitempty"`
-	// New attributes of node, which will replace previously reported attribute.
-	Attributes map[string]string `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// new schedulable resource, scheduler may preempt allocations on the
-	// node or schedule more allocations accordingly.
-	SchedulableResource *Resource `protobuf:"bytes,3,opt,name=schedulableResource,proto3" json:"schedulableResource,omitempty"`
-	// when the scheduler is co-exist with some other schedulers, some node
-	// resources might be occupied (allocated) by other schedulers.
-	OccupiedResource *Resource `protobuf:"bytes,4,opt,name=occupiedResource,proto3" json:"occupiedResource,omitempty"`
-	// Action to perform by the scheduler
-	Action               UpdateNodeInfo_ActionFromRM `protobuf:"varint,5,opt,name=action,proto3,enum=si.v1.UpdateNodeInfo_ActionFromRM" json:"action,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
-	XXX_unrecognized     []byte                      `json:"-"`
-	XXX_sizecache        int32                       `json:"-"`
-}
-
-func (m *UpdateNodeInfo) Reset()         { *m = UpdateNodeInfo{} }
-func (m *UpdateNodeInfo) String() string { return proto.CompactTextString(m) }
-func (*UpdateNodeInfo) ProtoMessage()    {}
-func (*UpdateNodeInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{21}
-}
-func (m *UpdateNodeInfo) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UpdateNodeInfo.Unmarshal(m, b)
-}
-func (m *UpdateNodeInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UpdateNodeInfo.Marshal(b, m, deterministic)
-}
-func (dst *UpdateNodeInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UpdateNodeInfo.Merge(dst, src)
-}
-func (m *UpdateNodeInfo) XXX_Size() int {
-	return xxx_messageInfo_UpdateNodeInfo.Size(m)
-}
-func (m *UpdateNodeInfo) XXX_DiscardUnknown() {
-	xxx_messageInfo_UpdateNodeInfo.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UpdateNodeInfo proto.InternalMessageInfo
-
-func (m *UpdateNodeInfo) GetNodeID() string {
-	if m != nil {
-		return m.NodeID
-	}
-	return ""
-}
-
-func (m *UpdateNodeInfo) GetAttributes() map[string]string {
-	if m != nil {
-		return m.Attributes
-	}
-	return nil
-}
-
-func (m *UpdateNodeInfo) GetSchedulableResource() *Resource {
-	if m != nil {
-		return m.SchedulableResource
-	}
-	return nil
-}
-
-func (m *UpdateNodeInfo) GetOccupiedResource() *Resource {
-	if m != nil {
-		return m.OccupiedResource
-	}
-	return nil
-}
-
-func (m *UpdateNodeInfo) GetAction() UpdateNodeInfo_ActionFromRM {
-	if m != nil {
-		return m.Action
-	}
-	return UpdateNodeInfo_UPDATE
 }
 
 type RejectedAllocationAsk struct {
@@ -1782,7 +1821,7 @@ func (m *RejectedAllocationAsk) Reset()         { *m = RejectedAllocationAsk{} }
 func (m *RejectedAllocationAsk) String() string { return proto.CompactTextString(m) }
 func (*RejectedAllocationAsk) ProtoMessage()    {}
 func (*RejectedAllocationAsk) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{22}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{25}
 }
 func (m *RejectedAllocationAsk) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RejectedAllocationAsk.Unmarshal(m, b)
@@ -1840,7 +1879,7 @@ func (m *PredicatesArgs) Reset()         { *m = PredicatesArgs{} }
 func (m *PredicatesArgs) String() string { return proto.CompactTextString(m) }
 func (*PredicatesArgs) ProtoMessage()    {}
 func (*PredicatesArgs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{23}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{26}
 }
 func (m *PredicatesArgs) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PredicatesArgs.Unmarshal(m, b)
@@ -1895,7 +1934,7 @@ func (m *ReSyncSchedulerCacheArgs) Reset()         { *m = ReSyncSchedulerCacheAr
 func (m *ReSyncSchedulerCacheArgs) String() string { return proto.CompactTextString(m) }
 func (*ReSyncSchedulerCacheArgs) ProtoMessage()    {}
 func (*ReSyncSchedulerCacheArgs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{24}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{27}
 }
 func (m *ReSyncSchedulerCacheArgs) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReSyncSchedulerCacheArgs.Unmarshal(m, b)
@@ -1943,7 +1982,7 @@ func (m *AssumedAllocation) Reset()         { *m = AssumedAllocation{} }
 func (m *AssumedAllocation) String() string { return proto.CompactTextString(m) }
 func (*AssumedAllocation) ProtoMessage()    {}
 func (*AssumedAllocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{25}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{28}
 }
 func (m *AssumedAllocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AssumedAllocation.Unmarshal(m, b)
@@ -1989,7 +2028,7 @@ func (m *ForgotAllocation) Reset()         { *m = ForgotAllocation{} }
 func (m *ForgotAllocation) String() string { return proto.CompactTextString(m) }
 func (*ForgotAllocation) ProtoMessage()    {}
 func (*ForgotAllocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{26}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{29}
 }
 func (m *ForgotAllocation) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ForgotAllocation.Unmarshal(m, b)
@@ -2034,7 +2073,7 @@ func (m *UpdateContainerSchedulingStateRequest) Reset()         { *m = UpdateCon
 func (m *UpdateContainerSchedulingStateRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateContainerSchedulingStateRequest) ProtoMessage()    {}
 func (*UpdateContainerSchedulingStateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{27}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{30}
 }
 func (m *UpdateContainerSchedulingStateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateContainerSchedulingStateRequest.Unmarshal(m, b)
@@ -2072,7 +2111,7 @@ func (m *UpdateContainerSchedulingStateRequest) GetState() UpdateContainerSchedu
 	if m != nil {
 		return m.State
 	}
-	return UpdateContainerSchedulingStateRequest_SKIPPED
+	return UpdateContainerSchedulingStateRequest_UNKNOWN_SCHEDULING_STATE
 }
 
 func (m *UpdateContainerSchedulingStateRequest) GetReason() string {
@@ -2094,7 +2133,7 @@ func (m *UpdateConfigurationRequest) Reset()         { *m = UpdateConfigurationR
 func (m *UpdateConfigurationRequest) String() string { return proto.CompactTextString(m) }
 func (*UpdateConfigurationRequest) ProtoMessage()    {}
 func (*UpdateConfigurationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{28}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{31}
 }
 func (m *UpdateConfigurationRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateConfigurationRequest.Unmarshal(m, b)
@@ -2137,7 +2176,7 @@ func (m *UpdateConfigurationResponse) Reset()         { *m = UpdateConfiguration
 func (m *UpdateConfigurationResponse) String() string { return proto.CompactTextString(m) }
 func (*UpdateConfigurationResponse) ProtoMessage()    {}
 func (*UpdateConfigurationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{29}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{32}
 }
 func (m *UpdateConfigurationResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UpdateConfigurationResponse.Unmarshal(m, b)
@@ -2201,7 +2240,7 @@ func (m *EventRecord) Reset()         { *m = EventRecord{} }
 func (m *EventRecord) String() string { return proto.CompactTextString(m) }
 func (*EventRecord) ProtoMessage()    {}
 func (*EventRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_si_66b80106569839cd, []int{30}
+	return fileDescriptor_si_4f9e5b3a38832831, []int{33}
 }
 func (m *EventRecord) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EventRecord.Unmarshal(m, b)
@@ -2225,7 +2264,7 @@ func (m *EventRecord) GetType() EventRecord_Type {
 	if m != nil {
 		return m.Type
 	}
-	return EventRecord_REQUEST
+	return EventRecord_UNKNOWN_EVENTRECORD_TYPE
 }
 
 func (m *EventRecord) GetObjectID() string {
@@ -2275,8 +2314,12 @@ var E_SiSecret = &proto.ExtensionDesc{
 func init() {
 	proto.RegisterType((*RegisterResourceManagerRequest)(nil), "si.v1.RegisterResourceManagerRequest")
 	proto.RegisterType((*RegisterResourceManagerResponse)(nil), "si.v1.RegisterResourceManagerResponse")
-	proto.RegisterType((*UpdateRequest)(nil), "si.v1.UpdateRequest")
-	proto.RegisterType((*UpdateResponse)(nil), "si.v1.UpdateResponse")
+	proto.RegisterType((*AllocationRequest)(nil), "si.v1.AllocationRequest")
+	proto.RegisterType((*ApplicationRequest)(nil), "si.v1.ApplicationRequest")
+	proto.RegisterType((*NodeRequest)(nil), "si.v1.NodeRequest")
+	proto.RegisterType((*AllocationResponse)(nil), "si.v1.AllocationResponse")
+	proto.RegisterType((*ApplicationResponse)(nil), "si.v1.ApplicationResponse")
+	proto.RegisterType((*NodeResponse)(nil), "si.v1.NodeResponse")
 	proto.RegisterType((*UpdatedApplication)(nil), "si.v1.UpdatedApplication")
 	proto.RegisterType((*RejectedApplication)(nil), "si.v1.RejectedApplication")
 	proto.RegisterType((*AcceptedApplication)(nil), "si.v1.AcceptedApplication")
@@ -2297,10 +2340,8 @@ func init() {
 	proto.RegisterType((*AllocationReleasesRequest)(nil), "si.v1.AllocationReleasesRequest")
 	proto.RegisterType((*AllocationRelease)(nil), "si.v1.AllocationRelease")
 	proto.RegisterType((*AllocationAskRelease)(nil), "si.v1.AllocationAskRelease")
-	proto.RegisterType((*NewNodeInfo)(nil), "si.v1.NewNodeInfo")
-	proto.RegisterMapType((map[string]string)(nil), "si.v1.NewNodeInfo.AttributesEntry")
-	proto.RegisterType((*UpdateNodeInfo)(nil), "si.v1.UpdateNodeInfo")
-	proto.RegisterMapType((map[string]string)(nil), "si.v1.UpdateNodeInfo.AttributesEntry")
+	proto.RegisterType((*NodeInfo)(nil), "si.v1.NodeInfo")
+	proto.RegisterMapType((map[string]string)(nil), "si.v1.NodeInfo.AttributesEntry")
 	proto.RegisterType((*RejectedAllocationAsk)(nil), "si.v1.RejectedAllocationAsk")
 	proto.RegisterType((*PredicatesArgs)(nil), "si.v1.PredicatesArgs")
 	proto.RegisterType((*ReSyncSchedulerCacheArgs)(nil), "si.v1.ReSyncSchedulerCacheArgs")
@@ -2311,8 +2352,7 @@ func init() {
 	proto.RegisterType((*UpdateConfigurationResponse)(nil), "si.v1.UpdateConfigurationResponse")
 	proto.RegisterType((*EventRecord)(nil), "si.v1.EventRecord")
 	proto.RegisterEnum("si.v1.TerminationType", TerminationType_name, TerminationType_value)
-	proto.RegisterEnum("si.v1.UpdateResponse_ActionFromScheduler", UpdateResponse_ActionFromScheduler_name, UpdateResponse_ActionFromScheduler_value)
-	proto.RegisterEnum("si.v1.UpdateNodeInfo_ActionFromRM", UpdateNodeInfo_ActionFromRM_name, UpdateNodeInfo_ActionFromRM_value)
+	proto.RegisterEnum("si.v1.NodeInfo_ActionFromRM", NodeInfo_ActionFromRM_name, NodeInfo_ActionFromRM_value)
 	proto.RegisterEnum("si.v1.UpdateContainerSchedulingStateRequest_SchedulingState", UpdateContainerSchedulingStateRequest_SchedulingState_name, UpdateContainerSchedulingStateRequest_SchedulingState_value)
 	proto.RegisterEnum("si.v1.EventRecord_Type", EventRecord_Type_name, EventRecord_Type_value)
 	proto.RegisterExtension(E_SiSecret)
@@ -2336,7 +2376,12 @@ type SchedulerClient interface {
 	// Update Scheduler status (this includes node status update, allocation request
 	// updates, etc. And receive updates from scheduler for allocation changes,
 	// any required status changes, etc.
-	Update(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateClient, error)
+	// Update allocation request
+	UpdateAllocation(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateAllocationClient, error)
+	// Update application request
+	UpdateApplication(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateApplicationClient, error)
+	// Update node info
+	UpdateNode(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateNodeClient, error)
 }
 
 type schedulerClient struct {
@@ -2356,31 +2401,93 @@ func (c *schedulerClient) RegisterResourceManager(ctx context.Context, in *Regis
 	return out, nil
 }
 
-func (c *schedulerClient) Update(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Scheduler_serviceDesc.Streams[0], "/si.v1.Scheduler/Update", opts...)
+func (c *schedulerClient) UpdateAllocation(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateAllocationClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Scheduler_serviceDesc.Streams[0], "/si.v1.Scheduler/UpdateAllocation", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &schedulerUpdateClient{stream}
+	x := &schedulerUpdateAllocationClient{stream}
 	return x, nil
 }
 
-type Scheduler_UpdateClient interface {
-	Send(*UpdateRequest) error
-	Recv() (*UpdateResponse, error)
+type Scheduler_UpdateAllocationClient interface {
+	Send(*AllocationRequest) error
+	Recv() (*AllocationResponse, error)
 	grpc.ClientStream
 }
 
-type schedulerUpdateClient struct {
+type schedulerUpdateAllocationClient struct {
 	grpc.ClientStream
 }
 
-func (x *schedulerUpdateClient) Send(m *UpdateRequest) error {
+func (x *schedulerUpdateAllocationClient) Send(m *AllocationRequest) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *schedulerUpdateClient) Recv() (*UpdateResponse, error) {
-	m := new(UpdateResponse)
+func (x *schedulerUpdateAllocationClient) Recv() (*AllocationResponse, error) {
+	m := new(AllocationResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *schedulerClient) UpdateApplication(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateApplicationClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Scheduler_serviceDesc.Streams[1], "/si.v1.Scheduler/UpdateApplication", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &schedulerUpdateApplicationClient{stream}
+	return x, nil
+}
+
+type Scheduler_UpdateApplicationClient interface {
+	Send(*ApplicationRequest) error
+	Recv() (*ApplicationResponse, error)
+	grpc.ClientStream
+}
+
+type schedulerUpdateApplicationClient struct {
+	grpc.ClientStream
+}
+
+func (x *schedulerUpdateApplicationClient) Send(m *ApplicationRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *schedulerUpdateApplicationClient) Recv() (*ApplicationResponse, error) {
+	m := new(ApplicationResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *schedulerClient) UpdateNode(ctx context.Context, opts ...grpc.CallOption) (Scheduler_UpdateNodeClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Scheduler_serviceDesc.Streams[2], "/si.v1.Scheduler/UpdateNode", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &schedulerUpdateNodeClient{stream}
+	return x, nil
+}
+
+type Scheduler_UpdateNodeClient interface {
+	Send(*NodeRequest) error
+	Recv() (*NodeResponse, error)
+	grpc.ClientStream
+}
+
+type schedulerUpdateNodeClient struct {
+	grpc.ClientStream
+}
+
+func (x *schedulerUpdateNodeClient) Send(m *NodeRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *schedulerUpdateNodeClient) Recv() (*NodeResponse, error) {
+	m := new(NodeResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -2395,7 +2502,12 @@ type SchedulerServer interface {
 	// Update Scheduler status (this includes node status update, allocation request
 	// updates, etc. And receive updates from scheduler for allocation changes,
 	// any required status changes, etc.
-	Update(Scheduler_UpdateServer) error
+	// Update allocation request
+	UpdateAllocation(Scheduler_UpdateAllocationServer) error
+	// Update application request
+	UpdateApplication(Scheduler_UpdateApplicationServer) error
+	// Update node info
+	UpdateNode(Scheduler_UpdateNodeServer) error
 }
 
 func RegisterSchedulerServer(s *grpc.Server, srv SchedulerServer) {
@@ -2420,26 +2532,78 @@ func _Scheduler_RegisterResourceManager_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Scheduler_Update_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(SchedulerServer).Update(&schedulerUpdateServer{stream})
+func _Scheduler_UpdateAllocation_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SchedulerServer).UpdateAllocation(&schedulerUpdateAllocationServer{stream})
 }
 
-type Scheduler_UpdateServer interface {
-	Send(*UpdateResponse) error
-	Recv() (*UpdateRequest, error)
+type Scheduler_UpdateAllocationServer interface {
+	Send(*AllocationResponse) error
+	Recv() (*AllocationRequest, error)
 	grpc.ServerStream
 }
 
-type schedulerUpdateServer struct {
+type schedulerUpdateAllocationServer struct {
 	grpc.ServerStream
 }
 
-func (x *schedulerUpdateServer) Send(m *UpdateResponse) error {
+func (x *schedulerUpdateAllocationServer) Send(m *AllocationResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *schedulerUpdateServer) Recv() (*UpdateRequest, error) {
-	m := new(UpdateRequest)
+func (x *schedulerUpdateAllocationServer) Recv() (*AllocationRequest, error) {
+	m := new(AllocationRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Scheduler_UpdateApplication_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SchedulerServer).UpdateApplication(&schedulerUpdateApplicationServer{stream})
+}
+
+type Scheduler_UpdateApplicationServer interface {
+	Send(*ApplicationResponse) error
+	Recv() (*ApplicationRequest, error)
+	grpc.ServerStream
+}
+
+type schedulerUpdateApplicationServer struct {
+	grpc.ServerStream
+}
+
+func (x *schedulerUpdateApplicationServer) Send(m *ApplicationResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *schedulerUpdateApplicationServer) Recv() (*ApplicationRequest, error) {
+	m := new(ApplicationRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Scheduler_UpdateNode_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SchedulerServer).UpdateNode(&schedulerUpdateNodeServer{stream})
+}
+
+type Scheduler_UpdateNodeServer interface {
+	Send(*NodeResponse) error
+	Recv() (*NodeRequest, error)
+	grpc.ServerStream
+}
+
+type schedulerUpdateNodeServer struct {
+	grpc.ServerStream
+}
+
+func (x *schedulerUpdateNodeServer) Send(m *NodeResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *schedulerUpdateNodeServer) Recv() (*NodeRequest, error) {
+	m := new(NodeRequest)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -2457,8 +2621,20 @@ var _Scheduler_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "Update",
-			Handler:       _Scheduler_Update_Handler,
+			StreamName:    "UpdateAllocation",
+			Handler:       _Scheduler_UpdateAllocation_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "UpdateApplication",
+			Handler:       _Scheduler_UpdateApplication_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "UpdateNode",
+			Handler:       _Scheduler_UpdateNode_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
@@ -2467,142 +2643,143 @@ var _Scheduler_serviceDesc = grpc.ServiceDesc{
 }
 
 func init() {
-	proto.RegisterFile("incubator-yunikorn-scheduler-interface/si.proto", fileDescriptor_si_66b80106569839cd)
+	proto.RegisterFile("incubator-yunikorn-scheduler-interface/si.proto", fileDescriptor_si_4f9e5b3a38832831)
 }
 
-var fileDescriptor_si_66b80106569839cd = []byte{
-	// 2120 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x59, 0xcd, 0x72, 0xdb, 0xc8,
-	0xf1, 0x17, 0xf8, 0x21, 0x92, 0x4d, 0x89, 0xa2, 0x86, 0xb2, 0xcd, 0xd5, 0xfa, 0xef, 0xd5, 0x1f,
-	0xb5, 0x56, 0x29, 0xd9, 0x32, 0xb5, 0x56, 0xaa, 0xb2, 0xeb, 0x8f, 0xa4, 0x02, 0x89, 0xf0, 0x4a,
-	0xb1, 0x44, 0xd2, 0x43, 0x72, 0xab, 0x36, 0x17, 0x15, 0x04, 0x8e, 0x68, 0x58, 0x24, 0xc0, 0x9d,
-	0x01, 0x64, 0xab, 0x72, 0xcb, 0x39, 0xb7, 0x1c, 0xf2, 0x00, 0xa9, 0xe4, 0x90, 0x5c, 0xf3, 0x00,
-	0xc9, 0x13, 0xe4, 0x92, 0x47, 0xc8, 0x35, 0x4f, 0x90, 0x4b, 0x6a, 0x06, 0x03, 0x10, 0x5f, 0xb4,
-	0xe8, 0xec, 0xa6, 0x2a, 0x37, 0x4c, 0xcf, 0xaf, 0x7b, 0x66, 0xba, 0x7f, 0xd3, 0xd3, 0x33, 0x80,
-	0x7d, 0xcb, 0x36, 0xbd, 0x0b, 0xc3, 0x75, 0xe8, 0xa3, 0x1b, 0xcf, 0xb6, 0xae, 0x1c, 0x6a, 0x3f,
-	0x62, 0xe6, 0x6b, 0x32, 0xf2, 0x26, 0x84, 0x3e, 0xb2, 0x6c, 0x97, 0xd0, 0x4b, 0xc3, 0x24, 0xfb,
-	0xcc, 0x6a, 0xcd, 0xa8, 0xe3, 0x3a, 0xa8, 0xc8, 0xac, 0xd6, 0xf5, 0xe3, 0xed, 0x9d, 0xb1, 0xe3,
-	0x8c, 0x27, 0x64, 0x5f, 0x08, 0x2f, 0xbc, 0xcb, 0xfd, 0x11, 0x61, 0x26, 0xb5, 0x66, 0xae, 0x43,
-	0x7d, 0xa0, 0x3a, 0x83, 0x07, 0x98, 0x8c, 0x2d, 0xe6, 0x12, 0x8a, 0x09, 0x73, 0x3c, 0x6a, 0x92,
-	0x33, 0xc3, 0x36, 0xc6, 0xbc, 0xf9, 0xad, 0x47, 0x98, 0x8b, 0x10, 0x14, 0xe8, 0xf4, 0xa4, 0xdd,
-	0x54, 0x76, 0x94, 0xbd, 0x0a, 0x16, 0xdf, 0xa8, 0x09, 0xa5, 0x6b, 0x42, 0x99, 0xe5, 0xd8, 0xcd,
-	0x9c, 0x10, 0x07, 0x4d, 0xb4, 0x03, 0xd5, 0x99, 0x33, 0xb1, 0xcc, 0x9b, 0xaf, 0xa8, 0xe3, 0xcd,
-	0x9a, 0x79, 0xd1, 0x1b, 0x15, 0xa9, 0xff, 0x0f, 0x9f, 0x2c, 0x1c, 0x91, 0xcd, 0x1c, 0x9b, 0x11,
-	0xf5, 0xf7, 0x79, 0x58, 0x1f, 0xce, 0x46, 0x86, 0x4b, 0x82, 0x49, 0xec, 0x41, 0xc1, 0x60, 0x57,
-	0xac, 0xa9, 0xec, 0xe4, 0xf7, 0xaa, 0x07, 0x5b, 0x2d, 0xb1, 0xbc, 0x96, 0x36, 0x99, 0x38, 0xa6,
-	0xe1, 0x5a, 0x8e, 0xad, 0xb1, 0x2b, 0x2c, 0x10, 0xe8, 0x39, 0x94, 0x29, 0x99, 0x10, 0x83, 0x11,
-	0x26, 0xe6, 0x56, 0x3d, 0xd8, 0x49, 0xa1, 0xb1, 0x04, 0x48, 0xeb, 0x38, 0xd4, 0x40, 0x6d, 0x68,
-	0xd8, 0xe4, 0x6d, 0xdf, 0x77, 0xad, 0x71, 0x31, 0x21, 0x1d, 0x67, 0x44, 0x58, 0x33, 0x2f, 0x86,
-	0x45, 0xd2, 0x50, 0x87, 0xbc, 0xe5, 0xe2, 0x13, 0xfb, 0xd2, 0xc1, 0x59, 0x70, 0xf4, 0x04, 0xd6,
-	0x3c, 0x31, 0xfd, 0x91, 0xaf, 0x5e, 0x10, 0xea, 0x77, 0xa4, 0xba, 0xbf, 0xb2, 0xd0, 0x42, 0x0c,
-	0x1a, 0x7a, 0xbb, 0x18, 0xf1, 0xf6, 0x0b, 0xd8, 0xb0, 0xc9, 0x5b, 0x6d, 0x36, 0x9b, 0x58, 0xfe,
-	0xfc, 0x59, 0x73, 0x55, 0x58, 0xbc, 0x1f, 0xac, 0x6c, 0x34, 0x8a, 0xf4, 0x06, 0xab, 0x4a, 0x2a,
-	0xa1, 0x2e, 0x20, 0x4a, 0xa6, 0xce, 0x35, 0x89, 0x99, 0x2a, 0x09, 0x53, 0x9f, 0x48, 0x53, 0x38,
-	0x09, 0x08, 0xac, 0x65, 0xa8, 0xaa, 0xbf, 0x59, 0x85, 0x5a, 0x10, 0x27, 0x3f, 0x74, 0x48, 0x83,
-	0x55, 0xc3, 0xe4, 0xbd, 0x82, 0x2f, 0xb5, 0x83, 0x1f, 0xc4, 0x16, 0x1d, 0xc0, 0x5a, 0x9a, 0xc0,
-	0xbc, 0xa0, 0xce, 0xb4, 0x1f, 0xd0, 0x18, 0x4b, 0x45, 0xf4, 0x04, 0x6a, 0x7c, 0xe6, 0x61, 0xb4,
-	0x78, 0x1c, 0xf9, 0x14, 0x37, 0xd3, 0x71, 0x4c, 0x00, 0xd1, 0xcf, 0xa1, 0x21, 0x43, 0x39, 0x8a,
-	0xea, 0xfb, 0xe1, 0x6b, 0x2e, 0xe2, 0x01, 0xce, 0x52, 0x42, 0x7d, 0xb8, 0x9b, 0x16, 0x6b, 0x9c,
-	0x84, 0x7e, 0x38, 0x3f, 0xce, 0x24, 0xa1, 0xb4, 0xb8, 0x40, 0x15, 0x75, 0xf8, 0x04, 0xdf, 0x10,
-	0xd3, 0x8d, 0x4f, 0xb0, 0x18, 0x0b, 0x27, 0x4e, 0x21, 0xb8, 0xe5, 0x2c, 0x45, 0xd4, 0x81, 0xad,
-	0x50, 0x9c, 0xe6, 0xc7, 0x76, 0xd2, 0x60, 0x24, 0xac, 0x99, 0x7a, 0xdc, 0x9e, 0x61, 0x9a, 0x64,
-	0x96, 0xb4, 0x57, 0x8a, 0xd9, 0xd3, 0xd2, 0x10, 0x9c, 0xa9, 0x87, 0x5e, 0x42, 0x43, 0xd2, 0x3b,
-	0x66, 0xae, 0x2c, 0xcc, 0x7d, 0x14, 0xe3, 0x46, 0xcc, 0x5a, 0x96, 0x16, 0x7a, 0x02, 0xeb, 0xc1,
-	0xa4, 0xfd, 0x7d, 0x55, 0x11, 0x66, 0x1a, 0x89, 0x55, 0xf2, 0x3e, 0x1c, 0x47, 0x72, 0xd5, 0x60,
-	0x7e, 0xbe, 0x2a, 0xc4, 0x54, 0xb5, 0x48, 0x1f, 0x8e, 0x23, 0xd5, 0x7d, 0x68, 0x64, 0xb0, 0x15,
-	0xad, 0x41, 0xb9, 0xd3, 0xd5, 0x8e, 0x06, 0x27, 0xdd, 0x4e, 0x7d, 0x05, 0x01, 0xac, 0x62, 0xbd,
-	0xff, 0x4d, 0xe7, 0xa8, 0xae, 0xa8, 0x7f, 0x50, 0x00, 0xa5, 0x97, 0x84, 0x3e, 0x85, 0x75, 0x63,
-	0xde, 0x0c, 0x13, 0x6a, 0x5c, 0x88, 0xb6, 0xa0, 0xc8, 0x5c, 0xc3, 0x25, 0x32, 0xaf, 0xfa, 0x0d,
-	0xf4, 0x14, 0x9a, 0xe2, 0x63, 0x40, 0x0d, 0x9b, 0x59, 0x1c, 0x3a, 0xb0, 0xa6, 0x84, 0xb9, 0xc6,
-	0xd4, 0x4f, 0xb1, 0x79, 0xbc, 0xb0, 0x9f, 0xe7, 0xea, 0x29, 0x61, 0xcc, 0x18, 0x93, 0x66, 0xc1,
-	0xcf, 0xd5, 0xb2, 0xa9, 0xf6, 0xa1, 0x91, 0xc1, 0x8c, 0x25, 0x27, 0x7a, 0x17, 0x56, 0x29, 0x31,
-	0x58, 0x78, 0x02, 0xc8, 0x96, 0xfa, 0x8c, 0xbb, 0x2b, 0xc5, 0x84, 0xe5, 0x8c, 0xaa, 0x3f, 0x85,
-	0xb5, 0x68, 0x14, 0xf9, 0x20, 0x36, 0xcf, 0x93, 0x01, 0x5c, 0xb6, 0x16, 0x0e, 0xbe, 0x0b, 0x6b,
-	0xd1, 0x50, 0x2e, 0xd2, 0x57, 0x6d, 0x28, 0xf7, 0xa8, 0xe5, 0x50, 0xcb, 0xbd, 0x41, 0xbb, 0xb0,
-	0x3e, 0x93, 0xdf, 0x5f, 0x1b, 0x13, 0x8f, 0x08, 0x68, 0xf1, 0x78, 0x05, 0xc7, 0xc5, 0xa8, 0x05,
-	0x9b, 0x81, 0xe0, 0x68, 0x62, 0x30, 0xd6, 0x31, 0xa6, 0x32, 0x4a, 0xc7, 0x2b, 0x38, 0xdd, 0x75,
-	0x08, 0x50, 0x0e, 0x84, 0xea, 0x6f, 0x15, 0x28, 0x07, 0x87, 0x1d, 0x7a, 0x0e, 0x15, 0x2a, 0xbf,
-	0x83, 0x03, 0xed, 0x41, 0x48, 0x61, 0x5f, 0x1e, 0x7e, 0x30, 0xdd, 0x76, 0xe9, 0x0d, 0x9e, 0x2b,
-	0x6c, 0x9f, 0x41, 0x2d, 0xde, 0x89, 0xea, 0x90, 0xbf, 0x22, 0x37, 0x72, 0x85, 0xfc, 0x13, 0x3d,
-	0x84, 0xe2, 0xb5, 0x58, 0x8a, 0x7f, 0x00, 0x6e, 0x48, 0xeb, 0xaf, 0x3c, 0xc3, 0x76, 0x2d, 0xf7,
-	0x06, 0xfb, 0xbd, 0x4f, 0x73, 0x5f, 0x2a, 0xea, 0x0e, 0x94, 0x03, 0x31, 0xe7, 0xde, 0x75, 0xe8,
-	0x81, 0xbc, 0x44, 0xa9, 0xbf, 0x2a, 0xc0, 0x7a, 0x2c, 0x13, 0x89, 0x58, 0x86, 0x82, 0x97, 0xe1,
-	0xd0, 0x71, 0x61, 0x3a, 0xe2, 0xb9, 0x2c, 0x1a, 0x7d, 0x0a, 0xeb, 0x33, 0x83, 0xba, 0x82, 0xb3,
-	0xc2, 0xa3, 0x7e, 0xc5, 0x10, 0x17, 0xa2, 0xc7, 0x50, 0x0d, 0x3c, 0xa0, 0xb1, 0x2b, 0xc1, 0xe3,
-	0xf9, 0xb2, 0x02, 0x77, 0xe0, 0x28, 0x06, 0xed, 0x42, 0x6d, 0x6a, 0xbc, 0x8b, 0x27, 0x59, 0x65,
-	0xaf, 0x88, 0x13, 0x52, 0xf4, 0xd9, 0x3c, 0x4c, 0xcd, 0xd5, 0x98, 0xdd, 0x80, 0x21, 0x38, 0x04,
-	0xa0, 0x43, 0xb8, 0x4f, 0xde, 0x11, 0xd3, 0x0b, 0x76, 0x98, 0xe3, 0xb9, 0x67, 0xd6, 0x64, 0x62,
-	0xf5, 0x89, 0xe9, 0xd8, 0x23, 0x9e, 0x26, 0xb9, 0xe3, 0xde, 0x8b, 0x41, 0x07, 0x50, 0x70, 0x8d,
-	0x71, 0x90, 0x03, 0x1f, 0x64, 0x9d, 0x22, 0xad, 0x81, 0x31, 0x96, 0x91, 0x17, 0x58, 0xee, 0x25,
-	0xd7, 0x60, 0x57, 0xa2, 0x80, 0x12, 0x5e, 0xaa, 0xf8, 0x5e, 0x8a, 0x09, 0x45, 0xed, 0x35, 0x31,
-	0x4c, 0xf2, 0xda, 0x99, 0x8c, 0x08, 0x6d, 0xc2, 0x8e, 0xb2, 0x57, 0xc6, 0x51, 0xd1, 0xf6, 0x17,
-	0x50, 0x09, 0x4d, 0x67, 0xf0, 0x66, 0x2b, 0xca, 0x9b, 0x4a, 0x94, 0x26, 0x7f, 0xcf, 0xc3, 0x9d,
-	0xcc, 0x2a, 0x63, 0xc9, 0x6c, 0x71, 0x1f, 0x2a, 0xdf, 0x7a, 0xc4, 0x23, 0xf3, 0x4d, 0x83, 0xe7,
-	0x82, 0x25, 0x49, 0xf0, 0x08, 0xf2, 0xde, 0xd8, 0x92, 0xc1, 0x0f, 0x4e, 0xdf, 0x21, 0x23, 0x54,
-	0x78, 0x80, 0xd7, 0x52, 0x74, 0xea, 0x4f, 0x8d, 0xe3, 0xd0, 0x53, 0xe9, 0x67, 0xff, 0x6c, 0xdd,
-	0x7d, 0x5f, 0xa9, 0x94, 0xf2, 0xf7, 0x6d, 0x71, 0x5e, 0x5d, 0x22, 0xce, 0x5f, 0x40, 0x2d, 0xe2,
-	0x7a, 0x4e, 0xdb, 0x52, 0x36, 0x6d, 0x13, 0x30, 0xf4, 0x39, 0x34, 0xc6, 0x86, 0x3d, 0x96, 0x47,
-	0x8d, 0x65, 0x8f, 0xfb, 0xee, 0xcd, 0x84, 0x34, 0xcb, 0xc2, 0x27, 0x59, 0x5d, 0xff, 0x79, 0x58,
-	0x2f, 0xa1, 0xb9, 0xa8, 0xe0, 0x5b, 0x32, 0xb0, 0xa9, 0xd0, 0xe5, 0x32, 0x42, 0xa7, 0x1e, 0xc2,
-	0x56, 0x56, 0xa0, 0x78, 0xb5, 0xeb, 0x31, 0x42, 0x83, 0xbb, 0x05, 0xff, 0xe6, 0x39, 0x7b, 0xcc,
-	0x71, 0x7e, 0xd9, 0x57, 0xc1, 0xb2, 0xa5, 0xfe, 0xba, 0x00, 0x30, 0xdf, 0x25, 0x4b, 0x26, 0xa1,
-	0x33, 0xa8, 0xcd, 0x05, 0xdc, 0x47, 0xb2, 0x96, 0x7c, 0x98, 0xda, 0x76, 0x91, 0xcf, 0x39, 0x1b,
-	0x12, 0xca, 0x7c, 0xbe, 0xc3, 0xe1, 0x49, 0x5b, 0xf2, 0x53, 0x7c, 0xa3, 0x67, 0x50, 0x0f, 0xf2,
-	0x4e, 0x8f, 0x50, 0x61, 0x45, 0xa4, 0x9a, 0x8c, 0x48, 0xa7, 0x80, 0x1f, 0x96, 0x7d, 0x62, 0x9b,
-	0xa8, 0x94, 0xdc, 0x44, 0xf3, 0xb3, 0xae, 0x1c, 0x3b, 0x2b, 0x53, 0x71, 0xac, 0x2c, 0x15, 0x47,
-	0xc8, 0xda, 0x82, 0xa9, 0x3c, 0x54, 0x5d, 0x22, 0x0f, 0xad, 0xa5, 0xf3, 0x90, 0x06, 0x8d, 0x0c,
-	0x77, 0x7f, 0x10, 0x75, 0xff, 0xa2, 0xc0, 0x47, 0x0b, 0x6f, 0x74, 0xe8, 0x14, 0xb6, 0xe6, 0xa1,
-	0x63, 0x03, 0x47, 0xf6, 0xcb, 0xe3, 0x76, 0xf1, 0x4d, 0x20, 0x53, 0x0b, 0x0d, 0xe1, 0x9e, 0x11,
-	0xab, 0xe3, 0xe7, 0x06, 0x73, 0xb7, 0xdf, 0x05, 0x16, 0xe9, 0xaa, 0x7f, 0x53, 0x60, 0x33, 0x35,
-	0x85, 0x74, 0x24, 0x94, 0x05, 0x91, 0x58, 0xe2, 0x74, 0xcd, 0xe2, 0xeb, 0xcf, 0x60, 0xc3, 0x25,
-	0x74, 0x6a, 0xd9, 0xbe, 0xf3, 0x6f, 0x66, 0x7e, 0x5d, 0x58, 0x3b, 0xb8, 0x2b, 0x17, 0x31, 0x88,
-	0xf7, 0xe2, 0x24, 0x3c, 0x5a, 0x51, 0x16, 0xe3, 0x15, 0xe5, 0x3f, 0x14, 0xd8, 0xca, 0xf2, 0xc1,
-	0xf7, 0xba, 0xa8, 0xd8, 0xce, 0xe7, 0x7c, 0xc9, 0x27, 0x77, 0x3e, 0x67, 0xce, 0x7f, 0x73, 0x99,
-	0xff, 0xcc, 0x41, 0x35, 0xf2, 0x08, 0xb0, 0xb0, 0x4c, 0x3d, 0x04, 0x30, 0x5c, 0x97, 0x5a, 0x17,
-	0x9e, 0x4b, 0x82, 0xcc, 0xa3, 0xa6, 0x1f, 0x11, 0x5a, 0x5a, 0x08, 0xf2, 0xd3, 0x4e, 0x44, 0x0b,
-	0x69, 0xd0, 0x60, 0xf3, 0xf7, 0x85, 0x20, 0x95, 0x88, 0x35, 0x67, 0x64, 0x98, 0x2c, 0x2c, 0xcf,
-	0x50, 0x8e, 0x69, 0x7a, 0x33, 0x8b, 0x8c, 0x42, 0xfd, 0x05, 0x25, 0x54, 0x0a, 0x88, 0x8e, 0xa0,
-	0x41, 0xde, 0x59, 0xcc, 0xb5, 0xec, 0x71, 0xfa, 0xc6, 0x9a, 0x71, 0x25, 0xcf, 0x42, 0x6f, 0xff,
-	0x04, 0x36, 0x12, 0x6b, 0xfc, 0xa0, 0xbd, 0xfe, 0xd7, 0x7c, 0xf0, 0xce, 0x70, 0xab, 0xcb, 0xf5,
-	0x0c, 0x97, 0x3f, 0xcc, 0x7c, 0x78, 0xf9, 0x9f, 0xf6, 0xfa, 0xd3, 0xf0, 0x19, 0xa5, 0x28, 0x48,
-	0xab, 0x2e, 0x58, 0x42, 0x78, 0x31, 0xc5, 0x67, 0xc1, 0xfb, 0xc9, 0x77, 0x75, 0xf6, 0x90, 0xdf,
-	0xa1, 0xe6, 0x66, 0xf9, 0xd5, 0x76, 0xd8, 0x6b, 0x6b, 0x03, 0xbd, 0xbe, 0x82, 0x6a, 0x00, 0x6d,
-	0xac, 0x9d, 0x74, 0xce, 0x3b, 0xdd, 0xb6, 0x5e, 0x57, 0xd0, 0x06, 0x54, 0xdb, 0xfa, 0x51, 0xf7,
-	0xec, 0xa4, 0xdf, 0xe7, 0xf7, 0xe0, 0x1c, 0x6a, 0xc2, 0x96, 0x0f, 0x18, 0x74, 0xcf, 0xfb, 0x47,
-	0xc7, 0x7a, 0x7b, 0x78, 0xaa, 0x1d, 0x9e, 0xea, 0xf5, 0xbc, 0xfa, 0x4b, 0xb8, 0x93, 0xf9, 0xae,
-	0xf1, 0xbd, 0xde, 0x26, 0xe6, 0xf7, 0xc2, 0x7c, 0xec, 0x5e, 0xf8, 0x06, 0x6a, 0x3d, 0x4a, 0x46,
-	0x1c, 0x48, 0x98, 0x46, 0xfd, 0x8a, 0x7a, 0x89, 0x51, 0xe7, 0x2c, 0xcb, 0xc5, 0x58, 0xb6, 0x0d,
-	0x65, 0x09, 0xf4, 0x39, 0x51, 0xc6, 0x61, 0x5b, 0xfd, 0x93, 0xc2, 0x8b, 0xaa, 0xfe, 0x8d, 0x6d,
-	0x86, 0x8f, 0x05, 0x47, 0x86, 0xf9, 0x9a, 0x88, 0x61, 0x8f, 0x01, 0x19, 0x8c, 0x79, 0xd3, 0xf8,
-	0xf3, 0x4f, 0xe2, 0x54, 0x4a, 0x02, 0x70, 0x86, 0x0e, 0xd2, 0x61, 0xf3, 0xd2, 0xa1, 0x63, 0xe2,
-	0xa6, 0x1f, 0xca, 0xee, 0x49, 0x43, 0x2f, 0x1c, 0x3a, 0x76, 0x22, 0xfd, 0x38, 0xad, 0xa1, 0xbe,
-	0x82, 0xcd, 0xd4, 0x78, 0xdf, 0xcd, 0x39, 0xea, 0x97, 0x50, 0x4f, 0x8e, 0xbc, 0x9c, 0x45, 0xf5,
-	0x8f, 0x39, 0x78, 0xe8, 0x33, 0xfc, 0xc8, 0xb1, 0x5d, 0xc3, 0xb2, 0x09, 0x8d, 0x96, 0xba, 0x91,
-	0xf7, 0xe0, 0x5d, 0xa8, 0xc9, 0xc8, 0xd3, 0x58, 0x75, 0x9a, 0x90, 0xa6, 0xc7, 0xcd, 0x65, 0xad,
-	0x04, 0x07, 0x8f, 0x2e, 0x79, 0xb1, 0xd9, 0x9e, 0xc7, 0x36, 0xdb, 0x2d, 0x53, 0x69, 0x25, 0xc5,
-	0xf2, 0xc9, 0x66, 0x4e, 0xc5, 0x42, 0x8c, 0x8a, 0x5f, 0xc1, 0x46, 0x42, 0x03, 0x55, 0xa1, 0xd4,
-	0x7f, 0x79, 0xd2, 0xeb, 0xe9, 0xed, 0xfa, 0x0a, 0x5a, 0x87, 0x8a, 0xdc, 0x38, 0x7a, 0xbb, 0xae,
-	0xa0, 0x35, 0x28, 0x63, 0xbd, 0xaf, 0xe3, 0xaf, 0xf5, 0x76, 0x3d, 0xc7, 0xf7, 0xe2, 0x0b, 0xed,
-	0x84, 0xf7, 0xe4, 0xd5, 0x1f, 0xc3, 0x76, 0x38, 0xc1, 0x4b, 0x6b, 0xec, 0xd1, 0x58, 0xf5, 0xde,
-	0x84, 0x92, 0x29, 0xe4, 0x4c, 0x7a, 0x26, 0x68, 0xaa, 0x53, 0xf8, 0x38, 0x53, 0x4f, 0x3e, 0xe0,
-	0x36, 0xa1, 0xc4, 0x3c, 0xd3, 0x24, 0xcc, 0x57, 0x2c, 0xe3, 0xa0, 0xc9, 0xcb, 0x4f, 0x67, 0x32,
-	0xf2, 0xb5, 0x82, 0x3b, 0x5c, 0x28, 0x58, 0xb8, 0xf5, 0xfe, 0xa5, 0x40, 0x55, 0xbf, 0x26, 0xb6,
-	0x8b, 0x89, 0xe9, 0xd0, 0x11, 0xfa, 0x0c, 0x0a, 0x2e, 0x3f, 0x8c, 0xfd, 0xe7, 0xe1, 0x80, 0xaa,
-	0x11, 0x44, 0x4b, 0x9c, 0xc6, 0x02, 0xc4, 0xf7, 0x99, 0x73, 0xc1, 0x93, 0x46, 0x48, 0xb2, 0xb0,
-	0xcd, 0x27, 0x2a, 0x6e, 0x06, 0x61, 0x79, 0x13, 0x34, 0x17, 0xb9, 0x7e, 0xf1, 0x81, 0x2e, 0xea,
-	0xda, 0xe0, 0xc1, 0xac, 0x63, 0xd8, 0x8e, 0xbc, 0xe0, 0xc5, 0x85, 0xea, 0x63, 0x28, 0x88, 0xc2,
-	0xa0, 0x0a, 0x25, 0xac, 0xbf, 0x1a, 0xea, 0xfd, 0x41, 0x7d, 0x05, 0x95, 0x20, 0xaf, 0xf5, 0x7a,
-	0x75, 0x05, 0x95, 0xa1, 0x20, 0xb2, 0x62, 0x0e, 0x55, 0xa0, 0xf8, 0x6a, 0xa8, 0x0f, 0xf5, 0x7a,
-	0xfe, 0x87, 0x63, 0xd8, 0x48, 0xd4, 0x19, 0x68, 0x13, 0xd6, 0xfb, 0x83, 0x2e, 0x8f, 0xf6, 0xf9,
-	0xe1, 0x37, 0xe7, 0xf8, 0xac, 0xbe, 0xc2, 0x0d, 0x0e, 0x4e, 0xce, 0xf4, 0xee, 0x70, 0x50, 0x57,
-	0xd0, 0x36, 0xdc, 0xed, 0x61, 0x5d, 0x3f, 0xeb, 0x0d, 0x7c, 0x44, 0xc0, 0x06, 0xec, 0xa7, 0xd7,
-	0xde, 0xa9, 0x76, 0xa4, 0x1f, 0x77, 0x4f, 0xdb, 0x3a, 0x3e, 0xc7, 0xba, 0x68, 0xb5, 0xeb, 0xf9,
-	0x83, 0x3f, 0x2b, 0x50, 0x99, 0x3f, 0x4e, 0xbe, 0x81, 0x7b, 0x0b, 0xfe, 0xb1, 0xa0, 0x87, 0xe1,
-	0xe1, 0xf3, 0xbe, 0xbf, 0x3e, 0xdb, 0xbb, 0xb7, 0xc1, 0xe4, 0xaf, 0x9a, 0x15, 0xf4, 0x0c, 0x56,
-	0x7d, 0x3e, 0xa1, 0xad, 0xc4, 0x5b, 0xbf, 0x6f, 0xe9, 0x4e, 0xe6, 0x1f, 0x00, 0x75, 0x65, 0x4f,
-	0xf9, 0x5c, 0x79, 0xfa, 0x0c, 0x2a, 0xcc, 0x3a, 0x67, 0xc4, 0xa4, 0xc4, 0x45, 0xff, 0xd7, 0xf2,
-	0x7f, 0x57, 0xb5, 0x82, 0xdf, 0x55, 0xad, 0x17, 0x16, 0x99, 0x8c, 0xba, 0x33, 0x3f, 0xb9, 0xfd,
-	0xae, 0xec, 0x67, 0x5a, 0xc6, 0xaf, 0xd8, 0x94, 0xb8, 0x87, 0xd5, 0x5f, 0x54, 0x26, 0xd6, 0xc5,
-	0xfe, 0xd8, 0xd9, 0x67, 0xd6, 0xc5, 0xaa, 0x50, 0xfa, 0xd1, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff,
-	0x6b, 0x0a, 0x8f, 0xa4, 0x2b, 0x1b, 0x00, 0x00,
+var fileDescriptor_si_4f9e5b3a38832831 = []byte{
+	// 2133 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x59, 0x4d, 0x8f, 0xdb, 0xc8,
+	0xd1, 0x36, 0x25, 0xcd, 0x8c, 0x54, 0x9a, 0x0f, 0x4d, 0x6b, 0xd6, 0xa6, 0xb5, 0x7e, 0xd7, 0xf3,
+	0x32, 0xeb, 0x81, 0x91, 0x85, 0x35, 0xbb, 0xde, 0xc5, 0xda, 0xb0, 0x9d, 0x6c, 0x34, 0x12, 0xbd,
+	0x23, 0xd8, 0xfa, 0x70, 0x4b, 0x72, 0xb0, 0xb9, 0x08, 0x1c, 0xaa, 0x47, 0xa6, 0x47, 0x22, 0xb5,
+	0x6c, 0x72, 0xe2, 0x41, 0x90, 0x4b, 0x80, 0xdc, 0x02, 0x04, 0x39, 0x05, 0x01, 0x72, 0x0b, 0x90,
+	0x4b, 0xfe, 0x41, 0x4e, 0x39, 0xe6, 0x96, 0x4b, 0xf2, 0x0f, 0x72, 0xca, 0xaf, 0x08, 0xba, 0xd9,
+	0xcd, 0x0f, 0x91, 0xb2, 0xe5, 0x64, 0x73, 0x63, 0x57, 0x3f, 0x55, 0xdd, 0x5d, 0x55, 0xfd, 0x74,
+	0x75, 0x13, 0x8e, 0x2d, 0xdb, 0xf4, 0xcf, 0x0c, 0xcf, 0x71, 0xef, 0x5d, 0xf9, 0xb6, 0x75, 0xe1,
+	0xb8, 0xf6, 0x3d, 0x6a, 0xbe, 0x22, 0x13, 0x7f, 0x46, 0xdc, 0x7b, 0x96, 0xed, 0x11, 0xf7, 0xdc,
+	0x30, 0xc9, 0x31, 0xb5, 0xea, 0x0b, 0xd7, 0xf1, 0x1c, 0xb4, 0x41, 0xad, 0xfa, 0xe5, 0x67, 0xb5,
+	0xc3, 0xa9, 0xe3, 0x4c, 0x67, 0xe4, 0x98, 0x0b, 0xcf, 0xfc, 0xf3, 0xe3, 0x09, 0xa1, 0xa6, 0x6b,
+	0x2d, 0x3c, 0xc7, 0x0d, 0x80, 0xda, 0x02, 0x3e, 0xc2, 0x64, 0x6a, 0x51, 0x8f, 0xb8, 0x98, 0x50,
+	0xc7, 0x77, 0x4d, 0xd2, 0x31, 0x6c, 0x63, 0xca, 0x9a, 0xdf, 0xfa, 0x84, 0x7a, 0x08, 0x41, 0xc1,
+	0x9d, 0xb7, 0x5b, 0xaa, 0x72, 0xa8, 0xdc, 0x2d, 0x61, 0xfe, 0x8d, 0x54, 0xd8, 0xba, 0x24, 0x2e,
+	0xb5, 0x1c, 0x5b, 0xcd, 0x71, 0xb1, 0x6c, 0xa2, 0x43, 0x28, 0x2f, 0x9c, 0x99, 0x65, 0x5e, 0x7d,
+	0xed, 0x3a, 0xfe, 0x42, 0xcd, 0xf3, 0xde, 0xb8, 0x48, 0xfb, 0x7f, 0xb8, 0xbd, 0x72, 0x44, 0xba,
+	0x70, 0x6c, 0x4a, 0xb4, 0x5f, 0x2b, 0xb0, 0xdf, 0x98, 0xcd, 0x1c, 0xd3, 0xf0, 0x2c, 0xc7, 0x96,
+	0x13, 0xb9, 0x0b, 0x05, 0x83, 0x5e, 0x50, 0x55, 0x39, 0xcc, 0xdf, 0x2d, 0xdf, 0x3f, 0xa8, 0xf3,
+	0x25, 0xd6, 0x23, 0x5c, 0x83, 0x5e, 0x60, 0x8e, 0x40, 0x4f, 0xa0, 0xe8, 0x92, 0x19, 0x31, 0x28,
+	0xa1, 0x7c, 0x7e, 0xe5, 0xfb, 0x87, 0x29, 0x34, 0x16, 0x00, 0x61, 0x1d, 0x87, 0x1a, 0xe1, 0x82,
+	0xf3, 0xd1, 0x82, 0xb5, 0xdf, 0x28, 0x80, 0x1a, 0x8b, 0xc5, 0xcc, 0x4a, 0x4e, 0xa9, 0x0e, 0x79,
+	0x9b, 0xfc, 0x54, 0xcc, 0xe8, 0x96, 0x1c, 0x63, 0x32, 0x49, 0x43, 0x31, 0x03, 0xa2, 0x07, 0xb0,
+	0xe9, 0x92, 0xb9, 0x73, 0x49, 0xd4, 0x1c, 0x57, 0xb9, 0x2d, 0x54, 0x30, 0x17, 0x66, 0x68, 0x09,
+	0x78, 0xe6, 0x9c, 0x4e, 0xa1, 0xdc, 0x75, 0x26, 0x44, 0xce, 0xe5, 0x0e, 0x6c, 0xd8, 0xce, 0x84,
+	0x48, 0xff, 0xec, 0x09, 0xd3, 0x0c, 0xd2, 0xb6, 0xcf, 0x1d, 0x1c, 0xf4, 0x86, 0x96, 0x72, 0x31,
+	0x4b, 0xff, 0x62, 0xab, 0x8b, 0x79, 0x26, 0x08, 0x03, 0xfa, 0x5e, 0x7c, 0x75, 0xfb, 0x69, 0x0f,
+	0xf2, 0x25, 0x7d, 0x11, 0xfa, 0x7a, 0x22, 0x16, 0xa5, 0xae, 0xf2, 0x75, 0xe8, 0xe3, 0x09, 0xfa,
+	0x0a, 0xb6, 0xe5, 0x77, 0x83, 0xc5, 0x34, 0xcf, 0x35, 0x3f, 0xcc, 0x8c, 0xa9, 0x50, 0x4e, 0x28,
+	0xa0, 0x87, 0x6c, 0xd8, 0xd7, 0xc4, 0xf4, 0xc8, 0x44, 0x2d, 0x24, 0xdc, 0x8f, 0x85, 0x38, 0x69,
+	0x24, 0x44, 0x6b, 0x7f, 0x56, 0xa0, 0x9a, 0xf0, 0xb4, 0x58, 0xed, 0x97, 0x31, 0x8b, 0xc1, 0x92,
+	0x6b, 0xcb, 0x16, 0x63, 0x5a, 0x21, 0x96, 0xe9, 0x19, 0xa6, 0x49, 0x16, 0x5e, 0xe8, 0x00, 0xa9,
+	0xd7, 0x10, 0xe2, 0x84, 0x9e, 0xc4, 0xa2, 0xcf, 0x61, 0xcb, 0x5f, 0x4c, 0x0c, 0xa6, 0x16, 0xac,
+	0xfe, 0xa6, 0x50, 0x1b, 0x05, 0xd2, 0xb8, 0x96, 0x44, 0x6a, 0x0b, 0xd8, 0x0e, 0x62, 0x2e, 0x26,
+	0x7d, 0x9c, 0x9a, 0x74, 0x75, 0x69, 0xd2, 0x1c, 0x1e, 0xcd, 0xf6, 0x38, 0x35, 0xdb, 0xea, 0xd2,
+	0x6c, 0x03, 0x05, 0x09, 0xd2, 0xfe, 0xa8, 0x00, 0x4a, 0xcf, 0x08, 0x7d, 0x0c, 0x3b, 0x46, 0xd4,
+	0x0c, 0xe9, 0x21, 0x29, 0x44, 0x07, 0xb0, 0x41, 0x3d, 0xc3, 0x23, 0x22, 0xdb, 0x82, 0x06, 0x7a,
+	0x04, 0x2a, 0xff, 0x18, 0xba, 0x86, 0x4d, 0x2d, 0x06, 0x1d, 0x5a, 0x73, 0x42, 0x3d, 0x63, 0x1e,
+	0x10, 0x46, 0x1e, 0xaf, 0xec, 0x67, 0xcc, 0x33, 0x27, 0x94, 0x1a, 0x53, 0xa2, 0x16, 0x02, 0xe6,
+	0x11, 0x4d, 0x6d, 0x00, 0xd5, 0x8c, 0x40, 0xad, 0x39, 0xd1, 0xeb, 0x6c, 0x63, 0x1a, 0x34, 0xe4,
+	0x33, 0xd1, 0xd2, 0x1e, 0x43, 0x35, 0x23, 0x8a, 0xeb, 0x19, 0xd5, 0x7e, 0x08, 0xdb, 0xf1, 0x28,
+	0xb0, 0x41, 0xd8, 0x1e, 0x0c, 0xe1, 0xa2, 0xb5, 0x72, 0xf0, 0x23, 0xd8, 0x8e, 0x07, 0x65, 0x95,
+	0xbe, 0x66, 0x43, 0xb1, 0xef, 0x5a, 0x8e, 0x6b, 0x79, 0x57, 0xe8, 0x08, 0x76, 0x16, 0xe2, 0xfb,
+	0xa5, 0x31, 0xf3, 0x09, 0x87, 0x6e, 0x9c, 0x5e, 0xc3, 0x49, 0x31, 0xaa, 0xc3, 0xbe, 0x14, 0x34,
+	0x67, 0x06, 0xa5, 0x5d, 0x63, 0x2e, 0xa2, 0x74, 0x7a, 0x0d, 0xa7, 0xbb, 0x4e, 0x00, 0x8a, 0x52,
+	0xa8, 0xfd, 0x56, 0x81, 0xa2, 0xa4, 0x6e, 0xf4, 0x04, 0x4a, 0xae, 0xf8, 0x96, 0xd4, 0xf3, 0x51,
+	0x98, 0x82, 0x81, 0x3c, 0xfc, 0xa0, 0xba, 0xed, 0xb9, 0x57, 0x38, 0x52, 0xa8, 0x75, 0x60, 0x37,
+	0xd9, 0x89, 0x2a, 0x90, 0xbf, 0x20, 0x57, 0x62, 0x85, 0xec, 0x93, 0x11, 0xdb, 0x25, 0x5f, 0x4a,
+	0x40, 0xe5, 0x92, 0xd8, 0x5e, 0xf8, 0x86, 0xed, 0x59, 0xde, 0x15, 0x0e, 0x7a, 0x1f, 0xe5, 0x1e,
+	0x2a, 0xda, 0x21, 0x14, 0xa5, 0x98, 0xe5, 0xde, 0x65, 0xe8, 0x81, 0xbc, 0x40, 0x69, 0xbf, 0x28,
+	0xc0, 0x4e, 0x82, 0x19, 0x78, 0x2c, 0x43, 0xc1, 0xb3, 0x70, 0xe8, 0xa4, 0x30, 0x1d, 0xf1, 0x5c,
+	0x56, 0x1a, 0x7d, 0x0c, 0x3b, 0x0b, 0xc3, 0xf5, 0x78, 0xce, 0x72, 0x8f, 0x06, 0x7c, 0x9d, 0x14,
+	0xa2, 0xcf, 0xa0, 0x2c, 0x3d, 0xd0, 0xa0, 0x17, 0x3c, 0x8f, 0xa3, 0x65, 0x49, 0x77, 0xe0, 0x38,
+	0x06, 0x1d, 0xc1, 0xee, 0xdc, 0x78, 0x13, 0x4d, 0x9c, 0xaa, 0x1b, 0x2c, 0xae, 0x78, 0x49, 0x8a,
+	0x3e, 0x89, 0xc2, 0xa4, 0x6e, 0x26, 0xec, 0xca, 0x0c, 0xc1, 0x21, 0x00, 0x9d, 0xc0, 0x2d, 0xf2,
+	0x86, 0x98, 0xbe, 0xdc, 0x61, 0x8e, 0xef, 0x75, 0xac, 0xd9, 0xcc, 0x1a, 0x10, 0xd3, 0xb1, 0x27,
+	0x54, 0xdd, 0xe2, 0x8e, 0x7b, 0x2b, 0x06, 0xdd, 0x87, 0x82, 0x67, 0x4c, 0xa9, 0x5a, 0x4c, 0x44,
+	0x3e, 0xe1, 0xe1, 0xfa, 0xd0, 0x98, 0x8a, 0xc8, 0x73, 0x2c, 0xf3, 0x92, 0x67, 0xd0, 0x0b, 0x5e,
+	0x0e, 0x70, 0x2f, 0x95, 0x02, 0x2f, 0x25, 0x84, 0xbc, 0x92, 0x98, 0x19, 0x26, 0x79, 0xe5, 0xcc,
+	0x26, 0xc4, 0x55, 0xe1, 0x50, 0xb9, 0x5b, 0xc4, 0x71, 0x51, 0xed, 0x01, 0x94, 0x42, 0xd3, 0x19,
+	0x79, 0x73, 0x10, 0xcf, 0x9b, 0x52, 0x3c, 0x4d, 0xfe, 0x9e, 0x87, 0x0f, 0x32, 0x4f, 0xe9, 0x35,
+	0xd9, 0xe2, 0x16, 0x94, 0xbe, 0xf5, 0x89, 0x4f, 0xa2, 0x4d, 0x83, 0x23, 0xc1, 0x9a, 0x49, 0x70,
+	0x0f, 0xf2, 0xfe, 0xd4, 0x12, 0xc1, 0x97, 0x07, 0xdf, 0x88, 0x12, 0x97, 0x7b, 0x80, 0x9d, 0xd8,
+	0xee, 0x5c, 0x1c, 0xb3, 0xfe, 0xd4, 0x42, 0x8f, 0x84, 0x9f, 0x37, 0xb8, 0x9f, 0x8f, 0xde, 0x56,
+	0x6a, 0xa4, 0xfc, 0xfd, 0xae, 0x38, 0x6f, 0xae, 0x11, 0xe7, 0x07, 0xb0, 0x1b, 0x73, 0x3d, 0x4b,
+	0xdb, 0xad, 0xec, 0xb4, 0x5d, 0x82, 0xa1, 0x4f, 0xa1, 0x3a, 0x35, 0xec, 0xe9, 0x20, 0xa8, 0x56,
+	0x2d, 0x7b, 0x3a, 0xf0, 0xae, 0x66, 0x44, 0x2d, 0x72, 0x9f, 0x64, 0x75, 0xfd, 0xe7, 0x61, 0x3d,
+	0x07, 0x75, 0x55, 0x21, 0xb5, 0x66, 0x60, 0x53, 0xa1, 0xcb, 0x65, 0x84, 0x4e, 0x3b, 0x81, 0x83,
+	0xac, 0x40, 0xb1, 0xd2, 0xca, 0xa7, 0xc4, 0x95, 0x95, 0x32, 0xfb, 0x66, 0x9c, 0x3d, 0x65, 0x38,
+	0xca, 0x4f, 0xdb, 0x12, 0x16, 0x2d, 0xed, 0x57, 0x05, 0x80, 0x68, 0x97, 0xac, 0x49, 0x42, 0x1d,
+	0xd8, 0x8d, 0x04, 0xcc, 0x47, 0xe2, 0x08, 0xbf, 0x93, 0xda, 0x76, 0xb1, 0xcf, 0x28, 0x1b, 0x96,
+	0x94, 0xd9, 0x7c, 0x47, 0xa3, 0xa8, 0xa8, 0x64, 0xdf, 0xe8, 0x31, 0x54, 0x24, 0xef, 0xf4, 0x89,
+	0xcb, 0xad, 0x70, 0xaa, 0xc9, 0x88, 0x74, 0x0a, 0xf8, 0x7e, 0xec, 0x93, 0xd8, 0x44, 0x5b, 0xcb,
+	0x9b, 0x28, 0x3a, 0xeb, 0x8a, 0x89, 0xb3, 0x32, 0x15, 0xc7, 0xd2, 0x5a, 0x71, 0x84, 0xac, 0x2d,
+	0x98, 0xe2, 0xa1, 0xf2, 0x1a, 0x3c, 0xb4, 0x9d, 0xe6, 0xa1, 0x06, 0x54, 0x33, 0xdc, 0xfd, 0x5e,
+	0xa9, 0xfb, 0x17, 0x05, 0x6e, 0xae, 0xbc, 0x9b, 0xa0, 0xe7, 0x70, 0x10, 0x85, 0x8e, 0x0e, 0x1d,
+	0xd1, 0x2f, 0x8e, 0xdb, 0xd5, 0xf5, 0x76, 0xa6, 0x16, 0x1a, 0xc1, 0x0d, 0x23, 0xce, 0xcf, 0x31,
+	0x83, 0xb9, 0x77, 0x97, 0xe1, 0xab, 0x74, 0xb5, 0xbf, 0x2d, 0x5d, 0xda, 0x82, 0xc1, 0x52, 0x91,
+	0x50, 0x56, 0x44, 0x62, 0x8d, 0xd3, 0x35, 0x2b, 0x5f, 0x7f, 0x04, 0x7b, 0x1e, 0x71, 0xe7, 0x96,
+	0x1d, 0x38, 0xff, 0x6a, 0x11, 0xd4, 0x85, 0xbb, 0xf7, 0xaf, 0x8b, 0x45, 0x0c, 0x93, 0xbd, 0x78,
+	0x19, 0x1e, 0xaf, 0x28, 0x37, 0x92, 0x15, 0xe5, 0x3f, 0x15, 0x38, 0xc8, 0xf2, 0xc1, 0x77, 0xba,
+	0xa8, 0xc4, 0xce, 0x67, 0xf9, 0x92, 0x5f, 0xde, 0xf9, 0x2c, 0x73, 0xfe, 0x97, 0xcb, 0xfc, 0x7d,
+	0x01, 0x8a, 0xf2, 0x96, 0xb8, 0xb2, 0x46, 0xfd, 0x02, 0x36, 0x0d, 0xd3, 0x93, 0x17, 0xfe, 0xdd,
+	0xf0, 0xb6, 0x25, 0x15, 0xeb, 0x0d, 0xde, 0xfb, 0xd4, 0x75, 0xe6, 0xb8, 0x83, 0x05, 0x16, 0x7d,
+	0x05, 0x60, 0x78, 0x9e, 0x6b, 0x9d, 0xf9, 0x1e, 0x91, 0x97, 0xbc, 0xdb, 0x29, 0xcd, 0x10, 0x11,
+	0xd0, 0x54, 0x4c, 0x05, 0x35, 0xa0, 0x2a, 0xde, 0x39, 0x8c, 0xb3, 0x19, 0x91, 0xd4, 0xb3, 0xaa,
+	0x64, 0xca, 0xc2, 0x32, 0x46, 0x73, 0x4c, 0xd3, 0x5f, 0x58, 0x64, 0x12, 0xea, 0xaf, 0x62, 0xb4,
+	0x65, 0x20, 0x6a, 0x42, 0x95, 0xbc, 0xb1, 0xa8, 0x67, 0xd9, 0xd3, 0x78, 0xf1, 0xb5, 0xb9, 0xea,
+	0x4a, 0x9c, 0x85, 0xae, 0xfd, 0x00, 0xf6, 0x96, 0xd6, 0xf8, 0x5e, 0xdc, 0xf0, 0x73, 0x76, 0x0d,
+	0x88, 0x9c, 0x8b, 0x6a, 0x70, 0x7d, 0xd4, 0x7d, 0xd6, 0xed, 0xfd, 0xb8, 0x3b, 0x6e, 0x34, 0x87,
+	0xed, 0x5e, 0x77, 0xfc, 0x14, 0xf7, 0x3a, 0x63, 0xdc, 0xa9, 0x5c, 0x43, 0x00, 0x9b, 0x4d, 0xac,
+	0x37, 0x86, 0x7a, 0x45, 0x61, 0xdf, 0xa3, 0x7e, 0x8b, 0x7d, 0xe7, 0xd0, 0x2e, 0x40, 0x0b, 0x37,
+	0xda, 0xdd, 0x71, 0xb7, 0xd7, 0xd2, 0x2b, 0x79, 0xb4, 0x07, 0xe5, 0x96, 0xde, 0xec, 0x75, 0xda,
+	0x83, 0x41, 0xbb, 0xd7, 0xad, 0x14, 0x90, 0x0a, 0x07, 0x01, 0x60, 0xd8, 0x1b, 0x0f, 0x9a, 0xa7,
+	0x7a, 0x6b, 0xf4, 0xbc, 0x71, 0xf2, 0x5c, 0xaf, 0x6c, 0x68, 0x3f, 0x83, 0x0f, 0x32, 0xaf, 0xd4,
+	0xdf, 0x69, 0xe1, 0x1c, 0x5d, 0x81, 0xf2, 0x89, 0x2b, 0xd0, 0x6b, 0xd8, 0xed, 0xbb, 0x64, 0xc2,
+	0x80, 0x84, 0x36, 0xdc, 0xa0, 0x78, 0x5c, 0x63, 0xd4, 0x28, 0x8d, 0x73, 0x89, 0x34, 0xae, 0x41,
+	0x51, 0x00, 0x83, 0xb2, 0xac, 0x88, 0xc3, 0xb6, 0xf6, 0x27, 0x85, 0xd5, 0x0f, 0x83, 0x2b, 0xdb,
+	0x1c, 0xc8, 0xa7, 0xb5, 0xa6, 0x61, 0xbe, 0x22, 0x7c, 0xd8, 0x53, 0x40, 0x06, 0xa5, 0xfe, 0x3c,
+	0xee, 0x04, 0xba, 0x4c, 0xc0, 0xcb, 0x00, 0x9c, 0xa1, 0x83, 0x74, 0xd8, 0x3f, 0x77, 0xdc, 0x29,
+	0xf1, 0xe2, 0x86, 0x02, 0xe2, 0xbd, 0x21, 0x0c, 0x3d, 0x75, 0xdc, 0xa9, 0x13, 0xeb, 0xc7, 0x69,
+	0x0d, 0xed, 0x05, 0xec, 0xa7, 0xc6, 0xfb, 0xef, 0x9c, 0xa3, 0x3d, 0x84, 0xca, 0xf2, 0xc8, 0xeb,
+	0x59, 0xd4, 0xfe, 0x9a, 0x83, 0x3b, 0xc1, 0x23, 0x41, 0xd3, 0xb1, 0x3d, 0xc3, 0xb2, 0x89, 0x1b,
+	0xaf, 0xea, 0x0c, 0x2f, 0x7c, 0xa5, 0x3a, 0x82, 0x5d, 0x11, 0x79, 0x37, 0x51, 0x88, 0x2d, 0x49,
+	0xd3, 0xe3, 0xe6, 0xb2, 0x56, 0x82, 0xe5, 0xfb, 0x42, 0x9e, 0x93, 0xd2, 0x93, 0xc4, 0x0b, 0xca,
+	0x3b, 0xa6, 0x52, 0x5f, 0x16, 0x8b, 0xd7, 0x89, 0x28, 0x15, 0x0b, 0x89, 0x54, 0x24, 0xb0, 0xb7,
+	0xa4, 0x81, 0x6e, 0x81, 0x2a, 0x77, 0xa2, 0xd8, 0x33, 0xed, 0xee, 0xd7, 0xe3, 0xc1, 0x90, 0xed,
+	0xb9, 0x6b, 0xa8, 0x0c, 0x5b, 0x83, 0x67, 0xed, 0x7e, 0x5f, 0x6f, 0x55, 0x14, 0xb4, 0x03, 0x25,
+	0x01, 0xd1, 0x5b, 0x95, 0x1c, 0xda, 0x86, 0x22, 0xd6, 0x07, 0x3a, 0x7e, 0xa9, 0xb7, 0x2a, 0x79,
+	0xb6, 0x53, 0x9f, 0x36, 0xda, 0xac, 0xa7, 0xa0, 0x7d, 0x09, 0xb5, 0x70, 0xfa, 0xe7, 0xd6, 0xd4,
+	0x77, 0x13, 0x65, 0xac, 0x0a, 0x5b, 0x26, 0x97, 0x53, 0xe1, 0x37, 0xd9, 0xd4, 0xe6, 0xf0, 0x61,
+	0xa6, 0x9e, 0x78, 0x28, 0x52, 0x61, 0x8b, 0xfa, 0xa6, 0x49, 0x68, 0xa0, 0x58, 0xc4, 0xb2, 0xc9,
+	0xea, 0x30, 0x67, 0x36, 0x09, 0xb4, 0xe4, 0x65, 0x26, 0x14, 0xac, 0xdc, 0x98, 0xbf, 0xcb, 0x41,
+	0x59, 0xbf, 0x24, 0xb6, 0x87, 0x89, 0xe9, 0xb8, 0x13, 0xf4, 0x09, 0x14, 0x3c, 0x76, 0x2a, 0x29,
+	0x3c, 0x10, 0x32, 0x91, 0x63, 0x88, 0x3a, 0x3f, 0x96, 0x38, 0x88, 0xed, 0x42, 0xe7, 0x8c, 0x51,
+	0x4a, 0x98, 0x82, 0x61, 0x9b, 0x4d, 0x94, 0x97, 0xc8, 0xe1, 0x39, 0x2f, 0x9b, 0xab, 0x02, 0xb3,
+	0xfa, 0x64, 0xe3, 0x05, 0x9e, 0x7c, 0x39, 0xea, 0x1a, 0xb6, 0x23, 0x6e, 0x3a, 0x49, 0xa1, 0xd6,
+	0x83, 0x02, 0x3f, 0x21, 0x63, 0xd1, 0xd4, 0x5f, 0xea, 0xdd, 0x21, 0xd6, 0x9b, 0x3d, 0xdc, 0x1a,
+	0x0f, 0xbf, 0xe9, 0x8b, 0x68, 0x62, 0xfd, 0xc5, 0x48, 0x1f, 0x0c, 0x2b, 0x0a, 0xda, 0x82, 0x7c,
+	0xa3, 0xdf, 0xaf, 0xe4, 0x50, 0x11, 0x0a, 0x82, 0x51, 0x4b, 0xb0, 0xf1, 0x62, 0xa4, 0x8f, 0xf4,
+	0x4a, 0xe1, 0xfb, 0xbf, 0x54, 0x60, 0x6f, 0xe9, 0x3c, 0x8e, 0x1b, 0x1f, 0xea, 0xb8, 0xd3, 0xee,
+	0x36, 0x38, 0x73, 0x0b, 0xe3, 0xfb, 0xb0, 0x33, 0x18, 0xf6, 0x58, 0xaa, 0x8c, 0x4f, 0xbe, 0x61,
+	0x4c, 0xae, 0xb0, 0xf1, 0x86, 0xed, 0x8e, 0xde, 0x1b, 0x0d, 0x2b, 0x39, 0x46, 0xf9, 0x7d, 0xac,
+	0xeb, 0x9d, 0xfe, 0x30, 0x40, 0xc8, 0x54, 0xc2, 0x95, 0x3c, 0x63, 0xee, 0xfe, 0xf3, 0x46, 0x53,
+	0x3f, 0xed, 0x3d, 0x6f, 0xe9, 0x78, 0x8c, 0x75, 0xde, 0x6a, 0x55, 0x0a, 0xf7, 0xff, 0x91, 0x83,
+	0x52, 0x48, 0x65, 0xe8, 0x35, 0xdc, 0x58, 0xf1, 0xee, 0x8e, 0xee, 0x84, 0x07, 0xe1, 0xdb, 0xfe,
+	0x04, 0xd4, 0x8e, 0xde, 0x05, 0x13, 0xcf, 0xf7, 0xd7, 0x50, 0x07, 0x2a, 0x41, 0x32, 0xc6, 0x98,
+	0x24, 0xab, 0x4c, 0x0d, 0xec, 0xde, 0xcc, 0xe8, 0x91, 0xa6, 0xee, 0x2a, 0x9f, 0x2a, 0xa8, 0x0f,
+	0xfb, 0xc2, 0x5c, 0xec, 0x0d, 0x2e, 0xd4, 0x4a, 0x5d, 0xf6, 0x6a, 0xb5, 0xac, 0xae, 0x84, 0xc5,
+	0xc7, 0x00, 0x81, 0x45, 0xfe, 0xb0, 0x86, 0x62, 0x25, 0x89, 0xb4, 0x51, 0x4d, 0xc8, 0xe2, 0xca,
+	0x8f, 0x1e, 0x43, 0x89, 0x5a, 0x63, 0x4a, 0x4c, 0x97, 0x78, 0xe8, 0xff, 0xea, 0xc1, 0x3f, 0x96,
+	0xba, 0xfc, 0xc7, 0x52, 0x7f, 0x6a, 0x91, 0xd9, 0xa4, 0xb7, 0x08, 0x88, 0xfd, 0x0f, 0xc5, 0xe0,
+	0x94, 0xa1, 0xec, 0x26, 0xed, 0x12, 0xef, 0xa4, 0xfc, 0x93, 0xd2, 0xcc, 0x3a, 0x3b, 0x9e, 0x3a,
+	0xc7, 0xd4, 0x3a, 0xdb, 0xe4, 0x4a, 0x9f, 0xff, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x39, 0xca, 0xd6,
+	0x08, 0xe0, 0x19, 0x00, 0x00,
 }
