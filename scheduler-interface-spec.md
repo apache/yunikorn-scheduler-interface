@@ -177,11 +177,6 @@ type ResourceManagerCallback interface {
 	// can be allocated onto a node.
 	Predicates(args *si.PredicatesArgs) error
 
-	// RM side implements this API when it can provide plugin for reconciling
-	// Re-sync scheduler cache can sync some in-cache (yunikorn-core side) state changes
-	// to scheduler cache (shim-side), such as assumed allocations.
-	ReSyncSchedulerCache(args *si.ReSyncSchedulerCacheArgs) error
-
 	// This plugin is responsible for transmitting events to the shim side.
 	// Events can be further exposed from the shim.
 	SendEvent(events []*si.EventRecord)
@@ -569,6 +564,10 @@ message AllocationRelease {
   TerminationType terminationType = 4;
   // human-readable message
   string message = 5;
+  // AllocationKey from AllocationAsk
+  string allocationkey = 6;
+  // update cache, default is false
+  bool updateCache = 7;
 }
 
 // Release ask
