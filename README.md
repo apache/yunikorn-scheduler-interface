@@ -76,7 +76,7 @@ import "github.com/apache/incubator-yunikorn-scheduler-interface/lib/go/common"
 To be added: currently only the go artifacts will be generated.
 
 ## How to build
-The scheduler interface is a required component for all other components of YuniKorn. For building the scheduler and its shims please check the instructions in the [How to build](https://github.com/apache/incubator-yunikorn-core/blob/master/docs/developer-guide.md) section in the yunikorn-core repository.
+The scheduler interface is a required component for all other components of YuniKorn. For building the scheduler and its shims please check the instructions in the [How to build](https://yunikorn.apache.org/docs/developer_guide/build) section in the yunikorn-core repository.
 
 The build process will download and install all required tools to build this artifact. Building the interface should only be required if the interface has been modified.
 
