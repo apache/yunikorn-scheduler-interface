@@ -75,6 +75,8 @@ message RegisterResourceManagerRequest {
   // This defines which policy to use. Policy should be statically configured. (Think about network security group concept of ec2).
   // Different RMs can refer to the same policyGroup if their static configuration is identical.
   string policyGroup = 3;
+
+  map<string, string> buildInfo = 4;
 }
 
 // Upon success, scheduler returns RegisterResourceManagerResponse to RM, otherwise RM receives exception.
