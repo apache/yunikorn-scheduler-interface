@@ -235,6 +235,9 @@ message RegisterResourceManagerRequest {
   // This defines which policy to use. Policy should be statically configured. (Think about network security group concept of ec2).
   // Different RMs can refer to the same policyGroup if their static configuration is identical.
   string policyGroup = 3;
+
+  // Pass the build information of k8shim to core.
+  map<string, string> buildInfo = 4;
 }
 
 // Upon success, scheduler returns RegisterResourceManagerResponse to RM, otherwise RM receives exception.
@@ -257,9 +260,6 @@ message AllocationRequest {
 
   // ID of RM, this will be used to identify which RM of the request comes from.
   string rmID = 3;
-
-  // Pass the build information of k8shim to core.
-  map<string, string> buildInfo = 4;
 }
 
 message ApplicationRequest {
