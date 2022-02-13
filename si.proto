@@ -336,7 +336,7 @@ message AllocationAskRelease {
   // when application id is set and allocationKey is not set, release all allocations key under the application id.
   string applicationID = 2;
   // optional, when this is set, only release allocation ask by specified
-  string allocationkey = 3;
+  string allocationKey = 3;
   // Termination type of the released allocation ask
   TerminationType terminationType = 4;
   // For human-readable message
