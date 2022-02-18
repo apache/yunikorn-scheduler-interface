@@ -177,11 +177,6 @@ type ResourceManagerCallback interface {
 	// can be allocated onto a node.
 	Predicates(args *si.PredicatesArgs) error
 
-	// RM side implements this API when it can provide plugin for reconciling
-	// Re-sync scheduler cache can sync some in-cache (yunikorn-core side) state changes
-	// to scheduler cache (shim-side), such as assumed allocations.
-	ReSyncSchedulerCache(args *si.ReSyncSchedulerCacheArgs) error
-
 	// This plugin is responsible for transmitting events to the shim side.
 	// Events can be further exposed from the shim.
 	SendEvent(events []*si.EventRecord)
@@ -569,6 +564,8 @@ message AllocationRelease {
   TerminationType terminationType = 4;
   // human-readable message
   string message = 5;
+  // AllocationKey from AllocationAsk
+  string allocationKey = 6;
 }
 
 // Release ask
@@ -734,25 +731,6 @@ message PredicatesArgs {
     string nodeID = 2;
     // run the predicates for alloactions (true) or reservations (false)
     bool allocate = 3;
-}
-
-message ReSyncSchedulerCacheArgs {
-   // a list of assumed allocations, this will be sync'd to scheduler cache.
-   repeated AssumedAllocation assumedAllocations = 1;
-   // a list of allocations to forget
-   repeated ForgotAllocation forgetAllocations = 2;
-}
-
-message AssumedAllocation {
-   // allocation key used to identify a container.
-   string allocationKey = 1;
-   // the node ID the container is assumed to be allocated to, this info is stored in scheduler cache.
-   string nodeID = 2;
-}
-
-message ForgotAllocation {
-   // allocation key used to identify a container.
-   string allocationKey = 1;
 }
 
 message UpdateContainerSchedulingStateRequest {

@@ -326,6 +326,8 @@ message AllocationRelease {
   TerminationType terminationType = 4;
   // human-readable message
   string message = 5;
+  // AllocationKey from AllocationAsk
+  string allocationKey = 6;
 }
 
 // Release ask
@@ -402,25 +404,6 @@ message PredicatesArgs {
     string nodeID = 2;
     // run the predicates for alloactions (true) or reservations (false)
     bool allocate = 3;
-}
-
-message ReSyncSchedulerCacheArgs {
-   // a list of assumed allocations, this will be sync'd to scheduler cache.
-   repeated AssumedAllocation assumedAllocations = 1;
-   // a list of allocations to forget
-   repeated ForgotAllocation forgetAllocations = 2;
-}
-
-message AssumedAllocation {
-   // allocation key used to identify a container.
-   string allocationKey = 1;
-   // the node ID the container is assumed to be allocated to, this info is stored in scheduler cache.
-   string nodeID = 2;
-}
-
-message ForgotAllocation {
-   // allocation key used to identify a container.
-   string allocationKey = 1;
 }
 
 message UpdateContainerSchedulingStateRequest {
