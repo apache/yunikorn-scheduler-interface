@@ -17,7 +17,7 @@
 // under the License.
 //
 
-module github.com/apache/incubator-yunikorn-scheduler-interface
+module github.com/apache/yunikorn-scheduler-interface
 
 go 1.15
 
