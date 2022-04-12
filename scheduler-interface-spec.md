@@ -714,6 +714,9 @@ const (
 	KeyPodName      = "podName"
 	KeyNamespace    = "namespace"
 	KeyRequiredNode = "requiredNode"
+
+	// Pods
+	CreationTime    = "creationTime"
 )
 ```
 
