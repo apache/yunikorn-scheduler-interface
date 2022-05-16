@@ -56,11 +56,6 @@ else ifeq (arm64, $(PROTOC_ARCH))
 PROTOC_ARCH := x86_64
 endif
 
-PROTOBUF_VERSION := $(shell $(GO) list -m 'google.golang.org/protobuf' | cut -d' ' -f 2 | cut -d'-' -f1)
-ifndef PROTOBUF_VERSION
-$(error Build requires to set a proper version of google.golang.org/protobuf in go.mod file)
-endif
-
 # Get and install the protoc binary.
 PROTOC_ZIP := protoc-$(PROTOC_VER)-$(PROTOC_OS)-$(PROTOC_ARCH).zip
 PROTOC_URL := https://github.com/protocolbuffers/protobuf/releases/download/v$(PROTOC_VER)/$(PROTOC_ZIP)
@@ -72,31 +67,6 @@ $(PROTOC):
 		curl -L $(PROTOC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) && \
 		unzip $(PROTOC_TMP_DIR)/$(PROTOC_ZIP) -d $(PROTOC_TMP_DIR) && \
 		chmod 0755 $(PROTOC)
-	stat $@ > /dev/null 2>&1
-
-
-# Get and install the go plug-in for protoc.
-PROTO_GEN_GO_TAR := protoc-gen-go.$(PROTOBUF_VERSION).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
-PROTO_GEN_URL    := https://github.com/protocolbuffers/protobuf-go/releases/download/$(PROTOBUF_VERSION)/$(PROTO_GEN_GO_TAR)
-PROTO_GEN_GO     := $(PROTOC_BIN_DIR)/protoc-gen-go
-$(PROTO_GEN_GO):
-	mkdir -p $(PROTOC_TMP_DIR) && \
-		curl -L $(PROTO_GEN_URL) -o $(PROTOC_TMP_DIR)/$(PROTO_GEN_GO_TAR) && \
-		tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTOC_TMP_DIR)/$(PROTO_GEN_GO_TAR) protoc-gen-go && \
-		chmod 0755 $(PROTO_GEN_GO)
-	stat $@ > /dev/null 2>&1
-
-# Get and install the go plug-in for protoc rpc.
-PROTO_GEN_GRPC_VERSION := v1.1.0
-PROTO_GEN_GRPC_TAR     := protoc-gen-go-grpc.$(PROTO_GEN_GRPC_VERSION).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
-PROTO_GEN_GRPC_TAG     := cmd%2Fprotoc-gen-go-grpc%2F$(PROTO_GEN_GRPC_VERSION)
-PROTO_GEN_GRPC_URL     := https://github.com/grpc/grpc-go/releases/download/$(PROTO_GEN_GRPC_TAG)/$(PROTO_GEN_GRPC_TAR)
-PROTO_GEN_GRPC_GO      := $(PROTOC_BIN_DIR)/protoc-gen-go-grpc
-$(PROTO_GEN_GRPC_GO):
-	mkdir -p $(PROTOC_TMP_DIR) && \
-		curl -L $(PROTO_GEN_GRPC_URL) -o $(PROTOC_TMP_DIR)/$(PROTO_GEN_GRPC_TAR) && \
-		tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTOC_TMP_DIR)/$(PROTO_GEN_GRPC_TAR) ./protoc-gen-go-grpc && \
-		chmod 0755 $(PROTO_GEN_GRPC_GO)
 	stat $@ > /dev/null 2>&1
 
 # Update PATH with the protoc bin dir which contains protoc and its plug-in
@@ -116,12 +86,12 @@ SI_GO := $(SI_PKG_SUB)/si.pb.go
 SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
-$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTO_GEN_GO) $(PROTO_GEN_GRPC_GO)
+$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install github.com/golang/protobuf/protoc-gen-go@v1.2.0
 	ls -al $(PROTOC_BIN_DIR)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
-		--go_opt=paths=source_relative --go_out=$(GO_OUT) \
-		--go-grpc_opt=paths=source_relative --go-grpc_out=$(GO_OUT) \
+		--go_out=plugins=grpc:$(GO_OUT) --go_opt=paths=source_relative \
 		$(PKG_ROOT)/$(<F))
 
 # Syntax check constants to make sure it passes
