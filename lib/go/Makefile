@@ -30,27 +30,34 @@ BASE := $(abspath $(CURDIR)/../../..)
 PKG_ROOT := $(patsubst %/lib/go,%,$(patsubst $(BASE)/%,%,$(HERE)))
 
 # Force Go modules even when checked out inside GOPATH
+GO := $(shell command -v go 2> /dev/null)
 GO111MODULE := on
 export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.16.0
+PROTOC_VER := 3.20.1
 endif
 
-# Fix OS string for Mac builds.
+# Fix OS string for Mac and Linux builds.
 PROTOC_OS := $(shell uname -s)
 PROTOGEN_OS := $(shell uname -s)
 ifeq (Darwin,$(PROTOC_OS))
 PROTOC_OS := osx
+else ifeq (Linux,$(PROTOC_OS))
+PROTOC_OS := linux
 endif
 
-# Allow building on 32 bit machines.
+# Fix architecture naming.
 PROTOC_ARCH := $(shell uname -m)
 PROTOGEN_ARCH := amd64
 ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
 PROTOGEN_ARCH := 386
+else ifeq (arm64, $(PROTOC_ARCH))
+PROTOC_ARCH := aarch_64
+else ifeq (aarch64, $(PROTOC_ARCH))
+PROTOC_ARCH := aarch_64
 endif
 
 # Get and install the protoc binary.
@@ -84,7 +91,7 @@ SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
 $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go get github.com/golang/protobuf/protoc-gen-go@v1.2.0
+	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install github.com/golang/protobuf/protoc-gen-go@v1.2.0
 	ls -al $(PROTOC_BIN_DIR)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
