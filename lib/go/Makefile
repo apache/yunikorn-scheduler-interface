@@ -39,14 +39,16 @@ ifeq (,$(strip $(PROTOC_VER)))
 PROTOC_VER := 3.16.0
 endif
 
-# Fix OS string for Mac builds.
+# Fix OS string for Mac and Linux builds.
 PROTOC_OS := $(shell uname -s)
 PROTOGEN_OS := $(shell uname -s)
 ifeq (Darwin,$(PROTOC_OS))
 PROTOC_OS := osx
+else ifeq (Linux,$(PROTOC_OS))
+PROTOC_OS := linux
 endif
 
-# Allow building on 32 bit machines.
+# Fix architecture naming.
 PROTOC_ARCH := $(shell uname -m)
 PROTOGEN_ARCH := amd64
 ifeq (i386,$(PROTOC_ARCH))
@@ -54,6 +56,8 @@ PROTOC_ARCH := x86_32
 PROTOGEN_ARCH := 386
 else ifeq (arm64, $(PROTOC_ARCH))
 PROTOC_ARCH := x86_64
+else ifeq (aarch64, $(PROTOC_ARCH))
+PROTOC_ARCH := aarch_64
 endif
 
 # Get and install the protoc binary.
