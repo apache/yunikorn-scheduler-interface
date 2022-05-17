@@ -36,7 +36,7 @@ export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.16.0
+PROTOC_VER := 3.20.1
 endif
 
 # Fix OS string for Mac and Linux builds.
@@ -55,7 +55,7 @@ ifeq (i386,$(PROTOC_ARCH))
 PROTOC_ARCH := x86_32
 PROTOGEN_ARCH := 386
 else ifeq (arm64, $(PROTOC_ARCH))
-PROTOC_ARCH := x86_64
+PROTOC_ARCH := aarch_64
 else ifeq (aarch64, $(PROTOC_ARCH))
 PROTOC_ARCH := aarch_64
 endif
