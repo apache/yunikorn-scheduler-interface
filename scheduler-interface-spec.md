@@ -447,7 +447,7 @@ message AllocationAsk {
   // Is this a placeholder ask (true) or a real ask (false), defaults to false
   // ignored if the taskGroupName is not set
   bool placeholder = 10;
-  // Does this ask originates the application?
+  // Is this ask the originator of the application?
   bool Originator = 11;
 }
 ```
@@ -713,9 +713,9 @@ const (
 	GroupAnnotation = "annotation/"
 
 	// Keys
-	KeyPodName      = "podName"
-	KeyNamespace    = "namespace"
-	KeyRequiredNode = "requiredNode"
+	KeyPodName         = "podName"
+	KeyNamespace       = "namespace"
+	KeyRequiredNode    = "requiredNode"
 	KeyAllowPreemption = "allowPreemption"
 
 	// Pods
