@@ -392,17 +392,6 @@ Lifecycle of Allocations:
 Common fields for allocation:
 
 ```protobuf
-message Priority {
-  oneof priority {
-    // Priority of each ask, higher is more important.
-    // How to deal with Priority is handled by each scheduler implementation.
-    int32 priorityValue = 1;
-
-    // PriorityClass is used for app owners to set named priorities. This is a portable way for
-    // app owners have a consistent way to setup priority across clusters
-    string priorityClassName = 2;
-  }
-}
 
 // A sparse map of resource to Quantity.
 message Resource {
@@ -434,7 +423,7 @@ message AllocationAsk {
   // Maximum number of allocations
   int32 maxAllocations = 5;
   // Priority of ask
-  Priority priority = 6;
+  int32 priority = 6;
   // Execution timeout: How long this allocation will be terminated (by scheduler)
   // once allocated by scheduler, 0 or negative value means never expire.
   int64 executionTimeoutMilliSeconds = 7;
@@ -515,7 +504,7 @@ message Allocation {
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
   // Priority of ask
-  Priority priority = 6;
+  int32 priority = 6;
   // Queue which the allocation belongs to
   string queueName = 7;
   // Node which the allocation belongs to
