@@ -115,15 +115,24 @@ build: $(SI_PROTO).tmp $(CONSTANTS_GO).tmp $(INTERFACE_GO).tmp
 test:
 	@echo ""
 
+OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 # Check for missing license headers
 .PHONY: license-check
 license-check:
-	@echo "checking license header"
-	@licRes=$$(grep -Lr --exclude-dir=lib --include=*.{go,sh,md,yaml,mod} "Licensed to the Apache Software Foundation" .) ; \
-	if [ -n "$${licRes}" ]; then \
-		echo "following files have incorrect license header:\n$${licRes}" ; \
+	@echo "checking license headers:"
+ifeq (darwin,$(OS))
+	$(shell find -E . -not -path "./.git*" -not -path "*lib*" -regex ".*\.(go|sh|md|yaml|yml|mod)" -exec grep -L "Licensed to the Apache Software Foundation" {} \; > LICRES)
+else
+	$(shell find . -not -path "./.git*" -not -path "*lib*" -regex ".*\.\(go\|sh\|md\|yaml\|yml\|mod\)" -exec grep -L "Licensed to the Apache Software Foundation" {} \; > LICRES)
+endif
+	@if [ -s LICRES ]; then \
+		echo "following files are missing license header:" ; \
+		cat LICRES ; \
+		rm -f LICRES ; \
 		exit 1; \
-	fi
+	fi ; \
+	rm -f LICRES
+	@echo "  all OK"
 
 # Simple clean of generated files only (no local cleanup).
 .PHONY: clean
