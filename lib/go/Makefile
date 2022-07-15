@@ -30,7 +30,6 @@ BASE := $(abspath $(CURDIR)/../../..)
 PKG_ROOT := $(patsubst %/lib/go,%,$(patsubst $(BASE)/%,%,$(HERE)))
 
 # Force Go modules even when checked out inside GOPATH
-GO := $(shell command -v go 2> /dev/null)
 GO111MODULE := on
 export GO111MODULE
 
@@ -39,13 +38,11 @@ ifeq (,$(strip $(PROTOC_VER)))
 PROTOC_VER := 3.20.1
 endif
 
-# Fix OS string for Mac and Linux builds.
-PROTOC_OS := $(shell uname -s)
-PROTOGEN_OS := $(shell uname -s)
-ifeq (Darwin,$(PROTOC_OS))
+PROTOC_OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+PROTOGEN_OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+# Fix OS string for Mac builds.
+ifeq (darwin,$(PROTOC_OS))
 PROTOC_OS := osx
-else ifeq (Linux,$(PROTOC_OS))
-PROTOC_OS := linux
 endif
 
 # Fix architecture naming.
@@ -107,7 +104,7 @@ syntax_check:
 
 # Build the go language bindings from the generated proto.
 build: $(SI_GO_TMP) syntax_check
-	cp -f $(SI_GO_TMP) $(SI_GO)
+	@cp -f $(SI_GO_TMP) $(SI_GO)
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
 
 # Simple clean of generated file language binding.
