@@ -272,8 +272,6 @@ message Allocation {
   Resource resourcePerAlloc = 5;
   // Priority of ask
   int32 priority = 6;
-  // Queue which the allocation belongs to
-  string queueName = 7;
   // Node which the allocation belongs to
   string nodeID = 8;
   // The ID of the application
