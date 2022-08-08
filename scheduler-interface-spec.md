@@ -501,12 +501,14 @@ message Allocation {
   map<string, string> allocationTags = 2;
   // UUID of the allocation
   string UUID = 3;
+  
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
   // Priority of ask
   int32 priority = 6;
   // Node which the allocation belongs to
   string nodeID = 8;
+  
   // The ID of the application
   string applicationID = 9;
   // Partition of the allocation
@@ -516,6 +518,9 @@ message Allocation {
   // Is this a placeholder allocation (true) or a real allocation (false), defaults to false
   // ignored if the taskGroupName is not set
   bool placeholder = 12;
+  
+  reserved 7;
+  reserved "queueName";
 }
 ```
 
