@@ -35,6 +35,7 @@ const (
 	ContainerImage = "si/container-image"
 	ContainerPorts = "si/container-ports"
 )
+
 // Constants for allocation tags
 const (
 	// Domains
@@ -53,5 +54,14 @@ const (
 	KeyAllowPreemption = "allowPreemption"
 
 	// Pods
-	CreationTime    = "creationTime"
+	CreationTime = "creationTime"
+)
+
+// Constants for Core and Shim
+const (
+	Memory                       = "memory"
+	CPU                          = "CPU"
+	AppTagNamespaceResourceQuota = "namespace.resourcequota"
+	AppTagStateAwareDisable      = "application.stateaware.disable"
+	NodeReadyAttribute           = "ready"
 )
