@@ -172,6 +172,7 @@ func (EventRecord_Type) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_si_09b58b0848c8fa12, []int{29, 0}
 }
 
+//
 // service MetricsService {
 // }
 type RegisterResourceManagerRequest struct {
