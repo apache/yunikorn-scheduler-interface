@@ -715,6 +715,19 @@ const (
 )
 ```
 
+Miscellaneous constants for resources and other values.
+
+```constants
+// Constants for Core and Shim
+const (
+	Memory                       = "memory"
+	CPU                          = "vcore"
+	AppTagNamespaceResourceQuota = "namespace.resourcequota"
+	AppTagStateAwareDisable      = "application.stateaware.disable"
+	NodeReadyAttribute           = "ready"
+)
+```
+
 ### Scheduler plugin
 
 SchedulerPlugin is a way to extend scheduler capabilities. Scheduler shim can implement such plugin and register itself to

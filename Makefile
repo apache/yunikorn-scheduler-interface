@@ -51,8 +51,10 @@ SI_PROTO := si.proto
 LIB_DIR := lib/go
 COMMON_LIB := $(LIB_DIR)/common
 CONSTANTS_GO := $(COMMON_LIB)/constants.go
+CONSTANTS_TMP := $(COMMON_LIB)/tmp_constants.go
 API_LIB := $(LIB_DIR)/api
 INTERFACE_GO := $(API_LIB)/interface.go
+INTERFACE_TMP := $(API_LIB)/tmp_interface.go
 
 define GENERATED_HEADER
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -91,23 +93,25 @@ $(SI_PROTO).tmp: $(SI_SPEC)
 	(diff $@ $(SI_PROTO) > /dev/null 2>&1 || mv -f $@ $(SI_PROTO)) && \
 		rm -f $@
 
-$(CONSTANTS_GO).tmp: $(SI_SPEC)
+$(CONSTANTS_TMP): $(SI_SPEC)
 	test -d $(COMMON_LIB) || mkdir -p $(COMMON_LIB)
 	@echo "$$GENERATED_HEADER" > $@
 	@echo "$$PACKAGE_DEF" >> $@
-	cat $< | sed -n -e '/``constants$$/,/^```$$/ p' | sed '/^```/d' >> $@
+	cat $< | sed -n -e '/```constants$$/,/^```$$/ p' | sed '/^```/ s/.*//g' >> $@
+	go fmt $@
 	(diff $@ $(CONSTANTS_GO) > /dev/null 2>&1 || mv -f $@ $(CONSTANTS_GO)) && \
 		rm -f $@
 
-$(INTERFACE_GO).tmp: $(SI_SPEC)
+$(INTERFACE_TMP): $(SI_SPEC)
 	test -d $(API_LIB) || mkdir -p $(API_LIB)
 	@echo "$$GENERATED_HEADER" > $@
-	cat $< | sed -n -e '/``golang$$/,/^```$$/ p' | sed '/^```/d' >> $@
+	cat $< | sed -n -e '/```golang$$/,/^```$$/ p' | sed '/^```/ s/.*//g' >> $@
+	go fmt $@
 	(diff $@ $(INTERFACE_GO) > /dev/null 2>&1 || mv -f $@ $(INTERFACE_GO)) && \
 		rm -f $@
 
 # Build the go language bindings from the spec via a generated proto
-build: $(SI_PROTO).tmp $(CONSTANTS_GO).tmp $(INTERFACE_GO).tmp 
+build: $(SI_PROTO).tmp $(CONSTANTS_TMP) $(INTERFACE_TMP)
 	$(MAKE) -C $(LIB_DIR)
 
 # Set a empty recipe
