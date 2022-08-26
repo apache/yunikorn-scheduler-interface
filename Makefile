@@ -105,7 +105,7 @@ $(CONSTANTS_TMP): $(SI_SPEC)
 $(INTERFACE_TMP): $(SI_SPEC)
 	test -d $(API_LIB) || mkdir -p $(API_LIB)
 	@echo "$$GENERATED_HEADER" > $@
-	cat $< | sed -n -e '/``golang$$/,/^```$$/ p' | sed '/^```/ s/.*//g' >> $@
+	cat $< | sed -n -e '/```golang$$/,/^```$$/ p' | sed '/^```/ s/.*//g' >> $@
 	go fmt $@
 	(diff $@ $(INTERFACE_GO) > /dev/null 2>&1 || mv -f $@ $(INTERFACE_GO)) && \
 		rm -f $@
