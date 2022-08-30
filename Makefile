@@ -119,6 +119,20 @@ build: $(SI_PROTO).tmp $(CONSTANTS_TMP) $(INTERFACE_TMP)
 test:
 	@echo ""
 
+# Check that the updates are made in the source file: scheduler-interface.md
+# The check is run as part of the pre-commit and a build should not update any files.
+.PHONY: check
+check: build
+	@echo "Check for changes by build"
+	@if ! git diff --quiet; then \
+		echo "'make build' updated the following files:\n" ; \
+		git status --untracked-files=no --porcelain ; \
+		echo "\nUpdates must be made in scheduler-interface.md" ; \
+		echo "Run 'make build' before committing PR changes" ; \
+		exit 1; \
+	fi
+	@echo "  all OK"
+
 OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 # Check for missing license headers
 .PHONY: license-check
