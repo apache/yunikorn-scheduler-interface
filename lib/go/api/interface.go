@@ -33,7 +33,7 @@ type SchedulerAPI interface {
 	UpdateNode(request *si.NodeRequest) error
 
 	// Notify scheduler to reload configuration and hot-refresh in-memory state based on configuration changes
-	UpdateConfiguration(clusterID string) error
+	UpdateConfiguration(request *si.UpdateConfigurationRequest) error
 }
 
 // RM side needs to implement this API
@@ -64,7 +64,4 @@ type ResourceManagerCallback interface {
 	// the shim side cannot assume to only receive updates on state changes
 	// the shim side implementation must be thread safe
 	UpdateContainerSchedulingState(request *si.UpdateContainerSchedulingStateRequest)
-
-	// Update configuration
-	UpdateConfiguration(args *si.UpdateConfigurationRequest) *si.UpdateConfigurationResponse
 }

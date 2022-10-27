@@ -78,6 +78,9 @@ message RegisterResourceManagerRequest {
 
   // Pass the build information of k8shim to core.
   map<string, string> buildInfo = 4;
+
+  // Pass the serialized configuration for this policyGroup to core.
+  bytes config = 5;
 }
 
 // Upon success, scheduler returns RegisterResourceManagerResponse to RM, otherwise RM receives exception.
@@ -430,19 +433,14 @@ message UpdateContainerSchedulingStateRequest {
 }
 
 message UpdateConfigurationRequest {
-    // New config what needs to be saved
-    string configs = 1;
-}
+    // RM ID to update
+    string rmID = 1;
 
-message UpdateConfigurationResponse {
-    // flag that marks the config update success or failure
-    bool success = 1;
+    // PolicyGroup to update
+    string policyGroup = 2;
 
-    // the old configuration what was changed
-    string oldConfig = 2;
-
-    // reason in case of failure
-    string reason = 3;
+    // New configuration to update
+    bytes config = 3;
 }
 message EventRecord {
    enum Type {
