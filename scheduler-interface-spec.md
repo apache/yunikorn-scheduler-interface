@@ -232,7 +232,7 @@ message RegisterResourceManagerRequest {
   map<string, string> buildInfo = 4;
 
   // Pass the serialized configuration for this policyGroup to core.
-  bytes config = 5;
+  string config = 5;
 }
 
 // Upon success, scheduler returns RegisterResourceManagerResponse to RM, otherwise RM receives exception.
@@ -774,14 +774,17 @@ message UpdateContainerSchedulingStateRequest {
 }
 
 message UpdateConfigurationRequest {
-    // RM ID to update
-    string rmID = 1;
+  // RM ID to update
+  string rmID = 2;
 
-    // PolicyGroup to update
-    string policyGroup = 2;
+  // PolicyGroup to update
+  string policyGroup = 3;
 
-    // New configuration to update
-    bytes config = 3;
+  // New configuration to update
+  string config = 4;
+
+  reserved 1;
+  reserved "configs";
 }
 ```
 
