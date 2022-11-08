@@ -158,7 +158,7 @@ type SchedulerAPI interface {
 	UpdateNode(request *si.NodeRequest) error
 
 	// Notify scheduler to reload configuration and hot-refresh in-memory state based on configuration changes
-	UpdateConfiguration(clusterID string) error
+	UpdateConfiguration(request *si.UpdateConfigurationRequest) error
 }
 
 // RM side needs to implement this API
@@ -189,9 +189,6 @@ type ResourceManagerCallback interface {
 	// the shim side cannot assume to only receive updates on state changes
 	// the shim side implementation must be thread safe
 	UpdateContainerSchedulingState(request *si.UpdateContainerSchedulingStateRequest)
-
-	// Update configuration
-	UpdateConfiguration(args *si.UpdateConfigurationRequest) *si.UpdateConfigurationResponse
 }
 ```
 
@@ -233,6 +230,9 @@ message RegisterResourceManagerRequest {
 
   // Pass the build information of k8shim to core.
   map<string, string> buildInfo = 4;
+
+  // Pass the serialized configuration for this policyGroup to core.
+  string config = 5;
 }
 
 // Upon success, scheduler returns RegisterResourceManagerResponse to RM, otherwise RM receives exception.
@@ -774,19 +774,17 @@ message UpdateContainerSchedulingStateRequest {
 }
 
 message UpdateConfigurationRequest {
-    // New config what needs to be saved
-    string configs = 1;
-}
+  // RM ID to update
+  string rmID = 2;
 
-message UpdateConfigurationResponse {
-    // flag that marks the config update success or failure
-    bool success = 1;
+  // PolicyGroup to update
+  string policyGroup = 3;
 
-    // the old configuration what was changed
-    string oldConfig = 2;
+  // New configuration to update
+  string config = 4;
 
-    // reason in case of failure
-    string reason = 3;
+  reserved 1;
+  reserved "configs";
 }
 ```
 
