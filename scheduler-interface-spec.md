@@ -233,6 +233,9 @@ message RegisterResourceManagerRequest {
 
   // Pass the serialized configuration for this policyGroup to core.
   string config = 5;
+
+  // Additional configuration key/value pairs for configuration not related to the policyGroup.
+  map<string, string> extraConfig = 6;
 }
 
 // Upon success, scheduler returns RegisterResourceManagerResponse to RM, otherwise RM receives exception.
@@ -782,6 +785,9 @@ message UpdateConfigurationRequest {
 
   // New configuration to update
   string config = 4;
+
+  // Additional configuration key/value pairs for configuration not related to the policyGroup.
+  map<string, string> extraConfig = 5;
 
   reserved 1;
   reserved "configs";
