@@ -65,3 +65,10 @@ type ResourceManagerCallback interface {
 	// the shim side implementation must be thread safe
 	UpdateContainerSchedulingState(request *si.UpdateContainerSchedulingStateRequest)
 }
+
+// RM can additionally implement this API to provide information during state dumps
+type StateDumpPlugin interface {
+
+	// This plugin is responsible for returning a JSON representation of the state of the shim
+	GetStateDump() (string, error)
+}
