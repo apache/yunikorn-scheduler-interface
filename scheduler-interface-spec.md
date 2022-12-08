@@ -448,6 +448,19 @@ message AllocationAsk {
   bool placeholder = 10;
   // Is this ask the originator of the application?
   bool Originator = 11;
+  // The preemption policy for this ask
+  PreemptionPolicy preemptionPolicy = 12;
+}
+```
+
+Preemption policy:
+
+```protobuf
+message PreemptionPolicy {
+  // Opt-out from preemption
+  bool allowPreemptSelf = 1;
+  // Allow preemption of other tasks with same or lower priority
+  bool allowPreemptOther = 2;
 }
 ```
 
