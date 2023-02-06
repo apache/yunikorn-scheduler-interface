@@ -19,7 +19,7 @@
 
 module github.com/apache/yunikorn-scheduler-interface
 
-go 1.15
+go 1.20
 
 require (
 	github.com/golang/protobuf v1.2.0
