@@ -177,6 +177,11 @@ type ResourceManagerCallback interface {
 	// can be allocated onto a node.
 	Predicates(args *si.PredicatesArgs) error
 
+	// Run predicate functions to determine if a proposed allocation can be allocated
+	// onto a node after preemption. The request contains a list of allocations to
+	// speculatively remove.
+	PreemptionPredicates(args *si.PreemptionPredicatesArgs) *si.PreemptionPredicatesResponse
+
 	// This plugin is responsible for transmitting events to the shim side.
 	// Events can be further exposed from the shim.
 	SendEvent(events []*si.EventRecord)
@@ -765,6 +770,24 @@ message PredicatesArgs {
     string nodeID = 2;
     // run the predicates for alloactions (true) or reservations (false)
     bool allocate = 3;
+}
+
+message PreemptionPredicatesArgs {
+    // the allocation key of the container to check
+    string allocationKey = 1;
+    // the node ID the container should be attempted to be scheduled on
+    string nodeID = 2;
+    // a list of existing allocations that should be tentatively removed before checking
+    repeated string preemptAllocationKeys = 3;
+    // index of last allocation in starting attempt (first attempt should be 0..startIndex)
+    int32 startIndex = 4;
+}
+
+message PreemptionPredicatesResponse {
+    // whether or not container will schedule on the node
+    bool success = 1;
+    // index of last allocation which was removed before success (ignored during failure)
+    int32 index = 2;
 }
 
 message UpdateContainerSchedulingStateRequest {

@@ -52,6 +52,11 @@ type ResourceManagerCallback interface {
 	// can be allocated onto a node.
 	Predicates(args *si.PredicatesArgs) error
 
+	// Run predicate functions to determine if a proposed allocation can be allocated
+	// onto a node after preemption. The request contains a list of allocations to
+	// speculatively remove.
+	PreemptionPredicates(args *si.PreemptionPredicatesArgs) *si.PreemptionPredicatesResponse
+
 	// This plugin is responsible for transmitting events to the shim side.
 	// Events can be further exposed from the shim.
 	SendEvent(events []*si.EventRecord)
