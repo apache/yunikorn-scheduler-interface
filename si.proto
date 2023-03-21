@@ -47,22 +47,6 @@ service Scheduler {
   rpc UpdateNode(stream NodeRequest)
     returns (stream NodeResponse) { }
 }
-
-/*
-service AdminService {
-  // Include
-  //   addQueueInfo.
-  //   removeQueueInfo.
-  //   updateQueueInfo.
-  rpc UpdateConfig (UpdateConfigRequest)
-    returns (UpdateConfigResponse) {}
-}
-*/
-
-/*
-service MetricsService {
-}
-*/
 message RegisterResourceManagerRequest {
   // An ID which can uniquely identify a RM **cluster**. (For example, if a RM cluster has multiple manager instances for HA purpose, they should use the same information when do registration).
   // If RM register with the same ID, all previous scheduling state in memory will be cleaned up, and expect RM report full scheduling state after registration.

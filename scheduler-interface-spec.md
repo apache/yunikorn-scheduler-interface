@@ -107,22 +107,6 @@ service Scheduler {
   rpc UpdateNode(stream NodeRequest)
     returns (stream NodeResponse) { }
 }
-
-/*
-service AdminService {
-  // Include
-  //   addQueueInfo.
-  //   removeQueueInfo.
-  //   updateQueueInfo.
-  rpc UpdateConfig (UpdateConfigRequest)
-    returns (UpdateConfigResponse) {}
-}
-*/
-
-/*
-service MetricsService {
-}
-*/
 ```
 #### Why bi-directional gRPC
 
