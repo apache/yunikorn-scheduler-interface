@@ -364,22 +364,25 @@ message NodeInfo {
   // ID of node, the node must exist to be updated
   string nodeID = 1;
 
+  // RackName of node, the node must exist to be updated
+  string rackName = 2;
+
   // Action to perform by the scheduler
-  ActionFromRM action = 2;
+  ActionFromRM action = 3;
 
   // New attributes of node, which will replace previously reported attribute.
-  map<string, string> attributes = 3;
+  map<string, string> attributes = 4;
 
   // new schedulable resource, scheduler may preempt allocations on the
   // node or schedule more allocations accordingly.
-  Resource schedulableResource = 4;
+  Resource schedulableResource = 5;
 
   // when the scheduler is co-exist with some other schedulers, some node
   // resources might be occupied (allocated) by other schedulers.
-  Resource occupiedResource = 5;
+  Resource occupiedResource = 6;
 
   // Allocated resources, this will be added when node registered to RM (recovery)
-  repeated Allocation existingAllocations = 6;
+  repeated Allocation existingAllocations = 7;
 }
 message RejectedAllocationAsk {
   string allocationKey = 1;
