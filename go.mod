@@ -23,17 +23,17 @@ go 1.15
 
 require (
 	github.com/golang/protobuf v1.2.0
-	golang.org/x/net v0.2.0
+	golang.org/x/net v0.8.0
 	google.golang.org/grpc v1.23.1
 	google.golang.org/protobuf v1.26.0-rc.1
 )
 
 replace (
 	github.com/golang/protobuf => github.com/golang/protobuf v1.2.0
-	golang.org/x/crypto => golang.org/x/crypto v0.3.0
+	golang.org/x/crypto => golang.org/x/crypto v0.7.0
 	golang.org/x/lint => golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
-	golang.org/x/net => golang.org/x/net v0.4.0
-	golang.org/x/sys => golang.org/x/sys v0.2.0
-	golang.org/x/text => golang.org/x/text v0.4.0
-	golang.org/x/tools => golang.org/x/tools v0.3.0
+	golang.org/x/net => golang.org/x/net v0.8.0
+	golang.org/x/sys => golang.org/x/sys v0.6.0
+	golang.org/x/text => golang.org/x/text v0.8.0
+	golang.org/x/tools => golang.org/x/tools v0.7.0
 )
