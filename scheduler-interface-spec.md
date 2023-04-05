@@ -849,13 +849,16 @@ message EventRecord {
    Type type = 1;
    // ID of the object associated with the event
    string objectID = 2;
-   // identification of the second object for the event, eg. an Allocation UUID for a new allocation added to an application, request or node
-   string referenceID = 3;
    // the detailed message as string
-   string message = 4;
+   string message = 5;
    // timestamp of the event
-   int64 timestampNano = 5;
+   int64 timestampNano = 6;
    // the type of the change
-   ChangeType eventChangeType = 6;
+   ChangeType eventChangeType = 7;
+   
+   reserved 3;
+   reserved "groupID";
+   reserved 4;
+   reserved "reason";
 }
 ```
