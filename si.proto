@@ -471,26 +471,17 @@ message EventRecord {
       QUEUE = 4;
    }
 
-   enum ChangeType {
-      NONE = 0;
-      SET = 1;
-      ADD = 2;
-      REMOVE = 3;
-   }
-
    // the type of the object associated with the event
    Type type = 1;
    // ID of the object associated with the event
    string objectID = 2;
+   // the group this object belongs to
+   // it specifies the application ID for allocations and the queue for applications
+   string groupID = 3;
+   // the reason of this event
+   string reason = 4;
    // the detailed message as string
    string message = 5;
    // timestamp of the event
    int64 timestampNano = 6;
-   // the type of the change
-   ChangeType eventChangeType = 7;
-   
-   reserved 3;
-   reserved "groupID";
-   reserved 4;
-   reserved "reason";
 }
