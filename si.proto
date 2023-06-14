@@ -530,7 +530,7 @@ message EventRecord {
    // the type of the change
    ChangeType eventChangeType = 7;
    // details about the change
-   ChangeDetail eventChangeDetai = 8;
+   ChangeDetail eventChangeDetail = 8;
    // the secondary object in the event (eg. allocation UUID, request ID)
    string referenceID = 9;
    // the resource value if the change involves setting/modifying a resource
