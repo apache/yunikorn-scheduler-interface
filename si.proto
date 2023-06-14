@@ -471,17 +471,73 @@ message EventRecord {
       QUEUE = 4;
    }
 
+   enum ChangeType {
+      NONE = 0;
+      SET = 1;
+      ADD = 2;
+      REMOVE = 3;
+   }
+
+   enum ChangeDetail {
+     DETAILS_NONE       = 0;
+
+     REQUEST_CANCEL     = 100;  // Request cancelled by the RM
+     REQUEST_ALLOC      = 101;  // Request allocated
+     REQUEST_TIMEOUT    = 102;  // Request cancelled due to timeout
+
+     APP_ALLOC          = 200;  // Allocation changed
+     APP_REQUEST        = 201;  // Request changed
+     APP_REJECT         = 202;  // Application rejected on create
+     APP_NEW            = 203;  // Application added with state new
+     APP_ACCEPTED       = 204;  // State change to accepted 
+     APP_STARTING       = 205;  // State change to starting
+     APP_RUNNING        = 206;  // State change to running
+     APP_COMPLETING     = 207;  // State change to completing
+     APP_COMPLETED      = 208;  // State change to completed
+     APP_FAILING        = 209;  // State change to failing
+     APP_FAILED         = 210;  // State change to failed
+
+     NODE_DECOMISSION   = 300;  // Node removal
+     NODE_READY         = 301;  // Node ready state change
+     NODE_SCHEDULABLE   = 302;  // Node schedulable state change (cordon)
+     NODE_ALLOC         = 303;  // Allocation changed
+     NODE_CAPACITY      = 304;  // Capacity changed
+     NODE_OCCUPIED      = 305;  // Occupied resource changed
+
+     QUEUE_CONFIG       = 400;  // Managed queue update or removal
+     QUEUE_DYNAMIC      = 401;  // Dynamic queue update or removal
+     QUEUE_TYPE         = 402;  // Queue type change
+     QUEUE_MAX          = 403;  // Max resource changed
+     QUEUE_GUARANTEED   = 404;  // Guaranteed resource changed
+     QUEUE_APP          = 405;  // Application changed
+     QUEUE_ALLOC        = 406;  // Allocation changed
+
+     ALLOC_CANCEL       = 500;  // Allocation cancelled by the RM
+     ALLOC_PREEMPT      = 501;  // Allocation preempted by the core
+     ALLOC_TIMEOUT      = 502;  // Allocation cancelled due to timeout
+     ALLOC_REPLACED     = 503;  // Allocation replacement (placeholder)
+     ALLOC_NODEREMOVED  = 504;  // Allocation cancelled, node removal
+   }
+
    // the type of the object associated with the event
    Type type = 1;
    // ID of the object associated with the event
    string objectID = 2;
-   // the group this object belongs to
-   // it specifies the application ID for allocations and the queue for applications
-   string groupID = 3;
-   // the reason of this event
-   string reason = 4;
    // the detailed message as string
    string message = 5;
    // timestamp of the event
    int64 timestampNano = 6;
+   // the type of the change
+   ChangeType eventChangeType = 7;
+   // details about the change
+   ChangeDetail eventChangeDetai = 8;
+   // the secondary object in the event (eg. allocation UUID, request ID)
+   string referenceID = 9;
+   // the resource value if the change involves setting/modifying a resource
+   Resource resource = 10;
+
+   reserved 3;
+   reserved "groupID";
+   reserved 4;
+   reserved "reason";
 }
