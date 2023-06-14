@@ -59,9 +59,10 @@ const (
 
 // Constants for Core and Shim
 const (
-	Memory                       = "memory"
-	CPU                          = "vcore"
-	AppTagNamespaceResourceQuota = "namespace.resourcequota"
-	AppTagStateAwareDisable      = "application.stateaware.disable"
-	NodeReadyAttribute           = "ready"
+	Memory                            = "memory"
+	CPU                               = "vcore"
+	AppTagNamespaceResourceQuota      = "namespace.resourcequota"
+	AppTagNamespaceResourceGuaranteed = "namespace.resourceguaranteed"
+	AppTagStateAwareDisable           = "application.stateaware.disable"
+	NodeReadyAttribute                = "ready"
 )
