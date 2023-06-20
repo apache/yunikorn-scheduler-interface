@@ -22,24 +22,23 @@ module github.com/apache/yunikorn-scheduler-interface
 go 1.20
 
 require (
-	github.com/golang/protobuf v1.2.0
-	golang.org/x/net v0.8.0
-	google.golang.org/grpc v1.23.1
-	google.golang.org/protobuf v1.26.0-rc.1
+	google.golang.org/grpc v1.56.0
+	google.golang.org/protobuf v1.30.0
 )
 
 require (
-	golang.org/x/sys v0.6.0 // indirect
-	golang.org/x/text v0.8.0 // indirect
-	google.golang.org/genproto v0.0.0-20180817151627-c66870c02cf8 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/text v0.9.0 // indirect
+	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 )
 
 replace (
-	github.com/golang/protobuf => github.com/golang/protobuf v1.2.0
-	golang.org/x/crypto => golang.org/x/crypto v0.7.0
+	golang.org/x/crypto => golang.org/x/crypto v0.10.0
 	golang.org/x/lint => golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
-	golang.org/x/net => golang.org/x/net v0.8.0
-	golang.org/x/sys => golang.org/x/sys v0.6.0
-	golang.org/x/text => golang.org/x/text v0.8.0
-	golang.org/x/tools => golang.org/x/tools v0.7.0
+	golang.org/x/net => golang.org/x/net v0.10.0
+	golang.org/x/sys => golang.org/x/sys v0.8.0
+	golang.org/x/text => golang.org/x/text v0.9.0
+	golang.org/x/tools => golang.org/x/tools v0.9.3
 )
