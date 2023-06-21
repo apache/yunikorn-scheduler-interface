@@ -35,7 +35,12 @@ export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 3.20.1
+PROTOC_VER := 23.2
+endif
+
+# Only set PROTOC_GEN_GO_GRPC_VER if it has an empty value.
+ifeq (,$(strip $(PROTOC_GEN_GO_GRPC_VER)))
+PROTOC_GEN_GO_GRPC_VER := 1.3.0
 endif
 
 PROTOC_OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
@@ -53,8 +58,10 @@ PROTOC_ARCH := x86_32
 PROTOGEN_ARCH := 386
 else ifeq (arm64, $(PROTOC_ARCH))
 PROTOC_ARCH := aarch_64
+PROTOGEN_ARCH := arm64
 else ifeq (aarch64, $(PROTOC_ARCH))
 PROTOC_ARCH := aarch_64
+PROTOGEN_ARCH := arm64
 endif
 
 # Get and install the protoc binary.
@@ -70,16 +77,32 @@ $(PROTOC):
 		chmod 0755 $(PROTOC)
 	stat $@ > /dev/null 2>&1
 
+# Get and install the go plug-in for protoc.
+PROTOC_GEN_GO_TAR := protoc-gen-go.$(PROTOBUF_VERSION).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
+PROTOC_GEN_GO_URL := https://github.com/protocolbuffers/protobuf-go/releases/download/$(PROTOBUF_VERSION)/$(PROTOC_GEN_GO_TAR)
+PROTOC_GEN_GO     := $(PROTOC_BIN_DIR)/protoc-gen-go
+$(PROTOC_GEN_GO):
+	mkdir -p $(PROTOC_TMP_DIR) && \
+		curl -L $(PROTOC_GEN_GO_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) && \
+		tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_TAR) protoc-gen-go && \
+		chmod 0755 $(PROTOC_GEN_GO)
+	stat $@ > /dev/null 2>&1
+
+# Get and install the protoc-gen-go-grpc for protoc.
+PROTOC_GEN_GO_GRPC_TAR := protoc-gen-go-grpc.v$(PROTOC_GEN_GO_GRPC_VER).$(PROTOGEN_OS).$(PROTOGEN_ARCH).tar.gz
+PROTOC_GEN_GO_GRPC_URL := https://github.com/grpc/grpc-go/releases/download/cmd/protoc-gen-go-grpc/v$(PROTOC_GEN_GO_GRPC_VER)/$(PROTOC_GEN_GO_GRPC_TAR)
+PROTOC_GEN_GO_GRPC     := $(PROTOC_BIN_DIR)/protoc-gen-go-grpc
+$(PROTOC_GEN_GO_GRPC):
+	mkdir -p $(PROTOC_TMP_DIR) && \
+		curl -L $(PROTOC_GEN_GO_GRPC_URL) -o $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_GRPC_TAR) && \
+		tar -C $(PROTOC_BIN_DIR) -xzvf $(PROTOC_TMP_DIR)/$(PROTOC_GEN_GO_GRPC_TAR) ./protoc-gen-go-grpc && \
+		chmod 0755 $(PROTOC_GEN_GO_GRPC)
+	stat $@ > /dev/null 2>&1
+
 # Update PATH with the protoc bin dir which contains protoc and its plug-in
 export PATH := $(HERE)/$(PROTOC_BIN_DIR):$(PATH)
 
 # Generate the go language bindings.
-# Note: before updating gRPC to later versions (e.g v1.32+), need to use
-# --go_out=plugins=grpc option to generate the gRPC code, otherwise
-# the generated code will have compile issues. We need to explicitly install
-# an older version of protoc-gen-go to make sure the generated code is
-# compatible with the current version of gRPC. See more details in
-# https://issues.apache.org/jira/browse/YUNIKORN-815.
 SI_PROTO := ../../si.proto
 SI_PKG_SUB := si
 SI_BUILD := $(SI_PKG_SUB)/build
@@ -87,12 +110,13 @@ SI_GO := $(SI_PKG_SUB)/si.pb.go
 SI_GRPC_GO := $(SI_PKG_SUB)/si_grpc.pb.go
 GO_OUT := $(HERE)/$(SI_BUILD)
 SI_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si.pb.go
-$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC)
-	GOBIN=$(HERE)/$(PROTOC_BIN_DIR) go install github.com/golang/protobuf/protoc-gen-go@v1.2.0
+SI_GRPC_GO_TMP := $(SI_BUILD)/$(PKG_ROOT)/si_grpc.pb.go
+$(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC)
 	ls -al $(PROTOC_BIN_DIR)
 	mkdir -p $(SI_BUILD) && \
 		(cd $(BASE) && $(HERE)/$(PROTOC) \
-		--go_out=plugins=grpc:$(GO_OUT) --go_opt=paths=source_relative \
+		--go_out=$(GO_OUT) --go_opt=paths=source_relative \
+		--go-grpc_out=$(GO_OUT) --go-grpc_opt=paths=source_relative \
 		$(PKG_ROOT)/$(<F))
 
 # Syntax check constants to make sure it passes
@@ -105,7 +129,8 @@ syntax_check:
 # Build the go language bindings from the generated proto.
 build: $(SI_GO_TMP) syntax_check
 	@cp -f $(SI_GO_TMP) $(SI_GO)
-	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n"
+	@cp -f $(SI_GRPC_GO_TMP) $(SI_GRPC_GO)
+	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n\t$(HERE)/$(SI_GRPC_GO)\n"
 
 # Simple clean of generated file language binding.
 .PHONY: clean
