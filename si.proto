@@ -83,6 +83,10 @@ message AllocationRequest {
 
   // ID of RM, this will be used to identify which RM of the request comes from.
   string rmID = 3;
+
+  // Register new allocations or replace of existing allocations (if allocationID is same).
+  // The ask must already exist, or be specified in the asks parameter of this request.
+  repeated Allocation allocations = 4;
 }
 
 message ApplicationRequest {
@@ -343,7 +347,7 @@ message NodeInfo {
     //ActionFromRM not set
     UNKNOWN_ACTION_FROM_RM = 0;
 
-    // Create Node
+    // Create Node as initially schedulable.
     CREATE = 1;
 
     // Update node resources, attributes.
@@ -359,6 +363,10 @@ message NodeInfo {
     // From Draining state to SCHEDULABLE state.
     // If node is not in draining state, error will be thrown
     DRAIN_TO_SCHEDULABLE = 5;
+
+    // Create Node as initially draining (i.e. unschedulable). Before scheduling can proceed,
+    // DRAIN_TO_SCHEDULABLE must be called.
+    CREATE_DRAIN = 6;
   }
 
   // ID of node, the node must exist to be updated
