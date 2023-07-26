@@ -871,6 +871,7 @@ message EventRecord {
      NODE_ALLOC         = 303;  // Allocation changed
      NODE_CAPACITY      = 304;  // Capacity changed
      NODE_OCCUPIED      = 305;  // Occupied resource changed
+     NODE_RESERVATION   = 306;  // Reservation/unreservation occurred
 
      QUEUE_CONFIG       = 400;  // Managed queue update or removal
      QUEUE_DYNAMIC      = 401;  // Dynamic queue update or removal
