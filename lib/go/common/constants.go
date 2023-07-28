@@ -64,5 +64,6 @@ const (
 	AppTagNamespaceResourceQuota      = "namespace.resourcequota"
 	AppTagNamespaceResourceGuaranteed = "namespace.resourceguaranteed"
 	AppTagStateAwareDisable           = "application.stateaware.disable"
+	AppTagCreateForce                 = "application.create.force"
 	NodeReadyAttribute                = "ready"
 )

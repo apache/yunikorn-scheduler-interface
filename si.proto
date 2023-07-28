@@ -84,8 +84,7 @@ message AllocationRequest {
   // ID of RM, this will be used to identify which RM of the request comes from.
   string rmID = 3;
 
-  // Register new allocations or replace of existing allocations (if allocationID is same).
-  // The ask must already exist, or be specified in the asks parameter of this request.
+  // Existing allocations to be added.
   repeated Allocation allocations = 4;
 }
 
