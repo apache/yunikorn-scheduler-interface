@@ -622,8 +622,7 @@ type AllocationRequest struct {
 	Releases *AllocationReleasesRequest `protobuf:"bytes,2,opt,name=releases,proto3" json:"releases,omitempty"`
 	// ID of RM, this will be used to identify which RM of the request comes from.
 	RmID string `protobuf:"bytes,3,opt,name=rmID,proto3" json:"rmID,omitempty"`
-	// Register new allocations or replace of existing allocations (if allocationID is same).
-	// The ask must already exist, or be specified in the asks parameter of this request.
+	// Existing allocations to be added.
 	Allocations []*Allocation `protobuf:"bytes,4,rep,name=allocations,proto3" json:"allocations,omitempty"`
 }
 
