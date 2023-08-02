@@ -121,6 +121,9 @@ message AllocationResponse {
 
   // Rejected allocation requests
   repeated RejectedAllocationAsk rejected = 4;
+
+  // Rejected allocations
+  repeated RejectedAllocation rejectedAllocations = 5;
 }
 
 message ApplicationResponse {
@@ -389,6 +392,15 @@ message NodeInfo {
   repeated Allocation existingAllocations = 6;
 }
 message RejectedAllocationAsk {
+  // the ID of the allocation ask
+  string allocationKey = 1;
+  // The ID of the application
+  string applicationID = 2;
+  // A human-readable reason message
+  string reason = 3;
+}
+message RejectedAllocation {
+  // the ID of the allocation
   string allocationKey = 1;
   // The ID of the application
   string applicationID = 2;

@@ -292,6 +292,9 @@ message AllocationResponse {
 
   // Rejected allocation requests
   repeated RejectedAllocationAsk rejected = 4;
+
+  // Rejected allocations
+  repeated RejectedAllocation rejectedAllocations = 5;
 }
 
 message ApplicationResponse {
@@ -667,12 +670,26 @@ message NodeInfo {
 
 #### Feedback from Scheduler
 
-Following is feedback from scheduler to RM:
+The following is the feedback produced from the scheduler to the RM:
 
-When allocation ask rejected by scheduler, information will be shared by scheduler.
+Rejected allocation ask:
 
 ```protobuf
 message RejectedAllocationAsk {
+  // the ID of the allocation ask
+  string allocationKey = 1;
+  // The ID of the application
+  string applicationID = 2;
+  // A human-readable reason message
+  string reason = 3;
+}
+```
+
+Rejected allocation:
+
+```protobuf
+message RejectedAllocation {
+  // the ID of the allocation
   string allocationKey = 1;
   // The ID of the application
   string applicationID = 2;
