@@ -889,6 +889,8 @@ message EventRecord {
      APP_COMPLETED      = 208;  // State change to completed
      APP_FAILING        = 209;  // State change to failing
      APP_FAILED         = 210;  // State change to failed
+     APP_RESUMING       = 211;  // State change to resuming
+     APP_EXPIRED        = 212;  // State change to expired
 
      NODE_DECOMISSION   = 300;  // Node removal
      NODE_READY         = 301;  // Node ready state change
