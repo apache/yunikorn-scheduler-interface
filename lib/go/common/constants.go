@@ -48,10 +48,9 @@ const (
 	GroupAnnotation = "annotation/"
 
 	// Keys
-	KeyPodName         = "podName"
-	KeyNamespace       = "namespace"
-	KeyRequiredNode    = "requiredNode"
-	KeyAllowPreemption = "allowPreemption"
+	KeyPodName      = "podName"
+	KeyNamespace    = "namespace"
+	KeyRequiredNode = "requiredNode"
 
 	// Pods
 	CreationTime = "creationTime"
