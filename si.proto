@@ -452,7 +452,7 @@ message UpdateContainerSchedulingStateRequest {
    }
 
    // application ID
-   string applicartionID = 1;
+   string applicationID = 1;
 
    // allocation key used to identify a container.
    string allocationKey = 2;
