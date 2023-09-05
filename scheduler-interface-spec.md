@@ -744,7 +744,6 @@ const (
 	KeyPodName         = "podName"
 	KeyNamespace       = "namespace"
 	KeyRequiredNode    = "requiredNode"
-	KeyAllowPreemption = "allowPreemption"
 
 	// Pods
 	CreationTime    = "creationTime"
