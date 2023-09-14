@@ -19,7 +19,7 @@
 
 module github.com/apache/yunikorn-scheduler-interface
 
-go 1.21
+go 1.20
 
 require (
 	google.golang.org/grpc v1.56.0
