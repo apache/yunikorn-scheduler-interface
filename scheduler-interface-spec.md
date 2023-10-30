@@ -416,7 +416,7 @@ message AllocationAsk {
   // Allocation key is used by both of scheduler and RM to track allocations.
   // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerID of YARN).
   // Allocations from the same AllocationAsk which are returned to the RM at the same time will have the same allocationKey.
-  // The request is considered an update of the existing AllocationAsk if an ALlocationAsk with the same allocationKey
+  // The request is considered an update of the existing AllocationAsk if an AllocationAsk with the same allocationKey
   // already exists.
   string allocationKey = 1;
   // The application ID this allocation ask belongs to
