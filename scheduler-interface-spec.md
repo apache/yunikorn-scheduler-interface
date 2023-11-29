@@ -517,8 +517,8 @@ message Allocation {
   string allocationKey = 1;
   // Allocation tags from AllocationAsk
   map<string, string> allocationTags = 2;
-  // UUID of the allocation
-  string UUID = 3;
+  // allocationID of the allocation
+  string allocationID = 3;
   
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
@@ -569,9 +569,9 @@ message AllocationRelease {
   string partitionName = 1;
   // The application the allocation belongs to
   string applicationID = 2;
-  // The UUID of the allocation to release, if not set all allocations are released for
+  // The allocationID of the allocation to release, if not set all allocations are released for
   // the applicationID
-  string UUID = 3;
+  string allocationID = 3;
   // Termination type of the released allocation
   TerminationType terminationType = 4;
   // human-readable message
@@ -926,7 +926,7 @@ message EventRecord {
    ChangeType eventChangeType = 7;
    // details about the change
    ChangeDetail eventChangeDetail = 8;
-   // the secondary object in the event (eg. allocation UUID, request ID)
+   // the secondary object in the event (eg. allocationID, request ID)
    string referenceID = 9;
    // the resource value if the change involves setting/modifying a resource
    Resource resource = 10;
