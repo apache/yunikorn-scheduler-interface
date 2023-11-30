@@ -557,6 +557,10 @@ message EventRecord {
    string referenceID = 9;
    // the resource value if the change involves setting/modifying a resource
    Resource resource = 10;
+   // the node instanceType of the node
+   string nodeInstanceType = 11;
+   // the pod bind time
+   int64 podBindTime = 12;
 
    reserved 3;
    reserved "groupID";
