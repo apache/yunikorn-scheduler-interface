@@ -517,8 +517,6 @@ message Allocation {
   string allocationKey = 1;
   // Allocation tags from AllocationAsk
   map<string, string> allocationTags = 2;
-  // UUID of the allocation
-  string UUID = 3;
   
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
@@ -536,9 +534,13 @@ message Allocation {
   // Is this a placeholder allocation (true) or a real allocation (false), defaults to false
   // ignored if the taskGroupName is not set
   bool placeholder = 12;
+  // AllocationID of the allocation
+  string allocationID = 13;
   
   reserved 7;
   reserved "queueName";
+  reserved 3;
+  reserved "UUID";
 }
 ```
 
@@ -569,15 +571,18 @@ message AllocationRelease {
   string partitionName = 1;
   // The application the allocation belongs to
   string applicationID = 2;
-  // The UUID of the allocation to release, if not set all allocations are released for
-  // the applicationID
-  string UUID = 3;
   // Termination type of the released allocation
   TerminationType terminationType = 4;
   // human-readable message
   string message = 5;
   // AllocationKey from AllocationAsk
   string allocationKey = 6;
+  // AllocationID of the allocation to release, if not set all allocations are released for
+  // the applicationID
+  string allocationID = 7;
+  
+  reserved 3;
+  reserved "UUID";
 }
 
 // Release ask
@@ -926,7 +931,7 @@ message EventRecord {
    ChangeType eventChangeType = 7;
    // details about the change
    ChangeDetail eventChangeDetail = 8;
-   // the secondary object in the event (eg. allocation UUID, request ID)
+   // the secondary object in the event (eg. allocation ID, request ID)
    string referenceID = 9;
    // the resource value if the change involves setting/modifying a resource
    Resource resource = 10;
