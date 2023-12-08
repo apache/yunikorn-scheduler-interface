@@ -143,6 +143,9 @@ type SchedulerAPI interface {
 
 	// Notify scheduler to reload configuration and hot-refresh in-memory state based on configuration changes
 	UpdateConfiguration(request *si.UpdateConfigurationRequest) error
+
+	// Stops the scheduler API service
+	Stop()
 }
 
 // RM side needs to implement this API
