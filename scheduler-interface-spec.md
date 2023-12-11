@@ -536,6 +536,10 @@ message Allocation {
   bool placeholder = 12;
   // AllocationID of the allocation
   string allocationID = 13;
+  // Whether this allocation was the originator of this app
+  bool originator = 14;
+  // The preemption policy for this allocation
+  PreemptionPolicy preemptionPolicy = 15;
   
   reserved 7;
   reserved "queueName";
