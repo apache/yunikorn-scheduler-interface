@@ -1631,8 +1631,8 @@ type AddApplicationRequest struct {
 	PartitionName string `protobuf:"bytes,3,opt,name=partitionName,proto3" json:"partitionName,omitempty"`
 	// The user group information of the application owner
 	Ugi *UserGroupInformation `protobuf:"bytes,4,opt,name=ugi,proto3" json:"ugi,omitempty"`
-	// A set of tags for the application. These tags provide application level generic inforamtion.
-	// The tags are optional and are used in placing an appliction or scheduling.
+	// A set of tags for the application. These tags provide application level generic information.
+	// The tags are optional and are used in placing an application or scheduling.
 	// Application tags are not considered when processing AllocationAsks.
 	Tags map[string]string `protobuf:"bytes,5,rep,name=tags,proto3" json:"tags,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Execution timeout: How long this application can be in a running state
