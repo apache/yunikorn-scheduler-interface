@@ -771,6 +771,7 @@ const (
 	CPU                               = "vcore"
 	AppTagNamespaceResourceQuota      = "namespace.resourcequota"
 	AppTagNamespaceResourceGuaranteed = "namespace.resourceguaranteed"
+	AppTagNamespaceResourceMaxApps    = "namespace.resourcemaxapps"
 	AppTagStateAwareDisable           = "application.stateaware.disable"
 	AppTagCreateForce                 = "application.create.force"
 	NodeReadyAttribute                = "ready"
