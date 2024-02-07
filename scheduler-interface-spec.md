@@ -874,6 +874,7 @@ message EventRecord {
       APP = 2;
       NODE = 3;
       QUEUE = 4;
+      USERGROUP = 5;
    }
 
    enum ChangeType {
@@ -903,6 +904,8 @@ message EventRecord {
      APP_FAILED         = 210;  // State change to failed
      APP_RESUMING       = 211;  // State change to resuming
      APP_EXPIRED        = 212;  // State change to expired
+     APP_CANNOTRUN      = 213;  // Application cannot run (maxApplications hit)
+     APP_CANRUN         = 214;  // Application is allowed to run (after maxApplications limit hit)
 
      NODE_DECOMISSION   = 300;  // Node removal
      NODE_READY         = 301;  // Node ready state change
@@ -925,6 +928,13 @@ message EventRecord {
      ALLOC_TIMEOUT      = 502;  // Allocation cancelled due to timeout
      ALLOC_REPLACED     = 503;  // Allocation replacement (placeholder)
      ALLOC_NODEREMOVED  = 504;  // Allocation cancelled, node removal
+
+     UG_USER_LIMITSET   = 600;  // Limit is configured for a given user
+     UG_GROUP_LIMITSET  = 601;  // Limit is configured for a given group
+     UG_APP_LINK        = 602;  // Linkage is created between an application and a group
+     UG_APP_UNLINK      = 603;  // Unlinking an application and a group
+     UG_USER_RESOURCE   = 604;  // Resource usage updated for a user
+     UG_GROUP_RESOURCE  = 605;  // Resource usage updated for a group
    }
 
    // the type of the object associated with the event
