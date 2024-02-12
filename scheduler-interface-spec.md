@@ -907,7 +907,7 @@ message EventRecord {
      APP_CANNOTRUN_QUEUE  = 213;  // Application cannot run in the queue (maxApplications hit)
      APP_RUNNABLE_QUEUE   = 214;  // Application is allowed to run (after maxApplications limit hit)
      APP_CANNOTRUN_QUOTA  = 215;  // Application cannot run due to user/group quota (maxApplications hit)
-     APP_RUNNABLE_QUOTA   = 216;  // Application is allowed to run based on user/group quota (after limit hit)
+     APP_RUNNABLE_QUOTA   = 216;  // Application is allowed to run based on user/group quota (after maxApplications limit hit)
 
      NODE_DECOMISSION   = 300;  // Node removal
      NODE_READY         = 301;  // Node ready state change

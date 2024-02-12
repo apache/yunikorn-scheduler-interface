@@ -360,7 +360,7 @@ const (
 	EventRecord_APP_CANNOTRUN_QUEUE EventRecord_ChangeDetail = 213 // Application cannot run in the queue (maxApplications hit)
 	EventRecord_APP_RUNNABLE_QUEUE  EventRecord_ChangeDetail = 214 // Application is allowed to run (after maxApplications limit hit)
 	EventRecord_APP_CANNOTRUN_QUOTA EventRecord_ChangeDetail = 215 // Application cannot run due to user/group quota (maxApplications hit)
-	EventRecord_APP_RUNNABLE_QUOTA  EventRecord_ChangeDetail = 216 // Application is allowed to run based on user/group quota (after limit hit)
+	EventRecord_APP_RUNNABLE_QUOTA  EventRecord_ChangeDetail = 216 // Application is allowed to run based on user/group quota (after maxApplications limit hit)
 	EventRecord_NODE_DECOMISSION    EventRecord_ChangeDetail = 300 // Node removal
 	EventRecord_NODE_READY          EventRecord_ChangeDetail = 301 // Node ready state change
 	EventRecord_NODE_SCHEDULABLE    EventRecord_ChangeDetail = 302 // Node schedulable state change (cordon)
