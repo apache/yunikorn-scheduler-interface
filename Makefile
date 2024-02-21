@@ -56,6 +56,12 @@ API_LIB := $(LIB_DIR)/api
 INTERFACE_GO := $(API_LIB)/interface.go
 INTERFACE_TMP := $(API_LIB)/tmp_interface.go
 
+OUTPUT=build
+TOOLS_DIR=tools
+
+GO_LICENSES_VERSION=v1.6.0
+GO_LICENSES_BIN=$(TOOLS_DIR)/go-licenses
+
 define GENERATED_HEADER
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -110,7 +116,14 @@ $(INTERFACE_TMP): $(SI_SPEC)
 	(diff $@ $(INTERFACE_GO) > /dev/null 2>&1 || mv -f $@ $(INTERFACE_GO)) && \
 		rm -f $@
 
+# Install go-licenses
+$(GO_LICENSES_BIN):
+	@echo "installing go-licenses $(GO_LICENSES_VERSION)"
+	@mkdir -p "$(TOOLS_DIR)"
+	@GOBIN="$(BASE_DIR)/$(TOOLS_DIR)" go install "github.com/google/go-licenses@$(GO_LICENSES_VERSION)"
+
 # Build the go language bindings from the spec via a generated proto
+.PHONY: build
 build: $(SI_PROTO).tmp $(CONSTANTS_TMP) $(INTERFACE_TMP)
 	$(MAKE) -C $(LIB_DIR)
 
@@ -152,6 +165,25 @@ endif
 	rm -f LICRES
 	@echo "  all OK"
 
+# Check licenses of go dependencies
+.PHONY: go-license-check
+go-license-check: $(GO_LICENSES_BIN)
+	@echo "Checking third-party licenses"
+	@"$(GO_LICENSES_BIN)" check ./lib/go/... --include_tests --disallowed_types=forbidden,permissive,reciprocal,restricted,unknown
+	@echo "License checks OK"
+
+# Save licenses of go dependencies
+.PHONY: go-license-save
+go-license-save: $(GO_LICENSES_BIN)
+	@echo "Saving third-party license files"
+	@rm -rf "$(OUTPUT)/third-party-licenses"
+	@"$(GO_LICENSES_BIN)" \
+		save ./lib/go/... \
+		--save_path="$(OUTPUT)/third-party-licenses" \
+		--ignore github.com/apache/yunikorn-scheduler-interface
+	@rm -rf third-party-licenses
+	@mv -f "$(OUTPUT)/third-party-licenses" third-party-licenses
+
 # Simple clean of generated files only (no local cleanup).
 .PHONY: clean
 clean:
@@ -159,6 +191,10 @@ clean:
 	rm -rf $(INTERFACE_GO)
 	cd $(BASE_DIR) && \
 	$(MAKE) -C $(LIB_DIR) $@
+
+.PHONY: distclean
+distclean: clean
+	rm -rf $(TOOLS_DIR)
 
 # Remove all non versioned files,
 # Running this target will trigger a re-install of protoc etc in te next build cycle.

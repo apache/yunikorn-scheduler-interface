@@ -2,3 +2,4 @@ protoc/
 src/
 build/
 .idea
+/tools/
