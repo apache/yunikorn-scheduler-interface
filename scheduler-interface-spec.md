@@ -895,7 +895,6 @@ message EventRecord {
      APP_REJECT           = 202;  // Application rejected on create
      APP_NEW              = 203;  // Application added with state new
      APP_ACCEPTED         = 204;  // State change to accepted
-     APP_STARTING         = 205;  // State change to starting
      APP_RUNNING          = 206;  // State change to running
      APP_COMPLETING       = 207;  // State change to completing
      APP_COMPLETED        = 208;  // State change to completed
@@ -935,6 +934,9 @@ message EventRecord {
      UG_APP_LINK        = 602;  // Linkage is changed (created/removed) between an application and a group
      UG_USER_RESOURCE   = 603;  // Resource usage updated for a user
      UG_GROUP_RESOURCE  = 604;  // Resource usage updated for a group
+
+     reserved 205;
+     reserved "APP_STARTING";
    }
 
    // the type of the object associated with the event
