@@ -744,8 +744,9 @@ Example allocation key: `kubernetes.io/meta/namespace`.
 // Constants for allocation tags
 const (
 	// Domains
-	DomainK8s      = "kubernetes.io/"
-	DomainYuniKorn = "yunikorn.apache.org/"
+	DomainK8s              = "kubernetes.io/"
+	DomainYuniKorn         = "yunikorn.apache.org/"
+	DomainYuniKornInternal = "internal.yunikorn.apache.org/"
 
 	// Groups
 	GroupMeta       = "meta/"
