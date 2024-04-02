@@ -532,7 +532,6 @@ message EventRecord {
      APP_RUNNABLE_QUOTA   = 216;  // Application is allowed to run based on user/group quota (after maxApplications limit hit)
 
      NODE_DECOMISSION   = 300;  // Node removal
-     NODE_READY         = 301;  // Node ready state change
      NODE_SCHEDULABLE   = 302;  // Node schedulable state change (cordon)
      NODE_ALLOC         = 303;  // Allocation changed
      NODE_CAPACITY      = 304;  // Capacity changed
@@ -560,7 +559,9 @@ message EventRecord {
      UG_GROUP_RESOURCE  = 604;  // Resource usage updated for a group
 
      reserved 205;
+     reserved 301;
      reserved "APP_STARTING";
+     reserved "NODE_READY";
    }
 
    // the type of the object associated with the event
