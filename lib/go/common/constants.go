@@ -65,5 +65,4 @@ const (
 	AppTagNamespaceResourceGuaranteed = "namespace.resourceguaranteed"
 	AppTagNamespaceResourceMaxApps    = "namespace.resourcemaxapps"
 	AppTagCreateForce                 = "application.create.force"
-	NodeReadyAttribute                = "ready"
 )
