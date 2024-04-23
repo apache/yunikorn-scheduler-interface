@@ -428,8 +428,6 @@ message AllocationAsk {
   string partitionName = 3;
   // The amount of resources per ask
   Resource resourceAsk = 4;
-  // Maximum number of allocations
-  int32 maxAllocations = 5;
   // Priority of ask
   int32 priority = 6;
   // Execution timeout: How long this allocation will be terminated (by scheduler)
@@ -448,6 +446,9 @@ message AllocationAsk {
   bool Originator = 11;
   // The preemption policy for this ask
   PreemptionPolicy preemptionPolicy = 12;
+
+  reserved 5;
+  reserved "maxAllocations";
 }
 ```
 
