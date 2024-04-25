@@ -249,7 +249,7 @@ Below is overview of how scheduler/RM keep connection and updates.
 
 ```protobuf
 message AllocationRequest {
-  // New allocation requests or replace existing allocation request (if allocationID is same)
+  // New allocation requests or replace existing allocation request (if allocationKey is same)
   repeated AllocationAsk asks = 1;
 
   // Allocations can be released.
@@ -538,8 +538,6 @@ message Allocation {
   // Is this a placeholder allocation (true) or a real allocation (false), defaults to false
   // ignored if the taskGroupName is not set
   bool placeholder = 12;
-  // AllocationID of the allocation
-  string allocationID = 13;
   // Whether this allocation was the originator of this app
   bool originator = 14;
   // The preemption policy for this allocation
@@ -549,6 +547,8 @@ message Allocation {
   reserved "queueName";
   reserved 3;
   reserved "UUID";
+  reserved 13;
+  reserved "allocationID";
 }
 ```
 
@@ -583,14 +583,13 @@ message AllocationRelease {
   TerminationType terminationType = 4;
   // human-readable message
   string message = 5;
-  // AllocationKey from AllocationAsk
+  // AllocationKey of the allocation to release, if not set all allocations are released for the applicationID
   string allocationKey = 6;
-  // AllocationID of the allocation to release, if not set all allocations are released for
-  // the applicationID
-  string allocationID = 7;
   
   reserved 3;
   reserved "UUID";
+  reserved 7;
+  reserved "allocationID";
 }
 
 // Release ask
