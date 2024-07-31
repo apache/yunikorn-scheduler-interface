@@ -204,9 +204,6 @@ message AllocationAsk {
   Resource resourceAsk = 4;
   // Priority of ask
   int32 priority = 6;
-  // Execution timeout: How long this allocation will be terminated (by scheduler)
-  // once allocated by scheduler, 0 or negative value means never expire.
-  int64 executionTimeoutMilliSeconds = 7;
   // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
   // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
   // These tags are optional.
@@ -223,6 +220,8 @@ message AllocationAsk {
 
   reserved 5;
   reserved "maxAllocations";
+  reserved 7;
+  reserved "executionTimeoutMilliSeconds";
 }
 message PreemptionPolicy {
   // Opt-out from preemption
@@ -397,8 +396,8 @@ message NodeInfo {
   // resources might be occupied (allocated) by other schedulers.
   Resource occupiedResource = 5;
 
-  // Allocated resources, this will be added when node registered to RM (recovery)
-  repeated Allocation existingAllocations = 6;
+  reserved 6;
+  reserved "existingAllocations";
 }
 message RejectedAllocationAsk {
   // the ID of the allocation ask
