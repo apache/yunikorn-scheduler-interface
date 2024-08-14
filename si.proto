@@ -75,17 +75,17 @@ message RegisterResourceManagerResponse {
   // Intentionally empty.
 }
 message AllocationRequest {
-  // New allocation requests or replace existing allocation request (if allocationKey is same)
-  repeated AllocationAsk asks = 1;
-
   // Allocations can be released.
   AllocationReleasesRequest releases = 2;
 
   // ID of RM, this will be used to identify which RM of the request comes from.
   string rmID = 3;
 
-  // Existing allocations to be added.
+  // Allocation to add or update.
   repeated Allocation allocations = 4;
+
+  reserved 1;
+  reserved "asks";
 }
 
 message ApplicationRequest {
@@ -116,14 +116,13 @@ message AllocationResponse {
   // Or it could be decision made by scheduler (such as preemption or timeout).
   repeated AllocationRelease released = 2;
 
-  // Released allocation asks(placeholder), when the placeholder allocation times out
-  repeated AllocationAskRelease releasedAsks = 3;
-
-  // Rejected allocation requests
-  repeated RejectedAllocationAsk rejected = 4;
-
   // Rejected allocations
   repeated RejectedAllocation rejectedAllocations = 5;
+
+  reserved 3;
+  reserved "releasedAsks";
+  reserved 4;
+  reserved "rejected";
 }
 
 message ApplicationResponse {
@@ -189,40 +188,6 @@ message Resource {
 message Quantity {
   int64 value = 1;
 }
-message AllocationAsk {
-  // Allocation key is used by both of scheduler and RM to track allocations.
-  // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerID of YARN).
-  // Allocations from the same AllocationAsk which are returned to the RM at the same time will have the same allocationKey.
-  // The request is considered an update of the existing AllocationAsk if an AllocationAsk with the same allocationKey
-  // already exists.
-  string allocationKey = 1;
-  // The application ID this allocation ask belongs to
-  string applicationID = 2;
-  // The partition the application belongs to
-  string partitionName = 3;
-  // The amount of resources per ask
-  Resource resourceAsk = 4;
-  // Priority of ask
-  int32 priority = 6;
-  // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
-  // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
-  // These tags are optional.
-  map<string, string> tags = 8;
-  // The name of the TaskGroup this ask belongs to
-  string taskGroupName = 9;
-  // Is this a placeholder ask (true) or a real ask (false), defaults to false
-  // ignored if the taskGroupName is not set
-  bool placeholder = 10;
-  // Is this ask the originator of the application?
-  bool Originator = 11;
-  // The preemption policy for this ask
-  PreemptionPolicy preemptionPolicy = 12;
-
-  reserved 5;
-  reserved "maxAllocations";
-  reserved 7;
-  reserved "executionTimeoutMilliSeconds";
-}
 message PreemptionPolicy {
   // Opt-out from preemption
   bool allowPreemptSelf = 1;
@@ -241,7 +206,6 @@ message AddApplicationRequest {
   UserGroupInformation ugi = 4;
   // A set of tags for the application. These tags provide application level generic information.
   // The tags are optional and are used in placing an application or scheduling.
-  // Application tags are not considered when processing AllocationAsks.
   map<string, string> tags = 5;
   // Execution timeout: How long this application can be in a running state
   // 0 or negative value means never expire.
@@ -266,18 +230,18 @@ message UserGroupInformation {
   repeated string groups = 2;
 }
 message Allocation {
-  // AllocationKey from AllocationAsk
+  // Allocation key
   string allocationKey = 1;
-  // Allocation tags from AllocationAsk
+  // Allocation tags
   map<string, string> allocationTags = 2;
-  
+
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
-  // Priority of ask
+  // Priority of allocation
   int32 priority = 6;
   // Node which the allocation belongs to
   string nodeID = 8;
-  
+
   // The ID of the application
   string applicationID = 9;
   // Partition of the allocation
@@ -291,7 +255,7 @@ message Allocation {
   bool originator = 14;
   // The preemption policy for this allocation
   PreemptionPolicy preemptionPolicy = 15;
-  
+
   reserved 7;
   reserved "queueName";
   reserved 3;
@@ -302,8 +266,9 @@ message Allocation {
 message AllocationReleasesRequest {
   // The allocations to release
   repeated AllocationRelease allocationsToRelease = 1;
-  // The asks to release
-  repeated AllocationAskRelease allocationAsksToRelease = 2;
+
+  reserved 2;
+  reserved "allocationAsksToRelease";
 }
 
 enum TerminationType {
@@ -329,26 +294,11 @@ message AllocationRelease {
   string message = 5;
   // AllocationKey of the allocation to release, if not set all allocations are released for the applicationID
   string allocationKey = 6;
-  
+
   reserved 3;
   reserved "UUID";
   reserved 7;
   reserved "allocationID";
-}
-
-// Release ask
-message AllocationAskRelease {
-  // Which partition to release the ask from, required.
-  string partitionName = 1;
-  // optional, when this is set, filter allocation key by application id.
-  // when application id is set and allocationKey is not set, release all allocations key under the application id.
-  string applicationID = 2;
-  // optional, when this is set, only release allocation ask by specified
-  string allocationKey = 3;
-  // Termination type of the released allocation ask
-  TerminationType terminationType = 4;
-  // For human-readable message
-  string message = 5;
 }
 message NodeInfo {
   // Action from RM
@@ -398,14 +348,6 @@ message NodeInfo {
 
   reserved 6;
   reserved "existingAllocations";
-}
-message RejectedAllocationAsk {
-  // the ID of the allocation ask
-  string allocationKey = 1;
-  // The ID of the application
-  string applicationID = 2;
-  // A human-readable reason message
-  string reason = 3;
 }
 message RejectedAllocation {
   // the ID of the allocation
