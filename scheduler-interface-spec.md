@@ -30,6 +30,7 @@ To define a standard interface that can be used by different types of resource m
 - Interface can handle multiple types of resource managers from multiple zones, and different policies can be configured in different zones.
 
 Possible use cases:
+
 - A large cluster needs multiple schedulers to achieve horizontally scalability.
 - Multiple resource managers need to run on the same cluster. The managers grow and shrink according to runtime resource usage and policies.
 
@@ -40,6 +41,7 @@ Possible use cases:
 ## Design considerations
 
 Highlights:
+
 - The scheduler should be as stateless as possible. It should try to eliminate any local persistent storage for scheduling decisions.
 - When a RM starts, restarts or recovers the RM needs to sync its state with scheduler.
 
@@ -50,6 +52,7 @@ Highlights:
 Interface and messages generic definition.
 
 The syntax used for the declarations is `proto3`. The definition currently only provides go related info.
+
 ```protobuf
 syntax = "proto3";
 package si.v1;
@@ -79,9 +82,9 @@ Unless specifically required we strongly recommend the use of the API based inte
 
 There are three sets of RPCs:
 
-* **Scheduler Service**: RM can communicate with the Scheduler Service and do resource allocation/request update, etc.
-* **Admin Service**: Admin can communicate with Scheduler Interface and get configuration updated.
-* **Metrics Service**: Used to retrieve state of scheduler by users / RMs.
+- **Scheduler Service**: RM can communicate with the Scheduler Service and do resource allocation/request update, etc.
+- **Admin Service**: Admin can communicate with Scheduler Interface and get configuration updated.
+- **Metrics Service**: Used to retrieve state of scheduler by users / RMs.
 
 Currently only the design and implementation for the Scheduler Service is provided.
 
@@ -108,6 +111,7 @@ service Scheduler {
     returns (stream NodeResponse) { }
 }
 ```
+
 #### Why bi-directional gRPC
 
 The reason of using bi-directional streaming gRPC is, according to performance benchmark: https://grpc.io/docs/guides/benchmarking.html latency is close to 0.5 ms.
@@ -120,7 +124,6 @@ The API interface only relies on the message definition and not on other generat
 Below is an example of the Scheduler Service as defined in the RPC. The SchedulerAPI is bi-directional and can be a-synchronous.
 For the asynchronous cases the API requires a callback interface to be implemented in the resource manager.
 The callback must be provided to the scheduler as part of the registration.
-
 
 ```golang
 package api
@@ -249,17 +252,17 @@ Below is overview of how scheduler/RM keep connection and updates.
 
 ```protobuf
 message AllocationRequest {
-  // New allocation requests or replace existing allocation request (if allocationKey is same)
-  repeated AllocationAsk asks = 1;
-
   // Allocations can be released.
   AllocationReleasesRequest releases = 2;
 
   // ID of RM, this will be used to identify which RM of the request comes from.
   string rmID = 3;
 
-  // Existing allocations to be added.
+  // Allocation to add or update.
   repeated Allocation allocations = 4;
+
+  reserved 1;
+  reserved "asks";
 }
 
 message ApplicationRequest {
@@ -290,14 +293,13 @@ message AllocationResponse {
   // Or it could be decision made by scheduler (such as preemption or timeout).
   repeated AllocationRelease released = 2;
 
-  // Released allocation asks(placeholder), when the placeholder allocation times out
-  repeated AllocationAskRelease releasedAsks = 3;
-
-  // Rejected allocation requests
-  repeated RejectedAllocationAsk rejected = 4;
-
   // Rejected allocations
   repeated RejectedAllocation rejectedAllocations = 5;
+
+  reserved 3;
+  reserved "releasedAsks";
+  reserved 4;
+  reserved "rejected";
 }
 
 message ApplicationResponse {
@@ -355,9 +357,9 @@ message AcceptedNode {
 }
 ```
 
-#### Ask for more resources
+#### Request for more resources
 
-Lifecycle of AllocationAsk:
+Lifecycle of Allocation:
 
 ```
                            Rejected by Scheduler
@@ -365,36 +367,22 @@ Lifecycle of AllocationAsk:
              |                                           |
              |                                           v
      +-------+---+ Asked  +-----------+Scheduler or,+-----------+
-     |Initial    +------->|Pending    |+----+----+->|Rejected   |
-     +-----------+By RM   +-+---------+ Asked by RM +-----------+
-                                +
+     |  Initial  |+------>|Pending    |+----+----+->|Rejected   |
+     +-----------+ By RM  +-----+-----+ Asked by RM +-----------+
                                 |
                                 v
-                          +-----------+
-                          |Allocated  |
-                          +-----------+
-```
-
-Lifecycle of Allocations:
-
-```
-         +--Allocated by
-         v    Scheduler
- +-----------+        +------------+
- |Allocated  |+------ |Completed   |
- +---+-------+ Stoppe +------------+
-     |         by RM
-     |                +------------+
-     +--------------->|Preempted   |
-     +  Preempted by  +------------+
-     |    Scheduler
-     |
-     |
-     |                +------------+
-     +--------------->|Expired     |
-         Timeout      +------------+
-        (Part of Allocation
-           ask)
+                          +-----------+         +------------+
+                          |Allocated  |+-------+|Completed   |
+                          +---+-------+ Stopped +------------+
+                                |         by RM
+                                |                +------------+
+                                +--------------->|Preempted   |
+                                +  Preempted by  +------------+
+                                |    Scheduler
+                                |                +------------+
+                                +--------------->|Expired     |
+                                    Timeout      +------------+
+                                  (Part of Allocation request)
 ```
 
 Common fields for allocation:
@@ -409,45 +397,6 @@ message Resource {
 // Quantity includes a single int64 value
 message Quantity {
   int64 value = 1;
-}
-```
-
-Allocation ask:
-
-```protobuf
-message AllocationAsk {
-  // Allocation key is used by both of scheduler and RM to track allocations.
-  // It doesn't have to be same as RM's internal allocation id (such as Pod name of K8s or ContainerID of YARN).
-  // Allocations from the same AllocationAsk which are returned to the RM at the same time will have the same allocationKey.
-  // The request is considered an update of the existing AllocationAsk if an AllocationAsk with the same allocationKey
-  // already exists.
-  string allocationKey = 1;
-  // The application ID this allocation ask belongs to
-  string applicationID = 2;
-  // The partition the application belongs to
-  string partitionName = 3;
-  // The amount of resources per ask
-  Resource resourceAsk = 4;
-  // Priority of ask
-  int32 priority = 6;
-  // A set of tags for this spscific AllocationAsk. Allocation level tags are used in placing this specific
-  // ask on nodes in the cluster. These tags are used in the PlacementConstraints.
-  // These tags are optional.
-  map<string, string> tags = 8;
-  // The name of the TaskGroup this ask belongs to
-  string taskGroupName = 9;
-  // Is this a placeholder ask (true) or a real ask (false), defaults to false
-  // ignored if the taskGroupName is not set
-  bool placeholder = 10;
-  // Is this ask the originator of the application?
-  bool Originator = 11;
-  // The preemption policy for this ask
-  PreemptionPolicy preemptionPolicy = 12;
-
-  reserved 5;
-  reserved "maxAllocations";
-  reserved 7;
-  reserved "executionTimeoutMilliSeconds";
 }
 ```
 
@@ -477,7 +426,6 @@ message AddApplicationRequest {
   UserGroupInformation ugi = 4;
   // A set of tags for the application. These tags provide application level generic information.
   // The tags are optional and are used in placing an application or scheduling.
-  // Application tags are not considered when processing AllocationAsks.
   map<string, string> tags = 5;
   // Execution timeout: How long this application can be in a running state
   // 0 or negative value means never expire.
@@ -499,6 +447,7 @@ message RemoveApplicationRequest {
 
 User information:
 The user that owns the application. Group information can be empty. If the group information is empty the groups will be resolved by the scheduler when needed.
+
 ```protobuf
 message UserGroupInformation {
   // the user name
@@ -511,23 +460,24 @@ message UserGroupInformation {
 ### Allocation of resources
 
 The Allocation message is used in two cases:
+
 1. A recovered allocation send from the RM to the scheduler
 2. A newly created allocation from the scheduler.
 
 ```protobuf
 message Allocation {
-  // AllocationKey from AllocationAsk
+  // Allocation key
   string allocationKey = 1;
-  // Allocation tags from AllocationAsk
+  // Allocation tags
   map<string, string> allocationTags = 2;
-  
+
   // Resource for each allocation
   Resource resourcePerAlloc = 5;
-  // Priority of ask
+  // Priority of allocation
   int32 priority = 6;
   // Node which the allocation belongs to
   string nodeID = 8;
-  
+
   // The ID of the application
   string applicationID = 9;
   // Partition of the allocation
@@ -541,7 +491,7 @@ message Allocation {
   bool originator = 14;
   // The preemption policy for this allocation
   PreemptionPolicy preemptionPolicy = 15;
-  
+
   reserved 7;
   reserved "queueName";
   reserved 3;
@@ -557,8 +507,9 @@ message Allocation {
 message AllocationReleasesRequest {
   // The allocations to release
   repeated AllocationRelease allocationsToRelease = 1;
-  // The asks to release
-  repeated AllocationAskRelease allocationAsksToRelease = 2;
+
+  reserved 2;
+  reserved "allocationAsksToRelease";
 }
 
 enum TerminationType {
@@ -584,26 +535,11 @@ message AllocationRelease {
   string message = 5;
   // AllocationKey of the allocation to release, if not set all allocations are released for the applicationID
   string allocationKey = 6;
-  
+
   reserved 3;
   reserved "UUID";
   reserved 7;
   reserved "allocationID";
-}
-
-// Release ask
-message AllocationAskRelease {
-  // Which partition to release the ask from, required.
-  string partitionName = 1;
-  // optional, when this is set, filter allocation key by application id.
-  // when application id is set and allocationKey is not set, release all allocations key under the application id.
-  string applicationID = 2;
-  // optional, when this is set, only release allocation ask by specified
-  string allocationKey = 3;
-  // Termination type of the released allocation ask
-  TerminationType terminationType = 4;
-  // For human-readable message
-  string message = 5;
 }
 ```
 
@@ -612,21 +548,24 @@ message AllocationAskRelease {
 State transition of node:
 
 ```
-   +-----------+          +--------+            +-------+
-   |SCHEDULABLE|+-------->|DRAINING|+---------->|REMOVED|
-   +-----------+          +--------+            +-------+
-         ^       Asked by      +     Aasked by
-         |      RM to DRAIN    |     RM to REMOVE
-         |                     |
-         +---------------------+
-              Asked by RM to
-              SCHEDULE again
+
++-----------+ +--------+ +-------+
+|SCHEDULABLE|+-------->|DRAINING|+---------->|REMOVED|
++-----------+ +--------+ +-------+
+^ Asked by + Aasked by
+| RM to DRAIN | RM to REMOVE
+| |
++---------------------+
+Asked by RM to
+SCHEDULE again
+
 ```
 
 See protocol below:
 
 During new node registration with the scheduler, request will be rejected if the node exist already.
 While updating registered node with the scheduler, request will fail if the node doesn't exist.
+
 ```protobuf
 message NodeInfo {
   // Action from RM
@@ -682,19 +621,6 @@ message NodeInfo {
 #### Feedback from Scheduler
 
 The following is the feedback produced from the scheduler to the RM:
-
-Rejected allocation ask:
-
-```protobuf
-message RejectedAllocationAsk {
-  // the ID of the allocation ask
-  string allocationKey = 1;
-  // The ID of the application
-  string applicationID = 2;
-  // A human-readable reason message
-  string reason = 3;
-}
-```
 
 Rejected allocation:
 
