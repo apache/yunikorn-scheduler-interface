@@ -551,8 +551,8 @@ State transition of node:
    +-----------+          +--------+            +-------+
    |SCHEDULABLE|+-------->|DRAINING|+---------->|REMOVED|
    +-----------+          +--------+            +-------+
-         ^       Asked by      +     Asked by
-         |      RM to DRAIN    |     RM to REMOVE
+         ^       Asked by      +      Asked by
+         |      RM to DRAIN    |    RM to REMOVE
          |                     |
          +---------------------+
               Asked by RM to
