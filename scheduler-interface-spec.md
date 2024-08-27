@@ -548,17 +548,15 @@ message AllocationRelease {
 State transition of node:
 
 ```
-
-+-----------+ +--------+ +-------+
-|SCHEDULABLE|+-------->|DRAINING|+---------->|REMOVED|
-+-----------+ +--------+ +-------+
-^ Asked by + Aasked by
-| RM to DRAIN | RM to REMOVE
-| |
-+---------------------+
-Asked by RM to
-SCHEDULE again
-
+   +-----------+          +--------+            +-------+
+   |SCHEDULABLE|+-------->|DRAINING|+---------->|REMOVED|
+   +-----------+          +--------+            +-------+
+         ^       Asked by      +      Asked by
+         |      RM to DRAIN    |    RM to REMOVE
+         |                     |
+         +---------------------+
+              Asked by RM to
+              SCHEDULE again
 ```
 
 See protocol below:
