@@ -54,7 +54,10 @@ const (
 	KeyRequiredNode = "requiredNode"
 
 	// Pods
-	CreationTime = "creationTime"
+	CreationTime     = "creationTime"
+	Foreign          = "foreign"
+	AllocTypeStatic  = "static"
+	AllocTypeDefault = "default"
 )
 
 // Constants for Core and Shim

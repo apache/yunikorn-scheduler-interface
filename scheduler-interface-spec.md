@@ -682,7 +682,10 @@ const (
 	KeyRequiredNode    = "requiredNode"
 
 	// Pods
-	CreationTime    = "creationTime"
+        CreationTime     = "creationTime"
+        Foreign          = "foreign"
+        AllocTypeStatic  = "static"
+        AllocTypeDefault = "default"
 )
 ```
 
