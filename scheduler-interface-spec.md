@@ -607,12 +607,10 @@ message NodeInfo {
   // node or schedule more allocations accordingly.
   Resource schedulableResource = 4;
 
-  // when the scheduler is co-exist with some other schedulers, some node
-  // resources might be occupied (allocated) by other schedulers.
-  Resource occupiedResource = 5;
-
   reserved 6;
   reserved "existingAllocations";
+  reserved 5;
+  reserved "occupiedResource";
 }
 ```
 
