@@ -19,24 +19,24 @@
 
 module github.com/apache/yunikorn-scheduler-interface
 
-go 1.21
+go 1.23.0
+
+toolchain go1.23.7
 
 require (
-	google.golang.org/grpc v1.65.0
-	google.golang.org/protobuf v1.34.2
+	google.golang.org/grpc v1.70.0
+	google.golang.org/protobuf v1.36.5
 )
 
 require (
-	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
+	golang.org/x/net v0.32.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241202173237-19429a94021a // indirect
 )
 
 replace (
-	golang.org/x/crypto => golang.org/x/crypto v0.21.0
-	golang.org/x/net => golang.org/x/net v0.23.0
-	golang.org/x/sys => golang.org/x/sys v0.18.0
-	golang.org/x/text => golang.org/x/text v0.14.0
-	golang.org/x/tools => golang.org/x/tools v0.17.0
+	golang.org/x/net => golang.org/x/net v0.36.0
+	golang.org/x/sys => golang.org/x/sys v0.30.0
+	golang.org/x/text => golang.org/x/text v0.22.0
 )
