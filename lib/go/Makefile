@@ -135,11 +135,9 @@ build: $(SI_GO_TMP) syntax_check
 # Simple clean of generated file language binding.
 .PHONY: clean
 clean:
-	rm -rf $(SI_GO) $(SI_GO_TMP)
-	rm -rf $(PROTOC_TMP_DIR)
-	rm -rf $(GO_OUT)
+	rm -rf $(SI_GO) $(SI_GO_TMP) $(SI_BUILD)
 
 # Remove all non versioned files (including compiler and cache)
 .PHONY: clobber
 clobber: clean
-	rm -rf $(PROTOC_TMP_DIR) $(PROTOC_GEN_GO_SRC) $(SI_BUILD)
+	rm -rf $(PROTOC_TMP_DIR)
