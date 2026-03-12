@@ -2,7 +2,7 @@ name: Pre-commit checks
 
 on:
   pull_request:
-    branches: 
+    branches:
       - master
 
 concurrency:
@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: .go_version
+          check-latest: true
       - name: Check license
         run: make license-check
       - name: Build and Check for changes
