@@ -2,7 +2,7 @@ name: Pre-commit checks
 
 on:
   pull_request:
-    branches: 
+    branches:
       - master
 
 concurrency:
@@ -14,11 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: .go_version
+          check-latest: true
       - name: Check license
         run: make license-check
       - name: Build and Check for changes
