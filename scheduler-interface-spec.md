@@ -845,6 +845,7 @@ message EventRecord {
      QUEUE_GUARANTEED   = 404;  // Guaranteed resource changed
      QUEUE_APP          = 405;  // Application changed
      QUEUE_ALLOC        = 406;  // Allocation changed
+     QUEUE_PREEMPTION   = 407;  // Quota Preemption
 
      ALLOC_CANCEL       = 500;  // Allocation cancelled by the RM
      ALLOC_PREEMPT      = 501;  // Allocation preempted by the core
