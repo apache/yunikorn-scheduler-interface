@@ -16,10 +16,12 @@
 # limitations under the License.
 #
 
+.PHONY: test check license-check clean clobber
+
 # Check if this GO tools version used is at least the version of go specified in
 # the go.mod file. The version in go.mod should be in sync with other repos.
 GO_VERSION := $(shell go version | awk '{print substr($$3, 3, 4)}')
-MOD_VERSION := $(shell cat .go_version) 
+MOD_VERSION := $(shell cat .go_version)
 
 GM := $(word 1,$(subst ., ,$(GO_VERSION)))
 MM := $(word 1,$(subst ., ,$(MOD_VERSION)))
@@ -114,14 +116,10 @@ $(INTERFACE_TMP): $(SI_SPEC)
 build: $(SI_PROTO).tmp $(CONSTANTS_TMP) $(INTERFACE_TMP)
 	$(MAKE) -C $(LIB_DIR)
 
-# Set a empty recipe
-.PHONY: test
-test:
-	@echo ""
+test: license-check check
 
 # Check that the updates are made in the source file: scheduler-interface.md
 # The check is run as part of the pre-commit and a build should not update any files.
-.PHONY: check
 check: build
 	@echo "Check for changes by build"
 	@if ! git diff --quiet; then \
@@ -135,7 +133,6 @@ check: build
 
 OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 # Check for missing license headers
-.PHONY: license-check
 license-check:
 	@echo "checking license headers:"
 ifeq (darwin,$(OS))
@@ -153,7 +150,6 @@ endif
 	@echo "  all OK"
 
 # Simple clean of generated files only (no local cleanup).
-.PHONY: clean
 clean:
 	rm -rf $(CONSTANTS_GO)
 	rm -rf $(INTERFACE_GO)
@@ -162,7 +158,6 @@ clean:
 
 # Remove all non versioned files,
 # Running this target will trigger a re-install of protoc etc in te next build cycle.
-.PHONY: clobber
 clobber: clean
 	cd $(BASE_DIR) && \
 	$(MAKE) -C $(LIB_DIR) $@
