@@ -20,6 +20,8 @@ ifndef PROTOBUF_VERSION
 $(error PROTOBUF_VERSION is missing)
 endif
 
+.PHONY: syntax_check clean clobber
+
 all: build
 
 # Build everything under the local directory.
@@ -121,7 +123,6 @@ $(SI_GO_TMP): $(SI_PROTO) | $(PROTOC) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC)
 
 # Syntax check constants to make sure it passes
 COMMON_DIR := ./common
-.PHONY: syntax_check
 syntax_check:
 	@echo "\nsyntax check for constants code"
 	@go build $(COMMON_DIR) > /dev/null
@@ -133,11 +134,9 @@ build: $(SI_GO_TMP) syntax_check
 	@echo "\nprotobuf go source generated:\n\t$(HERE)/$(SI_GO)\n\t$(HERE)/$(SI_GRPC_GO)\n"
 
 # Simple clean of generated file language binding.
-.PHONY: clean
 clean:
 	rm -rf $(SI_GO) $(SI_GO_TMP) $(SI_BUILD)
 
 # Remove all non versioned files (including compiler and cache)
-.PHONY: clobber
 clobber: clean
 	rm -rf $(PROTOC_TMP_DIR)
