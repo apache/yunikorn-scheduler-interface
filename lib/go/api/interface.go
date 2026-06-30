@@ -51,6 +51,12 @@ type ResourceManagerCallback interface {
 	//Receive Node Update Response
 	UpdateNode(response *si.NodeResponse) error
 
+	// PredicatesPreFilter Run a certain set of pre-filter functions to find the feasible nodes
+	// for the given pod. If all nodes are eligible, empty map along with nil error would be returned.
+	// Otherwise, map containing only feasible nodes along with nil error would be returned. Non-nil error
+	// would be returned for all other failure cases.
+	PredicatesPreFilter(args *si.PredicatesArgs) (map[string]struct{}, error)
+
 	// Run a certain set of predicate functions to determine if a proposed allocation
 	// can be allocated onto a node.
 	Predicates(args *si.PredicatesArgs) error
