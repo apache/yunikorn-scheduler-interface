@@ -46,6 +46,7 @@ const (
 	TerminationType_TIMEOUT                  TerminationType = 2 // Timed out based on the executionTimeoutMilliSeconds (created by core)
 	TerminationType_PREEMPTED_BY_SCHEDULER   TerminationType = 3 // Preempted allocation by scheduler (created by core)
 	TerminationType_PLACEHOLDER_REPLACED     TerminationType = 4 // Placeholder allocation replaced by real allocation (created by core)
+	TerminationType_SCHEDULING_FAILED_ON_RM  TerminationType = 5 // If binding or assumepod fails on RM side
 )
 
 // Enum value maps for TerminationType.
@@ -56,6 +57,7 @@ var (
 		2: "TIMEOUT",
 		3: "PREEMPTED_BY_SCHEDULER",
 		4: "PLACEHOLDER_REPLACED",
+		5: "SCHEDULING_FAILED_ON_RM",
 	}
 	TerminationType_value = map[string]int32{
 		"UNKNOWN_TERMINATION_TYPE": 0,
@@ -63,6 +65,7 @@ var (
 		"TIMEOUT":                  2,
 		"PREEMPTED_BY_SCHEDULER":   3,
 		"PLACEHOLDER_REPLACED":     4,
+		"SCHEDULING_FAILED_ON_RM":  5,
 	}
 )
 
@@ -2742,13 +2745,14 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\vUG_APP_LINK\x10\xda\x04\x12\x15\n" +
 	"\x10UG_USER_RESOURCE\x10\xdb\x04\x12\x16\n" +
 	"\x11UG_GROUP_RESOURCE\x10\xdc\x04\"\x06\b\xcd\x01\x10\xcd\x01\"\x06\b\xad\x02\x10\xad\x02*\fAPP_STARTING*\n" +
-	"NODE_READYJ\x04\b\x03\x10\x04J\x04\b\x04\x10\x05R\agroupIDR\x06reason*\x85\x01\n" +
+	"NODE_READYJ\x04\b\x03\x10\x04J\x04\b\x04\x10\x05R\agroupIDR\x06reason*\xa2\x01\n" +
 	"\x0fTerminationType\x12\x1c\n" +
 	"\x18UNKNOWN_TERMINATION_TYPE\x10\x00\x12\x11\n" +
 	"\rSTOPPED_BY_RM\x10\x01\x12\v\n" +
 	"\aTIMEOUT\x10\x02\x12\x1a\n" +
 	"\x16PREEMPTED_BY_SCHEDULER\x10\x03\x12\x18\n" +
-	"\x14PLACEHOLDER_REPLACED\x10\x042\xd5\x02\n" +
+	"\x14PLACEHOLDER_REPLACED\x10\x04\x12\x1b\n" +
+	"\x17SCHEDULING_FAILED_ON_RM\x10\x052\xd5\x02\n" +
 	"\tScheduler\x12j\n" +
 	"\x17RegisterResourceManager\x12%.si.v1.RegisterResourceManagerRequest\x1a&.si.v1.RegisterResourceManagerResponse\"\x00\x12M\n" +
 	"\x10UpdateAllocation\x12\x18.si.v1.AllocationRequest\x1a\x19.si.v1.AllocationResponse\"\x00(\x010\x01\x12P\n" +

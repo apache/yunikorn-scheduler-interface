@@ -277,6 +277,7 @@ enum TerminationType {
     TIMEOUT = 2;                // Timed out based on the executionTimeoutMilliSeconds (created by core)
     PREEMPTED_BY_SCHEDULER = 3; // Preempted allocation by scheduler (created by core)
     PLACEHOLDER_REPLACED = 4;   // Placeholder allocation replaced by real allocation (created by core)
+    SCHEDULING_FAILED_ON_RM = 5; // If binding or assumepod fails on RM side
 }
 
 // Release allocation: this is a bidirectional message. The Terminationtype defines the origin, or creator,
