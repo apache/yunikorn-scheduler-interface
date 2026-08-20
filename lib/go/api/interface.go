@@ -66,6 +66,12 @@ type ResourceManagerCallback interface {
 	// speculatively remove.
 	PreemptionPredicates(args *si.PreemptionPredicatesArgs) *si.PreemptionPredicatesResponse
 
+	Reserve(args *si.BindingArgs) *si.BindingResponse
+
+	PreBind(args *si.BindingArgs) *si.BindingResponse
+
+	UnReserve(args *si.BindingArgs) *si.BindingResponse
+
 	// This plugin is responsible for transmitting events to the shim side.
 	// Events can be further exposed from the shim.
 	SendEvent(events []*si.EventRecord)

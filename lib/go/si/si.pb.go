@@ -227,7 +227,7 @@ func (x UpdateContainerSchedulingStateRequest_SchedulingState) Number() protoref
 
 // Deprecated: Use UpdateContainerSchedulingStateRequest_SchedulingState.Descriptor instead.
 func (UpdateContainerSchedulingStateRequest_SchedulingState) EnumDescriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{30, 0}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{32, 0}
 }
 
 type EventRecord_Type int32
@@ -286,7 +286,7 @@ func (x EventRecord_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EventRecord_Type.Descriptor instead.
 func (EventRecord_Type) EnumDescriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{32, 0}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{34, 0}
 }
 
 type EventRecord_ChangeType int32
@@ -338,7 +338,7 @@ func (x EventRecord_ChangeType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EventRecord_ChangeType.Descriptor instead.
 func (EventRecord_ChangeType) EnumDescriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{32, 1}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{34, 1}
 }
 
 type EventRecord_ChangeDetail int32
@@ -510,7 +510,7 @@ func (x EventRecord_ChangeDetail) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EventRecord_ChangeDetail.Descriptor instead.
 func (EventRecord_ChangeDetail) EnumDescriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{32, 2}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{34, 2}
 }
 
 type RegisterResourceManagerRequest struct {
@@ -2231,6 +2231,60 @@ func (x *PreemptionPredicatesArgs) GetStartIndex() int32 {
 	return 0
 }
 
+type BindingArgs struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// allocation key identifies a container, the binding function to bind the container onto a node.
+	AllocationKey string `protobuf:"bytes,1,opt,name=allocationKey,proto3" json:"allocationKey,omitempty"`
+	// the node ID the container is bound to.
+	NodeID        string `protobuf:"bytes,2,opt,name=nodeID,proto3" json:"nodeID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BindingArgs) Reset() {
+	*x = BindingArgs{}
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BindingArgs) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BindingArgs) ProtoMessage() {}
+
+func (x *BindingArgs) ProtoReflect() protoreflect.Message {
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BindingArgs.ProtoReflect.Descriptor instead.
+func (*BindingArgs) Descriptor() ([]byte, []int) {
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *BindingArgs) GetAllocationKey() string {
+	if x != nil {
+		return x.AllocationKey
+	}
+	return ""
+}
+
+func (x *BindingArgs) GetNodeID() string {
+	if x != nil {
+		return x.NodeID
+	}
+	return ""
+}
+
 type PreemptionPredicatesResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// whether or not container will schedule on the node
@@ -2243,7 +2297,7 @@ type PreemptionPredicatesResponse struct {
 
 func (x *PreemptionPredicatesResponse) Reset() {
 	*x = PreemptionPredicatesResponse{}
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[27]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2255,7 +2309,7 @@ func (x *PreemptionPredicatesResponse) String() string {
 func (*PreemptionPredicatesResponse) ProtoMessage() {}
 
 func (x *PreemptionPredicatesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[27]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2268,7 +2322,7 @@ func (x *PreemptionPredicatesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PreemptionPredicatesResponse.ProtoReflect.Descriptor instead.
 func (*PreemptionPredicatesResponse) Descriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{27}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *PreemptionPredicatesResponse) GetSuccess() bool {
@@ -2293,7 +2347,7 @@ type Empty struct {
 
 func (x *Empty) Reset() {
 	*x = Empty{}
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[28]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2305,7 +2359,7 @@ func (x *Empty) String() string {
 func (*Empty) ProtoMessage() {}
 
 func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[28]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2318,7 +2372,7 @@ func (x *Empty) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Empty.ProtoReflect.Descriptor instead.
 func (*Empty) Descriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{28}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{29}
 }
 
 type PreFilterPredicatesResponse struct {
@@ -2333,7 +2387,7 @@ type PreFilterPredicatesResponse struct {
 
 func (x *PreFilterPredicatesResponse) Reset() {
 	*x = PreFilterPredicatesResponse{}
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[29]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2345,7 +2399,7 @@ func (x *PreFilterPredicatesResponse) String() string {
 func (*PreFilterPredicatesResponse) ProtoMessage() {}
 
 func (x *PreFilterPredicatesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[29]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2358,7 +2412,7 @@ func (x *PreFilterPredicatesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PreFilterPredicatesResponse.ProtoReflect.Descriptor instead.
 func (*PreFilterPredicatesResponse) Descriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{29}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *PreFilterPredicatesResponse) GetSuccess() bool {
@@ -2373,6 +2427,60 @@ func (x *PreFilterPredicatesResponse) GetFeasibleNodes() map[string]*Empty {
 		return x.FeasibleNodes
 	}
 	return nil
+}
+
+type BindingResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// whether or not binding fails
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	// A human-readable reason message only in case of failures
+	Reason        string `protobuf:"bytes,2,opt,name=reason,proto3" json:"reason,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BindingResponse) Reset() {
+	*x = BindingResponse{}
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BindingResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BindingResponse) ProtoMessage() {}
+
+func (x *BindingResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BindingResponse.ProtoReflect.Descriptor instead.
+func (*BindingResponse) Descriptor() ([]byte, []int) {
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *BindingResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *BindingResponse) GetReason() string {
+	if x != nil {
+		return x.Reason
+	}
+	return ""
 }
 
 type UpdateContainerSchedulingStateRequest struct {
@@ -2391,7 +2499,7 @@ type UpdateContainerSchedulingStateRequest struct {
 
 func (x *UpdateContainerSchedulingStateRequest) Reset() {
 	*x = UpdateContainerSchedulingStateRequest{}
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[30]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2403,7 +2511,7 @@ func (x *UpdateContainerSchedulingStateRequest) String() string {
 func (*UpdateContainerSchedulingStateRequest) ProtoMessage() {}
 
 func (x *UpdateContainerSchedulingStateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[30]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2416,7 +2524,7 @@ func (x *UpdateContainerSchedulingStateRequest) ProtoReflect() protoreflect.Mess
 
 // Deprecated: Use UpdateContainerSchedulingStateRequest.ProtoReflect.Descriptor instead.
 func (*UpdateContainerSchedulingStateRequest) Descriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{30}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *UpdateContainerSchedulingStateRequest) GetApplicationID() string {
@@ -2463,7 +2571,7 @@ type UpdateConfigurationRequest struct {
 
 func (x *UpdateConfigurationRequest) Reset() {
 	*x = UpdateConfigurationRequest{}
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[31]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2475,7 +2583,7 @@ func (x *UpdateConfigurationRequest) String() string {
 func (*UpdateConfigurationRequest) ProtoMessage() {}
 
 func (x *UpdateConfigurationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[31]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2488,7 +2596,7 @@ func (x *UpdateConfigurationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateConfigurationRequest.ProtoReflect.Descriptor instead.
 func (*UpdateConfigurationRequest) Descriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{31}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *UpdateConfigurationRequest) GetRmID() string {
@@ -2543,7 +2651,7 @@ type EventRecord struct {
 
 func (x *EventRecord) Reset() {
 	*x = EventRecord{}
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[32]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2555,7 +2663,7 @@ func (x *EventRecord) String() string {
 func (*EventRecord) ProtoMessage() {}
 
 func (x *EventRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[32]
+	mi := &file_yunikorn_scheduler_interface_si_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2568,7 +2676,7 @@ func (x *EventRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EventRecord.ProtoReflect.Descriptor instead.
 func (*EventRecord) Descriptor() ([]byte, []int) {
-	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{32}
+	return file_yunikorn_scheduler_interface_si_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *EventRecord) GetType() EventRecord_Type {
@@ -2796,7 +2904,10 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\x15preemptAllocationKeys\x18\x03 \x03(\tR\x15preemptAllocationKeys\x12\x1e\n" +
 	"\n" +
 	"startIndex\x18\x04 \x01(\x05R\n" +
-	"startIndex\"N\n" +
+	"startIndex\"K\n" +
+	"\vBindingArgs\x12$\n" +
+	"\rallocationKey\x18\x01 \x01(\tR\rallocationKey\x12\x16\n" +
+	"\x06nodeID\x18\x02 \x01(\tR\x06nodeID\"N\n" +
 	"\x1cPreemptionPredicatesResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x14\n" +
 	"\x05index\x18\x02 \x01(\x05R\x05index\"\a\n" +
@@ -2806,7 +2917,10 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\rFeasibleNodes\x18\x02 \x03(\v25.si.v1.PreFilterPredicatesResponse.FeasibleNodesEntryR\rFeasibleNodes\x1aN\n" +
 	"\x12FeasibleNodesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\"\n" +
-	"\x05value\x18\x02 \x01(\v2\f.si.v1.EmptyR\x05value:\x028\x01\"\xc6\x02\n" +
+	"\x05value\x18\x02 \x01(\v2\f.si.v1.EmptyR\x05value:\x028\x01\"C\n" +
+	"\x0fBindingResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x16\n" +
+	"\x06reason\x18\x02 \x01(\tR\x06reason\"\xc6\x02\n" +
 	"%UpdateContainerSchedulingStateRequest\x12$\n" +
 	"\rapplicationID\x18\x01 \x01(\tR\rapplicationID\x12$\n" +
 	"\rallocationKey\x18\x02 \x01(\tR\rallocationKey\x12R\n" +
@@ -2929,7 +3043,7 @@ func file_yunikorn_scheduler_interface_si_proto_rawDescGZIP() []byte {
 }
 
 var file_yunikorn_scheduler_interface_si_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
-var file_yunikorn_scheduler_interface_si_proto_msgTypes = make([]protoimpl.MessageInfo, 41)
+var file_yunikorn_scheduler_interface_si_proto_msgTypes = make([]protoimpl.MessageInfo, 43)
 var file_yunikorn_scheduler_interface_si_proto_goTypes = []any{
 	(TerminationType)(0),       // 0: si.v1.TerminationType
 	(NodeInfo_ActionFromRM)(0), // 1: si.v1.NodeInfo.ActionFromRM
@@ -2964,25 +3078,27 @@ var file_yunikorn_scheduler_interface_si_proto_goTypes = []any{
 	(*PredicatesArgs)(nil),                        // 30: si.v1.PredicatesArgs
 	(*PreFilterPredicatesArgs)(nil),               // 31: si.v1.PreFilterPredicatesArgs
 	(*PreemptionPredicatesArgs)(nil),              // 32: si.v1.PreemptionPredicatesArgs
-	(*PreemptionPredicatesResponse)(nil),          // 33: si.v1.PreemptionPredicatesResponse
-	(*Empty)(nil),                                 // 34: si.v1.Empty
-	(*PreFilterPredicatesResponse)(nil),           // 35: si.v1.PreFilterPredicatesResponse
-	(*UpdateContainerSchedulingStateRequest)(nil), // 36: si.v1.UpdateContainerSchedulingStateRequest
-	(*UpdateConfigurationRequest)(nil),            // 37: si.v1.UpdateConfigurationRequest
-	(*EventRecord)(nil),                           // 38: si.v1.EventRecord
-	nil,                                           // 39: si.v1.RegisterResourceManagerRequest.BuildInfoEntry
-	nil,                                           // 40: si.v1.RegisterResourceManagerRequest.ExtraConfigEntry
-	nil,                                           // 41: si.v1.Resource.ResourcesEntry
-	nil,                                           // 42: si.v1.AddApplicationRequest.TagsEntry
-	nil,                                           // 43: si.v1.Allocation.AllocationTagsEntry
-	nil,                                           // 44: si.v1.NodeInfo.AttributesEntry
-	nil,                                           // 45: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
-	nil,                                           // 46: si.v1.UpdateConfigurationRequest.ExtraConfigEntry
-	(*descriptorpb.FieldOptions)(nil),             // 47: google.protobuf.FieldOptions
+	(*BindingArgs)(nil),                           // 33: si.v1.BindingArgs
+	(*PreemptionPredicatesResponse)(nil),          // 34: si.v1.PreemptionPredicatesResponse
+	(*Empty)(nil),                                 // 35: si.v1.Empty
+	(*PreFilterPredicatesResponse)(nil),           // 36: si.v1.PreFilterPredicatesResponse
+	(*BindingResponse)(nil),                       // 37: si.v1.BindingResponse
+	(*UpdateContainerSchedulingStateRequest)(nil), // 38: si.v1.UpdateContainerSchedulingStateRequest
+	(*UpdateConfigurationRequest)(nil),            // 39: si.v1.UpdateConfigurationRequest
+	(*EventRecord)(nil),                           // 40: si.v1.EventRecord
+	nil,                                           // 41: si.v1.RegisterResourceManagerRequest.BuildInfoEntry
+	nil,                                           // 42: si.v1.RegisterResourceManagerRequest.ExtraConfigEntry
+	nil,                                           // 43: si.v1.Resource.ResourcesEntry
+	nil,                                           // 44: si.v1.AddApplicationRequest.TagsEntry
+	nil,                                           // 45: si.v1.Allocation.AllocationTagsEntry
+	nil,                                           // 46: si.v1.NodeInfo.AttributesEntry
+	nil,                                           // 47: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
+	nil,                                           // 48: si.v1.UpdateConfigurationRequest.ExtraConfigEntry
+	(*descriptorpb.FieldOptions)(nil),             // 49: google.protobuf.FieldOptions
 }
 var file_yunikorn_scheduler_interface_si_proto_depIdxs = []int32{
-	39, // 0: si.v1.RegisterResourceManagerRequest.buildInfo:type_name -> si.v1.RegisterResourceManagerRequest.BuildInfoEntry
-	40, // 1: si.v1.RegisterResourceManagerRequest.extraConfig:type_name -> si.v1.RegisterResourceManagerRequest.ExtraConfigEntry
+	41, // 0: si.v1.RegisterResourceManagerRequest.buildInfo:type_name -> si.v1.RegisterResourceManagerRequest.BuildInfoEntry
+	42, // 1: si.v1.RegisterResourceManagerRequest.extraConfig:type_name -> si.v1.RegisterResourceManagerRequest.ExtraConfigEntry
 	26, // 2: si.v1.AllocationRequest.releases:type_name -> si.v1.AllocationReleasesRequest
 	25, // 3: si.v1.AllocationRequest.allocations:type_name -> si.v1.Allocation
 	22, // 4: si.v1.ApplicationRequest.new:type_name -> si.v1.AddApplicationRequest
@@ -2996,28 +3112,28 @@ var file_yunikorn_scheduler_interface_si_proto_depIdxs = []int32{
 	14, // 12: si.v1.ApplicationResponse.updated:type_name -> si.v1.UpdatedApplication
 	17, // 13: si.v1.NodeResponse.rejected:type_name -> si.v1.RejectedNode
 	18, // 14: si.v1.NodeResponse.accepted:type_name -> si.v1.AcceptedNode
-	41, // 15: si.v1.Resource.resources:type_name -> si.v1.Resource.ResourcesEntry
+	43, // 15: si.v1.Resource.resources:type_name -> si.v1.Resource.ResourcesEntry
 	24, // 16: si.v1.AddApplicationRequest.ugi:type_name -> si.v1.UserGroupInformation
-	42, // 17: si.v1.AddApplicationRequest.tags:type_name -> si.v1.AddApplicationRequest.TagsEntry
+	44, // 17: si.v1.AddApplicationRequest.tags:type_name -> si.v1.AddApplicationRequest.TagsEntry
 	19, // 18: si.v1.AddApplicationRequest.placeholderAsk:type_name -> si.v1.Resource
-	43, // 19: si.v1.Allocation.allocationTags:type_name -> si.v1.Allocation.AllocationTagsEntry
+	45, // 19: si.v1.Allocation.allocationTags:type_name -> si.v1.Allocation.AllocationTagsEntry
 	19, // 20: si.v1.Allocation.resourcePerAlloc:type_name -> si.v1.Resource
 	21, // 21: si.v1.Allocation.preemptionPolicy:type_name -> si.v1.PreemptionPolicy
 	27, // 22: si.v1.AllocationReleasesRequest.allocationsToRelease:type_name -> si.v1.AllocationRelease
 	0,  // 23: si.v1.AllocationRelease.terminationType:type_name -> si.v1.TerminationType
 	1,  // 24: si.v1.NodeInfo.action:type_name -> si.v1.NodeInfo.ActionFromRM
-	44, // 25: si.v1.NodeInfo.attributes:type_name -> si.v1.NodeInfo.AttributesEntry
+	46, // 25: si.v1.NodeInfo.attributes:type_name -> si.v1.NodeInfo.AttributesEntry
 	19, // 26: si.v1.NodeInfo.schedulableResource:type_name -> si.v1.Resource
-	45, // 27: si.v1.PreFilterPredicatesResponse.FeasibleNodes:type_name -> si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
+	47, // 27: si.v1.PreFilterPredicatesResponse.FeasibleNodes:type_name -> si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
 	2,  // 28: si.v1.UpdateContainerSchedulingStateRequest.state:type_name -> si.v1.UpdateContainerSchedulingStateRequest.SchedulingState
-	46, // 29: si.v1.UpdateConfigurationRequest.extraConfig:type_name -> si.v1.UpdateConfigurationRequest.ExtraConfigEntry
+	48, // 29: si.v1.UpdateConfigurationRequest.extraConfig:type_name -> si.v1.UpdateConfigurationRequest.ExtraConfigEntry
 	3,  // 30: si.v1.EventRecord.type:type_name -> si.v1.EventRecord.Type
 	4,  // 31: si.v1.EventRecord.eventChangeType:type_name -> si.v1.EventRecord.ChangeType
 	5,  // 32: si.v1.EventRecord.eventChangeDetail:type_name -> si.v1.EventRecord.ChangeDetail
 	19, // 33: si.v1.EventRecord.resource:type_name -> si.v1.Resource
 	20, // 34: si.v1.Resource.ResourcesEntry.value:type_name -> si.v1.Quantity
-	34, // 35: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry.value:type_name -> si.v1.Empty
-	47, // 36: si.v1.si_secret:extendee -> google.protobuf.FieldOptions
+	35, // 35: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry.value:type_name -> si.v1.Empty
+	49, // 36: si.v1.si_secret:extendee -> google.protobuf.FieldOptions
 	6,  // 37: si.v1.Scheduler.RegisterResourceManager:input_type -> si.v1.RegisterResourceManagerRequest
 	8,  // 38: si.v1.Scheduler.UpdateAllocation:input_type -> si.v1.AllocationRequest
 	9,  // 39: si.v1.Scheduler.UpdateApplication:input_type -> si.v1.ApplicationRequest
@@ -3044,7 +3160,7 @@ func file_yunikorn_scheduler_interface_si_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_yunikorn_scheduler_interface_si_proto_rawDesc), len(file_yunikorn_scheduler_interface_si_proto_rawDesc)),
 			NumEnums:      6,
-			NumMessages:   41,
+			NumMessages:   43,
 			NumExtensions: 1,
 			NumServices:   1,
 		},

@@ -178,6 +178,12 @@ type ResourceManagerCallback interface {
 	// speculatively remove.
 	PreemptionPredicates(args *si.PreemptionPredicatesArgs) *si.PreemptionPredicatesResponse
 
+	Reserve(args *si.BindingArgs) *si.BindingResponse
+	
+	PreBind(args *si.BindingArgs) *si.BindingResponse
+
+	UnReserve(args *si.BindingArgs) *si.BindingResponse
+	
 	// This plugin is responsible for transmitting events to the shim side.
 	// Events can be further exposed from the shim.
 	SendEvent(events []*si.EventRecord)
@@ -743,6 +749,13 @@ message PreemptionPredicatesArgs {
     int32 startIndex = 4;
 }
 
+message BindingArgs {
+  // allocation key identifies a container, the binding function to bind the container onto a node.
+  string allocationKey = 1;
+  // the node ID the container is bound to.
+  string nodeID = 2;
+}
+
 message PreemptionPredicatesResponse {
     // whether or not container will schedule on the node
     bool success = 1;
@@ -757,6 +770,13 @@ message PreFilterPredicatesResponse{
   bool success = 1;
   // map of nodes that are considered feasible to run the container. Empty map means all nodes are eligible.
   map<string, Empty> FeasibleNodes = 2;
+}
+
+message BindingResponse {
+  // whether or not binding fails
+  bool success = 1;
+  // A human-readable reason message only in case of failures
+  string reason = 2;
 }
 
 message UpdateContainerSchedulingStateRequest {
