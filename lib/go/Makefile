@@ -37,12 +37,12 @@ export GO111MODULE
 
 # Only set PROTOC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_VER)))
-PROTOC_VER := 23.2
+PROTOC_VER := 36.0
 endif
 
 # Only set PROTOC_GEN_GO_GRPC_VER if it has an empty value.
 ifeq (,$(strip $(PROTOC_GEN_GO_GRPC_VER)))
-PROTOC_GEN_GO_GRPC_VER := 1.3.0
+PROTOC_GEN_GO_GRPC_VER := 1.6.2
 endif
 
 PROTOC_OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
