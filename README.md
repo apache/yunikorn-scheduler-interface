@@ -98,4 +98,4 @@ components.
 Please keep in mind that changes in the interface specification will be highly scrutinised and 
 are not really suited as a simple start to become familiar with YuniKorn.
 
-See how to contribute code in [our website](http://yunikorn.apache.org/community/how_to_contribute).
+See how to contribute code in [our website](https://yunikorn.apache.org/community/how_to_contribute).
