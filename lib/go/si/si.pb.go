@@ -2236,7 +2236,9 @@ type PreemptionPredicatesResponse struct {
 	// whether or not container will schedule on the node
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// index of last allocation which was removed before success (ignored during failure)
-	Index         int32 `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"`
+	Index int32 `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"`
+	// errors, if any
+	ErrorMessage  map[string]int32 `protobuf:"bytes,3,rep,name=errorMessage,proto3" json:"errorMessage,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2283,6 +2285,13 @@ func (x *PreemptionPredicatesResponse) GetIndex() int32 {
 		return x.Index
 	}
 	return 0
+}
+
+func (x *PreemptionPredicatesResponse) GetErrorMessage() map[string]int32 {
+	if x != nil {
+		return x.ErrorMessage
+	}
+	return nil
 }
 
 type Empty struct {
@@ -2805,10 +2814,14 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\x15preemptAllocationKeys\x18\x03 \x03(\tR\x15preemptAllocationKeys\x12\x1e\n" +
 	"\n" +
 	"startIndex\x18\x04 \x01(\x05R\n" +
-	"startIndex\"N\n" +
+	"startIndex\"\xea\x01\n" +
 	"\x1cPreemptionPredicatesResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x14\n" +
-	"\x05index\x18\x02 \x01(\x05R\x05index\"\a\n" +
+	"\x05index\x18\x02 \x01(\x05R\x05index\x12Y\n" +
+	"\ferrorMessage\x18\x03 \x03(\v25.si.v1.PreemptionPredicatesResponse.ErrorMessageEntryR\ferrorMessage\x1a?\n" +
+	"\x11ErrorMessageEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\a\n" +
 	"\x05Empty\"\x88\x02\n" +
 	"\x1bPreFilterPredicatesResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12[\n" +
@@ -2939,7 +2952,7 @@ func file_yunikorn_scheduler_interface_si_proto_rawDescGZIP() []byte {
 }
 
 var file_yunikorn_scheduler_interface_si_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
-var file_yunikorn_scheduler_interface_si_proto_msgTypes = make([]protoimpl.MessageInfo, 41)
+var file_yunikorn_scheduler_interface_si_proto_msgTypes = make([]protoimpl.MessageInfo, 42)
 var file_yunikorn_scheduler_interface_si_proto_goTypes = []any{
 	(TerminationType)(0),       // 0: si.v1.TerminationType
 	(NodeInfo_ActionFromRM)(0), // 1: si.v1.NodeInfo.ActionFromRM
@@ -2986,9 +2999,10 @@ var file_yunikorn_scheduler_interface_si_proto_goTypes = []any{
 	nil,                                           // 42: si.v1.AddApplicationRequest.TagsEntry
 	nil,                                           // 43: si.v1.Allocation.AllocationTagsEntry
 	nil,                                           // 44: si.v1.NodeInfo.AttributesEntry
-	nil,                                           // 45: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
-	nil,                                           // 46: si.v1.UpdateConfigurationRequest.ExtraConfigEntry
-	(*descriptorpb.FieldOptions)(nil),             // 47: google.protobuf.FieldOptions
+	nil,                                           // 45: si.v1.PreemptionPredicatesResponse.ErrorMessageEntry
+	nil,                                           // 46: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
+	nil,                                           // 47: si.v1.UpdateConfigurationRequest.ExtraConfigEntry
+	(*descriptorpb.FieldOptions)(nil),             // 48: google.protobuf.FieldOptions
 }
 var file_yunikorn_scheduler_interface_si_proto_depIdxs = []int32{
 	39, // 0: si.v1.RegisterResourceManagerRequest.buildInfo:type_name -> si.v1.RegisterResourceManagerRequest.BuildInfoEntry
@@ -3018,29 +3032,30 @@ var file_yunikorn_scheduler_interface_si_proto_depIdxs = []int32{
 	1,  // 24: si.v1.NodeInfo.action:type_name -> si.v1.NodeInfo.ActionFromRM
 	44, // 25: si.v1.NodeInfo.attributes:type_name -> si.v1.NodeInfo.AttributesEntry
 	19, // 26: si.v1.NodeInfo.schedulableResource:type_name -> si.v1.Resource
-	45, // 27: si.v1.PreFilterPredicatesResponse.FeasibleNodes:type_name -> si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
-	2,  // 28: si.v1.UpdateContainerSchedulingStateRequest.state:type_name -> si.v1.UpdateContainerSchedulingStateRequest.SchedulingState
-	46, // 29: si.v1.UpdateConfigurationRequest.extraConfig:type_name -> si.v1.UpdateConfigurationRequest.ExtraConfigEntry
-	3,  // 30: si.v1.EventRecord.type:type_name -> si.v1.EventRecord.Type
-	4,  // 31: si.v1.EventRecord.eventChangeType:type_name -> si.v1.EventRecord.ChangeType
-	5,  // 32: si.v1.EventRecord.eventChangeDetail:type_name -> si.v1.EventRecord.ChangeDetail
-	19, // 33: si.v1.EventRecord.resource:type_name -> si.v1.Resource
-	20, // 34: si.v1.Resource.ResourcesEntry.value:type_name -> si.v1.Quantity
-	34, // 35: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry.value:type_name -> si.v1.Empty
-	47, // 36: si.v1.si_secret:extendee -> google.protobuf.FieldOptions
-	6,  // 37: si.v1.Scheduler.RegisterResourceManager:input_type -> si.v1.RegisterResourceManagerRequest
-	8,  // 38: si.v1.Scheduler.UpdateAllocation:input_type -> si.v1.AllocationRequest
-	9,  // 39: si.v1.Scheduler.UpdateApplication:input_type -> si.v1.ApplicationRequest
-	10, // 40: si.v1.Scheduler.UpdateNode:input_type -> si.v1.NodeRequest
-	7,  // 41: si.v1.Scheduler.RegisterResourceManager:output_type -> si.v1.RegisterResourceManagerResponse
-	11, // 42: si.v1.Scheduler.UpdateAllocation:output_type -> si.v1.AllocationResponse
-	12, // 43: si.v1.Scheduler.UpdateApplication:output_type -> si.v1.ApplicationResponse
-	13, // 44: si.v1.Scheduler.UpdateNode:output_type -> si.v1.NodeResponse
-	41, // [41:45] is the sub-list for method output_type
-	37, // [37:41] is the sub-list for method input_type
-	37, // [37:37] is the sub-list for extension type_name
-	36, // [36:37] is the sub-list for extension extendee
-	0,  // [0:36] is the sub-list for field type_name
+	45, // 27: si.v1.PreemptionPredicatesResponse.errorMessage:type_name -> si.v1.PreemptionPredicatesResponse.ErrorMessageEntry
+	46, // 28: si.v1.PreFilterPredicatesResponse.FeasibleNodes:type_name -> si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry
+	2,  // 29: si.v1.UpdateContainerSchedulingStateRequest.state:type_name -> si.v1.UpdateContainerSchedulingStateRequest.SchedulingState
+	47, // 30: si.v1.UpdateConfigurationRequest.extraConfig:type_name -> si.v1.UpdateConfigurationRequest.ExtraConfigEntry
+	3,  // 31: si.v1.EventRecord.type:type_name -> si.v1.EventRecord.Type
+	4,  // 32: si.v1.EventRecord.eventChangeType:type_name -> si.v1.EventRecord.ChangeType
+	5,  // 33: si.v1.EventRecord.eventChangeDetail:type_name -> si.v1.EventRecord.ChangeDetail
+	19, // 34: si.v1.EventRecord.resource:type_name -> si.v1.Resource
+	20, // 35: si.v1.Resource.ResourcesEntry.value:type_name -> si.v1.Quantity
+	34, // 36: si.v1.PreFilterPredicatesResponse.FeasibleNodesEntry.value:type_name -> si.v1.Empty
+	48, // 37: si.v1.si_secret:extendee -> google.protobuf.FieldOptions
+	6,  // 38: si.v1.Scheduler.RegisterResourceManager:input_type -> si.v1.RegisterResourceManagerRequest
+	8,  // 39: si.v1.Scheduler.UpdateAllocation:input_type -> si.v1.AllocationRequest
+	9,  // 40: si.v1.Scheduler.UpdateApplication:input_type -> si.v1.ApplicationRequest
+	10, // 41: si.v1.Scheduler.UpdateNode:input_type -> si.v1.NodeRequest
+	7,  // 42: si.v1.Scheduler.RegisterResourceManager:output_type -> si.v1.RegisterResourceManagerResponse
+	11, // 43: si.v1.Scheduler.UpdateAllocation:output_type -> si.v1.AllocationResponse
+	12, // 44: si.v1.Scheduler.UpdateApplication:output_type -> si.v1.ApplicationResponse
+	13, // 45: si.v1.Scheduler.UpdateNode:output_type -> si.v1.NodeResponse
+	42, // [42:46] is the sub-list for method output_type
+	38, // [38:42] is the sub-list for method input_type
+	38, // [38:38] is the sub-list for extension type_name
+	37, // [37:38] is the sub-list for extension extendee
+	0,  // [0:37] is the sub-list for field type_name
 }
 
 func init() { file_yunikorn_scheduler_interface_si_proto_init() }
@@ -3054,7 +3069,7 @@ func file_yunikorn_scheduler_interface_si_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_yunikorn_scheduler_interface_si_proto_rawDesc), len(file_yunikorn_scheduler_interface_si_proto_rawDesc)),
 			NumEnums:      6,
-			NumMessages:   41,
+			NumMessages:   42,
 			NumExtensions: 1,
 			NumServices:   1,
 		},
