@@ -748,6 +748,8 @@ message PreemptionPredicatesResponse {
     bool success = 1;
     // index of last allocation which was removed before success (ignored during failure)
     int32 index = 2;
+    // errors, if any
+    map<string, int32> errorMessage = 3;
 }
 
 message Empty {}
