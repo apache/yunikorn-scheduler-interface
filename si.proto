@@ -399,6 +399,8 @@ message PreFilterPredicatesResponse{
   bool success = 1;
   // map of nodes that are considered feasible to run the container. Empty map means all nodes are eligible.
   map<string, Empty> FeasibleNodes = 2;
+  // errors, if any
+  string errorMessage = 3;
 }
 
 message UpdateContainerSchedulingStateRequest {
