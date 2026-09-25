@@ -2238,9 +2238,11 @@ type PreemptionPredicatesResponse struct {
 	// index of last allocation which was removed before success (ignored during failure)
 	Index int32 `protobuf:"varint,2,opt,name=index,proto3" json:"index,omitempty"`
 	// errors, if any
-	ErrorMessage  map[string]int32 `protobuf:"bytes,3,rep,name=errorMessage,proto3" json:"errorMessage,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	ErrorMessage map[string]int32 `protobuf:"bytes,3,rep,name=errorMessage,proto3" json:"errorMessage,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	// allocation keys of victims to preempt, if reprieved
+	VictimAllocationKeys []string `protobuf:"bytes,4,rep,name=victimAllocationKeys,proto3" json:"victimAllocationKeys,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *PreemptionPredicatesResponse) Reset() {
@@ -2290,6 +2292,13 @@ func (x *PreemptionPredicatesResponse) GetIndex() int32 {
 func (x *PreemptionPredicatesResponse) GetErrorMessage() map[string]int32 {
 	if x != nil {
 		return x.ErrorMessage
+	}
+	return nil
+}
+
+func (x *PreemptionPredicatesResponse) GetVictimAllocationKeys() []string {
+	if x != nil {
+		return x.VictimAllocationKeys
 	}
 	return nil
 }
@@ -2814,11 +2823,12 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\x15preemptAllocationKeys\x18\x03 \x03(\tR\x15preemptAllocationKeys\x12\x1e\n" +
 	"\n" +
 	"startIndex\x18\x04 \x01(\x05R\n" +
-	"startIndex\"\xea\x01\n" +
+	"startIndex\"\x9e\x02\n" +
 	"\x1cPreemptionPredicatesResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x14\n" +
 	"\x05index\x18\x02 \x01(\x05R\x05index\x12Y\n" +
-	"\ferrorMessage\x18\x03 \x03(\v25.si.v1.PreemptionPredicatesResponse.ErrorMessageEntryR\ferrorMessage\x1a?\n" +
+	"\ferrorMessage\x18\x03 \x03(\v25.si.v1.PreemptionPredicatesResponse.ErrorMessageEntryR\ferrorMessage\x122\n" +
+	"\x14victimAllocationKeys\x18\x04 \x03(\tR\x14victimAllocationKeys\x1a?\n" +
 	"\x11ErrorMessageEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\x05R\x05value:\x028\x01\"\a\n" +
