@@ -858,6 +858,7 @@ message EventRecord {
      APP_RUNNABLE_QUEUE   = 214;  // Application is allowed to run (after maxApplications limit hit)
      APP_CANNOTRUN_QUOTA  = 215;  // Application cannot run due to user/group quota (maxApplications hit)
      APP_RUNNABLE_QUOTA   = 216;  // Application is allowed to run based on user/group quota (after maxApplications limit hit)
+     APP_REVIVING = 217;  // State change to reviving
 
      NODE_DECOMISSION   = 300;  // Node removal
      NODE_SCHEDULABLE   = 302;  // Node schedulable state change (cordon)
