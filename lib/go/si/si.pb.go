@@ -364,6 +364,7 @@ const (
 	EventRecord_APP_RUNNABLE_QUEUE  EventRecord_ChangeDetail = 214 // Application is allowed to run (after maxApplications limit hit)
 	EventRecord_APP_CANNOTRUN_QUOTA EventRecord_ChangeDetail = 215 // Application cannot run due to user/group quota (maxApplications hit)
 	EventRecord_APP_RUNNABLE_QUOTA  EventRecord_ChangeDetail = 216 // Application is allowed to run based on user/group quota (after maxApplications limit hit)
+	EventRecord_APP_REVIVING        EventRecord_ChangeDetail = 217 // State change to reviving
 	EventRecord_NODE_DECOMISSION    EventRecord_ChangeDetail = 300 // Node removal
 	EventRecord_NODE_SCHEDULABLE    EventRecord_ChangeDetail = 302 // Node schedulable state change (cordon)
 	EventRecord_NODE_ALLOC          EventRecord_ChangeDetail = 303 // Allocation changed
@@ -413,6 +414,7 @@ var (
 		214: "APP_RUNNABLE_QUEUE",
 		215: "APP_CANNOTRUN_QUOTA",
 		216: "APP_RUNNABLE_QUOTA",
+		217: "APP_REVIVING",
 		300: "NODE_DECOMISSION",
 		302: "NODE_SCHEDULABLE",
 		303: "NODE_ALLOC",
@@ -459,6 +461,7 @@ var (
 		"APP_RUNNABLE_QUEUE":  214,
 		"APP_CANNOTRUN_QUOTA": 215,
 		"APP_RUNNABLE_QUOTA":  216,
+		"APP_REVIVING":        217,
 		"NODE_DECOMISSION":    300,
 		"NODE_SCHEDULABLE":    302,
 		"NODE_ALLOC":          303,
@@ -2849,7 +2852,7 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\vextraConfig\x18\x05 \x03(\v22.si.v1.UpdateConfigurationRequest.ExtraConfigEntryR\vextraConfig\x1a>\n" +
 	"\x10ExtraConfigEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01J\x04\b\x01\x10\x02R\aconfigs\"\xde\v\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01J\x04\b\x01\x10\x02R\aconfigs\"\xf1\v\n" +
 	"\vEventRecord\x12+\n" +
 	"\x04type\x18\x01 \x01(\x0e2\x17.si.v1.EventRecord.TypeR\x04type\x12\x1a\n" +
 	"\bobjectID\x18\x02 \x01(\tR\bobjectID\x12\x18\n" +
@@ -2873,7 +2876,7 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\x03SET\x10\x01\x12\a\n" +
 	"\x03ADD\x10\x02\x12\n" +
 	"\n" +
-	"\x06REMOVE\x10\x03\"\xab\a\n" +
+	"\x06REMOVE\x10\x03\"\xbe\a\n" +
 	"\fChangeDetail\x12\x10\n" +
 	"\fDETAILS_NONE\x10\x00\x12\x12\n" +
 	"\x0eREQUEST_CANCEL\x10d\x12\x11\n" +
@@ -2896,7 +2899,8 @@ const file_yunikorn_scheduler_interface_si_proto_rawDesc = "" +
 	"\x13APP_CANNOTRUN_QUEUE\x10\xd5\x01\x12\x17\n" +
 	"\x12APP_RUNNABLE_QUEUE\x10\xd6\x01\x12\x18\n" +
 	"\x13APP_CANNOTRUN_QUOTA\x10\xd7\x01\x12\x17\n" +
-	"\x12APP_RUNNABLE_QUOTA\x10\xd8\x01\x12\x15\n" +
+	"\x12APP_RUNNABLE_QUOTA\x10\xd8\x01\x12\x11\n" +
+	"\fAPP_REVIVING\x10\xd9\x01\x12\x15\n" +
 	"\x10NODE_DECOMISSION\x10\xac\x02\x12\x15\n" +
 	"\x10NODE_SCHEDULABLE\x10\xae\x02\x12\x0f\n" +
 	"\n" +
