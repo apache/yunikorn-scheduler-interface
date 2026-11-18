@@ -750,6 +750,9 @@ message PreemptionPredicatesResponse {
     int32 index = 2;
     // errors, if any
     map<string, int32> errorMessage = 3;
+    // Allocation keys of victims to preempt after reprieve, in the same order as
+    // preemptAllocationKeys[0..index]. When empty, 0..index are preempted.
+    repeated string victimAllocationKeys = 4;
 }
 
 message Empty {}
